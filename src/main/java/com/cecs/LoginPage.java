@@ -20,6 +20,8 @@ class LoginPage {
     }
 
     static void show(Stage stage) {
+
+
         var userLabel = new Label("Username");
         var userField = new TextField();
         var user = new HBox(userLabel, userField);
@@ -38,6 +40,7 @@ class LoginPage {
 
         var signIn = new Text("Sign In");
         signIn.setFont(new Font(null, 36.0));
+
 
         var button = new Button("Sign In");
         button.setOnAction(action -> {
@@ -62,11 +65,12 @@ class LoginPage {
         });
 
         var col = new VBox(signIn, entries, button);
-        col.setSpacing(30.0);
+        col.setSpacing(10.0);
         col.setAlignment(Pos.CENTER);
         col.setPadding(new Insets(25.0));
 
-        stage.setScene(new Scene(col));
+        stage.setScene(new Scene(col, 400, 600));
+        stage.setTitle("Music Player 1.0");
         stage.show();
     }
 
