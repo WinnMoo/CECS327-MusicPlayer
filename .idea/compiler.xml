@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="CECS327-MusicPlayer" />
+        <module name="assignment1" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="CECS327-MusicPlayer" target="11" />
+      <module name="assignment1" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
