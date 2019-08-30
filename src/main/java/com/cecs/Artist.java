@@ -10,9 +10,9 @@ public class Artist {
     private String location;
     private String latitude;
     private String similar;
-    private float hotttnesss;
+    private float hotness;
 
-    public Artist(float terms_freq, String terms, String name, String familiarity, String longitude, String id, String location, String latitude, String similar, float hotttnesss) {
+    public Artist(float terms_freq, String terms, String name, String familiarity, String longitude, String id, String location, String latitude, String similar, float hotness) {
         this.terms_freq = terms_freq;
         this.terms = terms;
         this.name = name;
@@ -22,7 +22,7 @@ public class Artist {
         this.location = location;
         this.latitude = latitude;
         this.similar = similar;
-        this.hotttnesss = hotttnesss;
+        this.hotness = hotness;
     }
 
     public float getTerms_freq() {
@@ -97,11 +97,14 @@ public class Artist {
         this.similar = similar;
     }
 
-    public float getHotttnesss() {
-        return hotttnesss;
+    public float getHotness() {
+        return hotness;
     }
 
-    public void setHotttnesss(float hotttnesss) {
-        this.hotttnesss = hotttnesss;
+    public void setHotness(float hotness) {
+        this.hotness = hotness;
     }
+
+    @Override
+    public String toString() { return name; }
 }

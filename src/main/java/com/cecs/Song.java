@@ -234,4 +234,7 @@ public class Song {
     public void setLoudness(String loudness) {
         this.loudness = loudness;
     }
+
+    @Override
+    public String toString() { return title; }
 }

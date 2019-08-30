@@ -3,21 +3,21 @@ package com.cecs;
 import java.util.ArrayList;
 
 public class Playlist {
-    public ArrayList<Song> songs;
+    private ArrayList<Song> songs;
 
     public Playlist(){
-        songs = new ArrayList();
+        songs = new ArrayList<>();
     }
 
-    public boolean AddSong(Song songToAdd){
+    public boolean addSong(Song songToAdd){
         return songs.add(songToAdd);
     }
 
-    public boolean RemoveSong(Song songToRemove){
+    public boolean removeSong(Song songToRemove){
         return songs.remove(songToRemove);
     }
 
-    public void ClearPlaylist(){
+    public void clearPlaylist(){
         while(!songs.isEmpty()){
             songs.remove(0);
         }
