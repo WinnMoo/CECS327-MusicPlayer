@@ -2,7 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b25b93a7-165d-4836-a196-a9956bd60060" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/assignment1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/AddPlaylistPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/AddSongPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/App.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/Artist.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/CreateAccountPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/LoginPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/MainPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/Music.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/Playlist.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/Release.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/Song.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/CreateAccountPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/CreateAccountPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/LoginPage.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,6 +42,7 @@
     <option name="directoryName" value="vUnDQMXA" />
   </component>
   <component name="ProjectId" id="1Q6y85TjdUAyXbxxgQ0JaQYunqk" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -78,6 +96,7 @@
       <option name="presentableId" value="Default" />
       <updated>1567105177057</updated>
       <workItem from="1567188609978" duration="13173000" />
+      <workItem from="1567531896735" duration="1280000" />
     </task>
     <servers />
   </component>

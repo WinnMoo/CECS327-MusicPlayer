@@ -4,10 +4,7 @@ import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -21,6 +18,9 @@ class LoginPage {
     }
 
     static void show(Stage stage) {
+        var signIn = new Text("Sign In");
+        signIn.setFont(new Font(null, 36.0));
+
         var userLabel = new Label("Username");
         var passLabel = new Label("Password");
         var labels = new VBox(userLabel, passLabel);
@@ -38,21 +38,16 @@ class LoginPage {
         entries.setAlignment(Pos.CENTER);
         entries.maxWidth(225.0);
 
-        var signIn = new Text("Sign In");
-        signIn.setFont(new Font(null, 36.0));
-
         var loginButton = new Button("Sign In");
         var errorMessage = new Label("");
         errorMessage.setTextFill(Color.color(1.0, 0.2, 0.2));
 
-        var createAcc = new Text("Create Account");
-        createAcc.setFont(new Font(null, 36.0));
+        var createAccText = new Text("Need an account? ");
+        var createAccLink = new Hyperlink("Sign Up");
+        var createAccRow = new HBox(createAccText, createAccLink);
+        createAccRow.setAlignment(Pos.CENTER);
 
-        var createAccButton = new Button("Create Account");
-
-        createAccButton.setOnAction(action -> {
-            CreateAccountPage.show(stage);
-        });
+        createAccLink.setOnAction(action -> CreateAccountPage.showAndWait(stage));
 
         loginButton.setOnAction(action -> {
             var u = userField.getText();
@@ -85,12 +80,11 @@ class LoginPage {
         });
 
         var buttonRow = new BorderPane();
-        buttonRow.setLeft(createAccButton);
-        buttonRow.setCenter(errorMessage);
+        buttonRow.setLeft(errorMessage);
         buttonRow.setRight(loginButton);
-        buttonRow.setMaxWidth(400.0);
+        buttonRow.setMaxWidth(250.0);
 
-        var col = new VBox(signIn, entries, buttonRow);
+        var col = new VBox(signIn, entries, buttonRow, createAccRow);
         col.setSpacing(10.0);
         col.setAlignment(Pos.CENTER);
         col.setPadding(new Insets(25.0));
