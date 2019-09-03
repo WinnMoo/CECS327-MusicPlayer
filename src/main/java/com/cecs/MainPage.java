@@ -21,12 +21,12 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.gson.GsonBuilder;
 
-
 class MainPage {
     static void show(Stage stage, User user) {
         var musics = new Music[0];
         try {
-            var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
+            var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"),
+                    StandardCharsets.UTF_8);
             musics = new GsonBuilder().create().fromJson(reader, Music[].class);
         } catch (NullPointerException e) {
             System.err.println("Instantiating input stream failed.");
@@ -56,9 +56,9 @@ class MainPage {
         searchBar.setOnKeyReleased(keyEvent -> {
             list.setPredicate(p -> {
                 final var query = searchBar.getText().toLowerCase().trim();
-                return p.getArtist().toString().toLowerCase().contains(query) ||
-                p.getRelease().toString().toLowerCase().contains(query) ||
-                p.getSong().toString().toLowerCase().contains(query);
+                return p.getArtist().toString().toLowerCase().contains(query)
+                        || p.getRelease().toString().toLowerCase().contains(query)
+                        || p.getSong().toString().toLowerCase().contains(query);
             });
         });
 

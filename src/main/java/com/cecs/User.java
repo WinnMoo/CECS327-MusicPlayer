@@ -18,18 +18,18 @@ public class User {
         this.userPlaylists = new ArrayList<Playlist>();
     }
 
-    User(String name, String pass){
+    User(String name, String pass) {
         this.username = name;
         this.password = pass;
         this.userPlaylists = new ArrayList<Playlist>();
     }
 
-    public void changeUsername(String newUsername){
+    public void changeUsername(String newUsername) {
         this.username = newUsername;
     }
 
-    public boolean changePassword(String oldPassword, String newPassword){
-        if(this.password.equals((oldPassword))){
+    public boolean changePassword(String oldPassword, String newPassword) {
+        if (this.password.equals((oldPassword))) {
             this.password = newPassword;
             return true;
         } else {
@@ -37,17 +37,17 @@ public class User {
         }
     }
 
-    public boolean addNewPlaylist(Playlist newPlaylist){
+    public boolean addNewPlaylist(Playlist newPlaylist) {
         return this.userPlaylists.add(newPlaylist);
     }
 
-    public boolean deletePlaylist(Playlist playlistToRemove){
+    public boolean deletePlaylist(Playlist playlistToRemove) {
         return this.userPlaylists.remove((playlistToRemove));
     }
 
     // I suggest naming this logout
-    public boolean deleteUser(String pass){
-        if(this.password.equals(pass)){
+    public boolean deleteUser(String pass) {
+        if (this.password.equals(pass)) {
             this.username = null;
             this.password = null;
             this.userPlaylists = null;
@@ -57,8 +57,8 @@ public class User {
         }
     }
 
-    public boolean IsValidPassword(String pass){
-        if(this.password.equals((pass))){
+    public boolean IsValidPassword(String pass) {
+        if (this.password.equals((pass))) {
             return true;
         } else {
             return false;

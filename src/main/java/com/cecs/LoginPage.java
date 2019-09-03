@@ -41,7 +41,7 @@ class LoginPage {
         var signIn = new Text("Sign In");
         signIn.setFont(new Font(null, 36.0));
 
-        var button = new Button("Sign In");
+        var loginButton = new Button("Sign In");
         var errorMessage = new Label("");
         errorMessage.setTextFill(Color.color(1.0, 0.2, 0.2));
 
@@ -54,7 +54,7 @@ class LoginPage {
             CreateAccountPage.show(stage);
         });
 
-        button.setOnAction(action -> {
+        loginButton.setOnAction(action -> {
             var u = userField.getText();
             var p = passField.getText();
             Flowable.fromCallable(() -> authenticate(u, p)).subscribe(code -> {
@@ -75,19 +75,19 @@ class LoginPage {
         });
         userField.setOnKeyReleased(actionEvent -> {
             if (actionEvent.getCode() == KeyCode.ENTER) {
-                button.fire();
+                loginButton.fire();
             }
         });
         passField.setOnKeyReleased(actionEvent -> {
             if (actionEvent.getCode() == KeyCode.ENTER) {
-                button.fire();
+                loginButton.fire();
             }
         });
 
         var buttonRow = new BorderPane();
         buttonRow.setLeft(createAccButton);
         buttonRow.setCenter(errorMessage);
-        buttonRow.setRight(button);
+        buttonRow.setRight(loginButton);
         buttonRow.setMaxWidth(400.0);
 
         var col = new VBox(signIn, entries, buttonRow);
