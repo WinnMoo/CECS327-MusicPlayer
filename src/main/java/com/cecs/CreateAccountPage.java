@@ -45,7 +45,11 @@ class CreateAccountPage {
             var p1 = passField.getText();
             var p2 = passField.getText();
             Flowable.fromCallable(() -> register(u, p1, p2)).subscribe(code -> {
+                System.out.println("Success path: " + code);
                 // TODO: After call is successful, do stuff
+            }, error -> {
+                System.out.println("Error path: " + error.getMessage());
+                // Path reached when register throws
             });
         });
 
@@ -62,6 +66,9 @@ class CreateAccountPage {
     }
 
     private static boolean register(String user, String pass1, String pass2) {
+        if (user.isBlank() || pass1.isBlank() || pass2.isBlank()) {
+            throw new IllegalArgumentException("Cannot leave fields blank!");
+        }
         return true;
     }
 }

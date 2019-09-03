@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b25b93a7-165d-4836-a196-a9956bd60060" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/assignment1.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/AddPlaylistPage.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/AddSongPage.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/src/main/java/com/cecs/App.java" beforeDir="false" />
@@ -41,6 +39,13 @@
   <component name="MacroExpansionManager">
     <option name="directoryName" value="vUnDQMXA" />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="vmOptionsForImporter" value="-Xmx768m" />
+      </MavenImportingSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="1Q6y85TjdUAyXbxxgQ0JaQYunqk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
@@ -48,10 +53,10 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.runner" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -96,7 +101,7 @@
       <option name="presentableId" value="Default" />
       <updated>1567105177057</updated>
       <workItem from="1567188609978" duration="13173000" />
-      <workItem from="1567531896735" duration="1280000" />
+      <workItem from="1567531896735" duration="4749000" />
     </task>
     <servers />
   </component>

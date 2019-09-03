@@ -66,6 +66,9 @@ class LoginPage {
                     errorMessage.setText("Password cannot be blank");
                 }
                 }
+            }, error -> {
+                System.err.println("An error has occurred.\n");
+                error.printStackTrace();
             });
         });
         userField.setOnKeyReleased(actionEvent -> {
