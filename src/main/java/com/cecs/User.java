@@ -54,4 +54,12 @@ public class User {
             return false;
         }
     }
+
+    public boolean IsValidPassword(String pass){
+        if(this.password.equals((pass))){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
