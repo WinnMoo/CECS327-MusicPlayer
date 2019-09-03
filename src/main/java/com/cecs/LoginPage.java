@@ -8,8 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -20,56 +21,71 @@ class LoginPage {
     }
 
     static void show(Stage stage) {
-
-
         var userLabel = new Label("Username");
-        var userField = new TextField();
-        var user = new HBox(userLabel, userField);
-        user.setSpacing(20.0);
-        user.setAlignment(Pos.CENTER);
-
         var passLabel = new Label("Password");
-        var passField = new PasswordField();
-        var pass = new HBox(passLabel, passField);
-        pass.setSpacing(20.0);
-        pass.setAlignment(Pos.CENTER);
+        var labels = new VBox(userLabel, passLabel);
+        labels.setSpacing(15.0);
+        labels.setAlignment(Pos.CENTER);
 
-        var entries = new VBox(user, pass);
-        entries.setSpacing(15.0);
+        var userField = new TextField();
+        var passField = new PasswordField();
+        var fields = new VBox(userField, passField);
+        fields.setSpacing(15.0);
+        fields.setAlignment(Pos.CENTER);
+
+        var entries = new HBox(labels, fields);
+        entries.setSpacing(20.0);
         entries.setAlignment(Pos.CENTER);
+        entries.maxWidth(225.0);
 
         var signIn = new Text("Sign In");
         signIn.setFont(new Font(null, 36.0));
 
-
         var button = new Button("Sign In");
+        var buttonLabel = new Label("");
+        buttonLabel.setTextFill(Color.color(1.0, 0.2, 0.2));
+
         button.setOnAction(action -> {
             var u = userField.getText();
             var p = passField.getText();
             Flowable.fromCallable(() -> authenticate(u, p)).subscribe(code -> {
                 switch (code) {
                 case SUCCESS: {
-                    MainPage.show(new Stage());
-                    stage.close();
+                    MainPage.show(stage, new User(u, p));
                     break;
                 }
                 case INVALID_USER: {
+                    buttonLabel.setText("Username cannot be blank");
                     break;
-                    /* TODO: Inform user when name is incorrect */
                 }
                 case INVALID_PASS: {
-                    /* TODO: Inform user when pass is incorrect */
+                    buttonLabel.setText("Password cannot be blank");
                 }
                 }
             });
         });
+        userField.setOnKeyReleased(actionEvent -> {
+            if (actionEvent.getCode() == KeyCode.ENTER) {
+                button.fire();
+            }
+        });
+        passField.setOnKeyReleased(actionEvent -> {
+            if (actionEvent.getCode() == KeyCode.ENTER) {
+                button.fire();
+            }
+        });
 
-        var col = new VBox(signIn, entries, button);
+        var buttonRow = new BorderPane();
+        buttonRow.setLeft(buttonLabel);
+        buttonRow.setRight(button);
+        buttonRow.setMaxWidth(225.0);
+
+        var col = new VBox(signIn, entries, buttonRow);
         col.setSpacing(10.0);
         col.setAlignment(Pos.CENTER);
         col.setPadding(new Insets(25.0));
 
-        stage.setScene(new Scene(col, 400, 600));
+        stage.setScene(new Scene(col, 800, 600));
         stage.setTitle("Music Player 1.0");
         stage.show();
     }

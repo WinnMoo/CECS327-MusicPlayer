@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class User {
-    public String username;
+    String username;
     private String password;
     public ArrayList<Playlist> userPlaylists;
 
-    public User(String pass){
+    @Deprecated
+    public User(String pass) {
         Random rand = new Random();
         int n = rand.nextInt(999999999); // If no username is provided, generate a random num for it
 
@@ -17,17 +18,17 @@ public class User {
         this.userPlaylists = new ArrayList<Playlist>();
     }
 
-    public User(String name, String pass){
+    User(String name, String pass){
         this.username = name;
         this.password = pass;
         this.userPlaylists = new ArrayList<Playlist>();
     }
 
-    public void ChangeUsername(String newUsername){
+    public void changeUsername(String newUsername){
         this.username = newUsername;
     }
 
-    public boolean ChangePassword(String oldPassword, String newPassword){
+    public boolean changePassword(String oldPassword, String newPassword){
         if(this.password.equals((oldPassword))){
             this.password = newPassword;
             return true;
@@ -36,15 +37,16 @@ public class User {
         }
     }
 
-    public boolean AddNewPlaylist(Playlist newPlaylist){
+    public boolean addNewPlaylist(Playlist newPlaylist){
         return this.userPlaylists.add(newPlaylist);
     }
 
-    public boolean DeletePlaylist(Playlist playlistToRemove){
+    public boolean deletePlaylist(Playlist playlistToRemove){
         return this.userPlaylists.remove((playlistToRemove));
     }
 
-    public boolean DeleteUser(String pass){
+    // I suggest naming this logout
+    public boolean deleteUser(String pass){
         if(this.password.equals(pass)){
             this.username = null;
             this.password = null;
