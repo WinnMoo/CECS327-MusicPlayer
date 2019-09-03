@@ -42,8 +42,17 @@ class LoginPage {
         signIn.setFont(new Font(null, 36.0));
 
         var button = new Button("Sign In");
-        var buttonLabel = new Label("");
-        buttonLabel.setTextFill(Color.color(1.0, 0.2, 0.2));
+        var errorMessage = new Label("");
+        errorMessage.setTextFill(Color.color(1.0, 0.2, 0.2));
+
+        var createAcc = new Text("Create Account");
+        createAcc.setFont(new Font(null, 36.0));
+
+        var createAccButton = new Button("Create Account");
+
+        createAccButton.setOnAction(action -> {
+            CreateAccountPage.show(stage);
+        });
 
         button.setOnAction(action -> {
             var u = userField.getText();
@@ -55,11 +64,11 @@ class LoginPage {
                     break;
                 }
                 case INVALID_USER: {
-                    buttonLabel.setText("Username cannot be blank");
+                    errorMessage.setText("Username cannot be blank");
                     break;
                 }
                 case INVALID_PASS: {
-                    buttonLabel.setText("Password cannot be blank");
+                    errorMessage.setText("Password cannot be blank");
                 }
                 }
             });
@@ -76,9 +85,10 @@ class LoginPage {
         });
 
         var buttonRow = new BorderPane();
-        buttonRow.setLeft(buttonLabel);
+        buttonRow.setLeft(createAccButton);
+        buttonRow.setCenter(errorMessage);
         buttonRow.setRight(button);
-        buttonRow.setMaxWidth(225.0);
+        buttonRow.setMaxWidth(400.0);
 
         var col = new VBox(signIn, entries, buttonRow);
         col.setSpacing(10.0);
