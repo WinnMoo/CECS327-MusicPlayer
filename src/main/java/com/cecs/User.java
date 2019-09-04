@@ -46,15 +46,10 @@ public class User {
     }
 
     // I suggest naming this logout
-    public boolean deleteUser(String pass) {
-        if (this.password.equals(pass)) {
-            this.username = null;
-            this.password = null;
-            this.userPlaylists = null;
-            return true;
-        } else {
-            return false;
-        }
+    public void deleteUser() {
+        this.username = null;
+        this.password = null;
+        this.userPlaylists = null;
     }
 
     public boolean IsValidPassword(String pass) {
