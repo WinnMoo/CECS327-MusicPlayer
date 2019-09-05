@@ -40,4 +40,33 @@ class JsonService {
         // TODO: Everything
         return new User("a", "b");
     }
+
+    public static boolean DeleteAccount(User userToDelete) {
+        Gson gson = new Gson();
+
+        try {
+            var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/users.json"),
+                    StandardCharsets.UTF_8);
+            User[] users = new GsonBuilder().create().fromJson(reader, User[].class); // Read users from users.json file
+
+            int indexOfUserToDelete = binarySearch(users, userToDelete);
+            users[indexOfUserToDelete] = userToDelete;
+
+            String jsonUsers = gson.toJson(users);
+
+            FileWriter writer = new FileWriter("users.json"); // Write the new array of users to file
+            writer.write(jsonUsers);
+            writer.close();
+            return true;
+        } catch (NullPointerException e) {
+            System.err.println("Instantiating input stream failed.");
+            return false;
+        } catch (JsonSyntaxException | JsonIOException e) {
+            System.err.println("Could not populate music list.");
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
