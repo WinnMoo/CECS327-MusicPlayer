@@ -23,8 +23,25 @@ import com.google.gson.GsonBuilder;
 
 
 class MainPage {
+
+    //Load files prior to application running
+    public void init() throws Exception {
+        System.out.println("Before application");
+    }
+
+    //show application visible to user
     static void show(Stage stage, User user) {
+
+        stage.setTitle("Stage Title");
+        stage.setWidth(1080);
+        stage.setHeight(720);
+        
+
+
+
+        //initialize variable
         var musics = new Music[0];
+        //try catch to retrieve music from json file
         try {
             var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
             musics = new GsonBuilder().create().fromJson(reader, Music[].class);
@@ -34,11 +51,14 @@ class MainPage {
             System.err.println("Could not populate music list.");
         }
 
+        //use FX to display array of music
         var listOfMusic = FXCollections.observableArrayList(musics);
 
+        //Display text above music
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
+        //Song Array UI
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
         var releases = new TableColumn<Music, String>("Release");
