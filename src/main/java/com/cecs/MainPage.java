@@ -1,7 +1,6 @@
 package com.cecs;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import io.reactivex.Flowable;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
@@ -16,25 +15,10 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
-import com.google.gson.GsonBuilder;
-
 class MainPage {
     static void show(Stage stage, User user) {
-        var musics = new Music[0];
-        try {
-            var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"),
-                    StandardCharsets.UTF_8);
-            musics = new GsonBuilder().create().fromJson(reader, Music[].class);
-        } catch (NullPointerException e) {
-            System.err.println("Instantiating input stream failed.");
-        } catch (JsonSyntaxException | JsonIOException e) {
-            System.err.println("Could not populate music list.");
-        }
-
-        var listOfMusic = FXCollections.observableArrayList(musics);
+        var listOfMusic = FXCollections.<Music>observableArrayList();
+        Flowable.fromCallable(JsonService::loadDatabase).subscribe(listOfMusic::addAll, Throwable::printStackTrace);
 
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));

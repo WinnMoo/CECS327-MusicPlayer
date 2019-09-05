@@ -1,13 +1,15 @@
 package com.cecs;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+
+import static java.util.Arrays.binarySearch;
 
 class JsonService {
     /*
@@ -41,32 +43,33 @@ class JsonService {
         return new User("a", "b");
     }
 
-    public static boolean DeleteAccount(User userToDelete) {
-        Gson gson = new Gson();
+    // TODO: Create use-case for testing
+    /*
+     * Function to delete a User and update users lists in json file
+     */
+    static void DeleteAccount(User userToDelete) throws IOException {
+        var gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try {
-            var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/users.json"),
-                    StandardCharsets.UTF_8);
-            User[] users = new GsonBuilder().create().fromJson(reader, User[].class); // Read users from users.json file
+        // Load current Users from user file
+        var reader = new FileReader("users.json", StandardCharsets.UTF_8);
+        var users = gson.fromJson(reader, User[].class);
+        var newUsers = new User[users.length - 1];
 
-            int indexOfUserToDelete = binarySearch(users, userToDelete);
-            users[indexOfUserToDelete] = userToDelete;
+        // Copy all Users to new array except for deleted User
+        int deleteIdx = binarySearch(users, userToDelete);
+        System.arraycopy(users, 0, newUsers, 0, users.length - 1);
+        System.arraycopy(users, deleteIdx, newUsers, deleteIdx - 1, newUsers.length - deleteIdx);
 
-            String jsonUsers = gson.toJson(users);
+        // Create string from array of Users and write to file
+        var jsonUsers = gson.toJson(newUsers);
+        var writer = new FileWriter("users.json");
+        writer.write(jsonUsers);
+        writer.close();
+    }
 
-            FileWriter writer = new FileWriter("users.json"); // Write the new array of users to file
-            writer.write(jsonUsers);
-            writer.close();
-            return true;
-        } catch (NullPointerException e) {
-            System.err.println("Instantiating input stream failed.");
-            return false;
-        } catch (JsonSyntaxException | JsonIOException e) {
-            System.err.println("Could not populate music list.");
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+    static ObservableList<Music> loadDatabase() {
+        var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
+        var musics = new GsonBuilder().create().fromJson(reader, Music[].class);
+        return FXCollections.observableArrayList(musics);
     }
 }
