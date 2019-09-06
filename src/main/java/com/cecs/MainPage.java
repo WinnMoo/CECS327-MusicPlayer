@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -15,7 +16,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
@@ -35,7 +38,25 @@ class MainPage {
         stage.setTitle("Stage Title");
         stage.setWidth(1080);
         stage.setHeight(720);
+
+
+        VBox root = new VBox();
+
+
+        var button1 = new Button("Sign In");
+
+
+        Menu menu1 = new Menu("All Songs");
         
+        Menu menu2 = new Menu("Volume");
+        MenuBar menuBar = new MenuBar();
+
+        menuBar.getMenus().add(menu1);
+        menuBar.getMenus().add(menu2);
+
+
+
+
 
 
 
@@ -82,10 +103,12 @@ class MainPage {
             });
         });
 
-        final var col = new VBox(label, searchBar, table);
+        final var col = new VBox(menuBar, button1, label, searchBar, table);
         col.setSpacing(10.0);
         col.setPadding(new Insets(25.0));
         final var scene = new Scene(col, 800, 600);
+
+
 
         stage.setScene(scene);
         stage.show();
