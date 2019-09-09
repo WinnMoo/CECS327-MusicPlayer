@@ -28,3 +28,4 @@ target/*
 bin/
 /users.json
 *.xml
+.idea/workspace.xml
