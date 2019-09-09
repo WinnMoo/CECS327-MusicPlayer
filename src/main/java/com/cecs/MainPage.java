@@ -21,6 +21,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import javafx.scene.layout.BorderPane;
+
 
 import com.google.gson.GsonBuilder;
 
@@ -34,27 +36,26 @@ class MainPage {
 
     //show application visible to user
     static void show(Stage stage, User user) {
-
+        BorderPane root = new BorderPane();
         stage.setTitle("Stage Title");
-        stage.setWidth(1080);
-        stage.setHeight(720);
 
 
-        VBox root = new VBox();
 
+        //VBox root = new VBox();
 
         var button1 = new Button("Sign In");
 
 
         Menu menu1 = new Menu("All Songs");
-        
+
         Menu menu2 = new Menu("Volume");
         MenuBar menuBar = new MenuBar();
 
         menuBar.getMenus().add(menu1);
         menuBar.getMenus().add(menu2);
 
-
+        menuBar.prefWidthProperty().bind(stage.widthProperty());
+        root.setTop(menuBar);
 
 
 

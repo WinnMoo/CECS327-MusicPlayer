@@ -22,8 +22,6 @@ class LoginPage {
 
     static void show(Stage stage) {
 
-        stage.setWidth(1080);
-        stage.setHeight(720);
 
         var userLabel = new Label("Username");
         var passLabel = new Label("Password");
