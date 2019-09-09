@@ -18,14 +18,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Slider;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 class MainPage {
     static void show(Stage stage, User user) {
+        int songIndex = 0;
+
         var listOfMusic = FXCollections.<Music>observableArrayList();
         Flowable.fromCallable(JsonService::loadDatabase).subscribe(listOfMusic::addAll, Throwable::printStackTrace);
 
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
-
 
         var playbackSlider  = new Slider();
         var playButton = new Button("|>");
@@ -53,6 +56,30 @@ class MainPage {
                         || p.getRelease().toString().toLowerCase().contains(query)
                         || p.getSong().toString().toLowerCase().contains(query);
             });
+        });
+
+        prevSongButton.setOnAction(action -> {
+            int currentIndex = table.getSelectionModel().getSelectedIndex();
+            int prevIndex = currentIndex - 1;
+            var song = table.getItems().get(prevIndex);
+            stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+        });
+
+        playButton.setOnAction(action -> {
+            try {
+                var song = table.getSelectionModel().getSelectedItem();
+                stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+            } catch(NullPointerException e) {
+                var song = table.getItems().get(songIndex);
+                stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+            }
+        });
+
+        nextSongButton.setOnAction(action -> {
+            int currentIndex = table.getSelectionModel().getSelectedIndex();
+            int nextIndex = currentIndex + 1;
+            var song = table.getItems().get(nextIndex);
+            stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
         });
 
         var controlButtonRow = new BorderPane();
