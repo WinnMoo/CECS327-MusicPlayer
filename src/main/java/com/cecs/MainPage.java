@@ -63,15 +63,18 @@ class MainPage {
             int prevIndex = currentIndex - 1;
             var song = table.getItems().get(prevIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+            //SongPlayer.playSong(song.getSong().getTitle());
         });
 
         playButton.setOnAction(action -> {
             try {
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            } catch(NullPointerException e) {
+                //SongPlayer.playSong(song.getSong().getTitle());
+            } catch(NullPointerException e) { // Catch for case when there's no selected item
                 var song = table.getItems().get(songIndex);
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+                //SongPlayer.playSong(song.getSong().getTitle());
             }
         });
 
@@ -80,6 +83,7 @@ class MainPage {
             int nextIndex = currentIndex + 1;
             var song = table.getItems().get(nextIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+            //SongPlayer.playSong(song.getSong().getTitle());
         });
 
         var controlButtonRow = new BorderPane();
