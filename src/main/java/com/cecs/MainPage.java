@@ -6,19 +6,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import javafx.scene.layout.BorderPane;
@@ -29,30 +24,65 @@ import com.google.gson.GsonBuilder;
 
 class MainPage {
 
+
+
+
     //Load files prior to application running
     public void init() throws Exception {
         System.out.println("Before application");
     }
 
     //show application visible to user
-    static void show(Stage stage, User user) {
+    public static void show(Stage stage, User user) {
         BorderPane root = new BorderPane();
         stage.setTitle("Stage Title");
 
 
 
         //VBox root = new VBox();
+        //var button1 = new Button("Button");
+        //button1.setOnAction(action -> {
+        //    PlaylistPage.show(stage);
+        //});
 
-        var button1 = new Button("Sign In");
+
+        Menu MainMenu = new Menu("All Songs");
+        Menu PlaylistMenu = new Menu("Playlists");
+        Menu ProfileMenu = new Menu("User Profile");
+        Menu SettingsMenu = new Menu("Settings");
+
+        Slider slider = new Slider(0, 100, 50);
+        CustomMenuItem customMenuItem = new CustomMenuItem();
+        customMenuItem.setContent(slider);
+        customMenuItem.setHideOnClick(false);
+        SettingsMenu.getItems().add(customMenuItem);
+
+        Button menuButton = new Button("Custom Menu Item Button");
+        CustomMenuItem customMenuItem2 = new CustomMenuItem();
+        customMenuItem2.setContent(menuButton);
+        menuButton.setOnAction(action -> {
+            PlaylistPage.show(stage);
+        });
+        customMenuItem2.setHideOnClick(false);
+
+        Button allPlaylistButton = new Button("View All");
+        CustomMenuItem customMenuItem_Playlist = new CustomMenuItem();
+        customMenuItem_Playlist.setContent(allPlaylistButton);
+        allPlaylistButton.setOnAction(action -> {
+            PlaylistPage.show(stage);
+        });
+        customMenuItem_Playlist.setHideOnClick(false);
 
 
-        Menu menu1 = new Menu("All Songs");
+        SettingsMenu.getItems().add(customMenuItem2);
+        PlaylistMenu.getItems().add(customMenuItem_Playlist);
 
-        Menu menu2 = new Menu("Volume");
+
         MenuBar menuBar = new MenuBar();
-
-        menuBar.getMenus().add(menu1);
-        menuBar.getMenus().add(menu2);
+        menuBar.getMenus().add(MainMenu);
+        menuBar.getMenus().add(PlaylistMenu);
+        menuBar.getMenus().add(ProfileMenu);
+        menuBar.getMenus().add(SettingsMenu);
 
         menuBar.prefWidthProperty().bind(stage.widthProperty());
         root.setTop(menuBar);
@@ -104,9 +134,9 @@ class MainPage {
             });
         });
 
-        final var col = new VBox(menuBar, button1, label, searchBar, table);
+        final var col = new VBox(menuBar, label, searchBar, table);
         col.setSpacing(10.0);
-        col.setPadding(new Insets(25.0));
+        col.setPadding(new Insets(10.0));
         final var scene = new Scene(col, 800, 600);
 
 

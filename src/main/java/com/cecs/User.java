@@ -24,6 +24,10 @@ public class User {
         this.userPlaylists = new ArrayList<Playlist>();
     }
 
+    public User(char u, char p) {
+    }
+
+
     public void changeUsername(String newUsername){
         this.username = newUsername;
     }
