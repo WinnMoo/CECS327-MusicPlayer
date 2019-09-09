@@ -5,15 +5,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.control.Slider;
 
 class MainPage {
     static void show(Stage stage, User user) {
@@ -22,6 +25,12 @@ class MainPage {
 
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
+
+
+        var playbackSlider  = new Slider();
+        var playButton = new Button("|>");
+        var nextSongButton = new Button(">>");
+        var prevSongButton = new Button("<<");
 
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
@@ -46,7 +55,13 @@ class MainPage {
             });
         });
 
-        final var col = new VBox(label, searchBar, table);
+        var controlButtonRow = new BorderPane();
+        controlButtonRow.setLeft(prevSongButton);
+        controlButtonRow.setCenter(playButton);
+        controlButtonRow.setRight(nextSongButton);
+        controlButtonRow.setMaxWidth(250.0);
+
+        final var col = new VBox(label, searchBar, table, playbackSlider, controlButtonRow);
         col.setSpacing(10.0);
         col.setPadding(new Insets(25.0));
         final var scene = new Scene(col, 800, 600);
