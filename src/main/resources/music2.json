@@ -1,0 +1,45 @@
+[
+  {
+    "release": {
+      "id": 300848,
+      "name": "Fear Itself"
+    },
+    "artist": {
+      "terms_freq": 1.0,
+      "terms": "hip hop",
+      "name": "Casual",
+      "familiarity": 0.581793766,
+      "longitude": -63.933357868519515,
+      "id": "ARD7TVE1187B99BFB1",
+      "location": "California - LA",
+      "latitude": 37.15735675013362,
+      "similar": "ARV4KO21187FB38008",
+      "hotttnesss": 0.401997543
+    },
+    "song": {
+      "key": 1.0,
+      "mode_confidence": 0.636,
+      "artist_mbtags_count": 0.0,
+      "key_confidence": 0.736,
+      "tatums_start": 0.28519,
+      "year": 0,
+      "duration": 218.93179,
+      "hotttnesss": 0.60211999,
+      "beats_start": 0.58521,
+      "time_signature_confidence": 0.778,
+      "title": "I Didn't Mean To",
+      "bars_confidence": 0.643,
+      "id": "SOMZWCG12A8C13C480",
+      "bars_start": 0.58521,
+      "artist_mbtags": "",
+      "start_of_fade_out": 218.932,
+      "tempo": 92.198,
+      "end_of_fade_in": 0.247,
+      "beats_confidence": 0.834,
+      "tatums_confidence": 0.779,
+      "mode": 0,
+      "time_signature": 4.0,
+      "loudness": -11.197
+    }
+  }
+]
