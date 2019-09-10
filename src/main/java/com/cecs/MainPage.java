@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Slider;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class MainPage {
@@ -63,18 +64,18 @@ class MainPage {
             int prevIndex = currentIndex - 1;
             var song = table.getItems().get(prevIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            //SongPlayer.playSong(song.getSong().getId());
+            //SongPlayer.playSong(song.getSong().getId() + ".mp3");
         });
 
         playButton.setOnAction(action -> {
             try {
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                //SongPlayer.playSong(song.getSong().getId());
+                SongPlayer.playSong(song.getSong().getId() + ".mp3");
             } catch(NullPointerException e) { // Catch for case when there's no selected item
                 var song = table.getItems().get(songIndex);
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                //SongPlayer.playSong(song.getSong().getId());
+                SongPlayer.playSong(song.getSong().getId() + ".mp3");
             }
         });
 
