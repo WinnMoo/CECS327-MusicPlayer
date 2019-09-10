@@ -20,5 +20,6 @@
     <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjava:2.2.12" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: javazoom:jlayer:1.0.1" level="project" />
+    <orderEntry type="library" name="javafx-swt" level="application" />
   </component>
 </module>
