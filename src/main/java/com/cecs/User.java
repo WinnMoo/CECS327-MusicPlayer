@@ -1,22 +1,11 @@
 package com.cecs;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class User {
     String username;
-    private String password;
+    String password;
     public ArrayList<Playlist> userPlaylists;
-
-    @Deprecated
-    public User(String pass) {
-        Random rand = new Random();
-        int n = rand.nextInt(999999999); // If no username is provided, generate a random num for it
-
-        this.username = String.valueOf(n);
-        this.password = pass;
-        this.userPlaylists = new ArrayList<Playlist>();
-    }
 
     User(String name, String pass) {
         this.username = name;

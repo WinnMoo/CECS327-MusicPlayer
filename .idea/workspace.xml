@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b25b93a7-165d-4836-a196-a9956bd60060" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/JsonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/JsonService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/MainPage.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -92,7 +90,7 @@
       <workItem from="1567531896735" duration="4749000" />
       <workItem from="1567621879103" duration="908000" />
       <workItem from="1567625340927" duration="3585000" />
-      <workItem from="1567705120698" duration="3036000" />
+      <workItem from="1567705120698" duration="4610000" />
     </task>
     <servers />
   </component>
