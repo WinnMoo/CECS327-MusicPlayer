@@ -54,9 +54,9 @@ class LoginPage {
 
         loginButton.setOnAction(action -> {
             Flowable.fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
-                switch (pair.getValue()) {
+                switch (pair.getKey()) {
                 case SUCCESS: {
-                    MainPage.show(stage, pair.getKey());
+                    MainPage.show(stage, pair.getValue());
                     break;
                 }
                 case INVALID_USER: {
@@ -65,9 +65,11 @@ class LoginPage {
                 }
                 case INVALID_PASS: {
                     errorMessage.setText("Password cannot be blank");
+                    break;
                 }
                 case INCORRECT_CREDENTIALS: {
                     errorMessage.setText("Incorrect username or password");
+                    break;
                 }
                 }
             }, error -> {
@@ -101,18 +103,19 @@ class LoginPage {
         stage.show();
     }
 
-    private static Pair<User, LoginCode> authenticate(String name, String pass) throws IOException {
+    private static Pair<LoginCode, User> authenticate(String name, String pass) throws IOException {
         User user = null;
         var code = LoginCode.SUCCESS;
         if (name.isBlank()) {
             code = LoginCode.INVALID_USER;
         } else if (pass.isBlank()) {
             code = LoginCode.INVALID_PASS;
+        } else {
+            user = JsonService.login(name, pass);
+            if (user == null) {
+                code = LoginCode.INCORRECT_CREDENTIALS;
+            }
         }
-        user = JsonService.login(name, pass);
-        if (user == null) {
-            code = LoginCode.INCORRECT_CREDENTIALS;
-        }
-        return new Pair<>(user, code);
+        return new Pair<>(code, user);
     }
 }

@@ -17,27 +17,52 @@ class JsonService {
     /**
      * Function to create a new User and add the User to a JSON file
      * 
+     * @param name Name of user
+     * @param pass Password of user
+     * 
+     * @return <code>true</code> If new user is added to file, <code>false</code> if
+     *         the username already exists
+     * 
      * @throws IOException
      */
-    static void createAccount(String user, String pass) throws IOException {
-        var newUser = new User(user, pass);
+    static boolean createAccount(String name, String pass) throws IOException {
+        var newUser = new User(name, pass);
         var gson = new GsonBuilder().setPrettyPrinting().create();
+        var file = new File("users.json");
+        if (!file.exists()) {
+            file.createNewFile();
+        }
 
         // Load previous Users from user file
-        var reader = new FileReader("users.json", StandardCharsets.UTF_8);
+        var reader = new FileReader(file, StandardCharsets.UTF_8);
         var users = gson.fromJson(reader, User[].class);
-        var newUsers = new User[users.length + 1];
+        User[] newUsers = null;
+        if (users == null) {
+            newUsers = new User[] { newUser };
+        } else {
+            var len = users.length;
+            newUsers = new User[len + 1];
 
-        // Append new User to old User list
-        System.arraycopy(users, 0, newUsers, 0, users.length);
-        newUsers[users.length] = newUser;
-        Arrays.sort(newUsers);
+            // Check is username is already taken
+            for (var user : users) {
+                if (newUser.username.equalsIgnoreCase(user.username)) {
+                    return false;
+                }
+            }
+
+            // Append new User to old User list
+            System.arraycopy(users, 0, newUsers, 0, len);
+            newUsers[len] = newUser;
+            Arrays.sort(newUsers);
+        }
 
         // Create string from array of Users and write to file
         var jsonUsers = gson.toJson(newUsers);
         var writer = new FileWriter("users.json");
         writer.write(jsonUsers);
         writer.close();
+
+        return true;
     }
 
     // TODO: Create use-case for testing
@@ -47,7 +72,7 @@ class JsonService {
      * @param name Name of user
      * @param pass Password of user
      * 
-     * @return User if their credentials are found in the JSON file and
+     * @return User if their credentials match ones in the JSON file and
      *         <code>null</code> otherwise
      * 
      * @throws IOException
@@ -55,8 +80,12 @@ class JsonService {
     static User login(String name, String pass) throws IOException {
         var loginUser = new User(name, pass);
         var gson = new GsonBuilder().setPrettyPrinting().create();
+        var file = new File("users.json");
+        if (!file.exists()) {
+            return null;
+        }
 
-        var reader = new FileReader("users.json", StandardCharsets.UTF_8);
+        var reader = new FileReader(file, StandardCharsets.UTF_8);
         var users = gson.fromJson(reader, User[].class);
 
         // Check if login user is in JSON file
@@ -74,9 +103,13 @@ class JsonService {
      */
     static void DeleteAccount(User userToDelete) throws IOException {
         var gson = new GsonBuilder().setPrettyPrinting().create();
+        var file = new File("users.json");
+        if (!file.exists()) {
+            file.createNewFile();
+        }
 
         // Load current Users from user file
-        var reader = new FileReader("users.json", StandardCharsets.UTF_8);
+        var reader = new FileReader(file, StandardCharsets.UTF_8);
         var users = gson.fromJson(reader, User[].class);
         var newUsers = new User[users.length - 1];
 

@@ -31,7 +31,7 @@ class MainPage {
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
-        var playbackSlider  = new Slider();
+        var playbackSlider = new Slider();
         var playButton = new Button("|>");
         var nextSongButton = new Button(">>");
         var prevSongButton = new Button("<<");
@@ -64,7 +64,7 @@ class MainPage {
             int prevIndex = currentIndex - 1;
             var song = table.getItems().get(prevIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            //SongPlayer.playSong(song.getSong().getId() + ".mp3");
+            // SongPlayer.playSong(song.getSong().getId() + ".mp3");
         });
 
         playButton.setOnAction(action -> {
@@ -72,7 +72,7 @@ class MainPage {
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
                 SongPlayer.playSong(song.getSong().getId() + ".mp3");
-            } catch(NullPointerException e) { // Catch for case when there's no selected item
+            } catch (NullPointerException e) { // Catch for case when there's no selected item
                 var song = table.getItems().get(songIndex);
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
                 SongPlayer.playSong(song.getSong().getId() + ".mp3");
@@ -84,7 +84,7 @@ class MainPage {
             int nextIndex = currentIndex + 1;
             var song = table.getItems().get(nextIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            //SongPlayer.playSong(song.getSong().getId());
+            // SongPlayer.playSong(song.getSong().getId());
         });
 
         var controlButtonRow = new BorderPane();

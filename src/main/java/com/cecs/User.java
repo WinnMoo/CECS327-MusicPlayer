@@ -2,7 +2,7 @@ package com.cecs;
 
 import java.util.ArrayList;
 
-public class User {
+public class User implements Comparable<User> {
     String username;
     String password;
     public ArrayList<Playlist> userPlaylists;
@@ -47,5 +47,15 @@ public class User {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(User other) {
+        var userCmp = this.username.compareToIgnoreCase(other.username);
+        var passCmp = this.username.compareTo(other.password);
+        if (userCmp == 0) {
+            return passCmp;
+        }
+        return userCmp;
     }
 }

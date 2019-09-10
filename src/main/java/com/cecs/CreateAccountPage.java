@@ -13,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 
 class CreateAccountPage {
     enum RegisterCode {
-        SUCCESS, INVALID_USER, INVALID_PASS1, INVALID_PASS2, NO_MATCH
+        SUCCESS, INVALID_USER, INVALID_PASS1, INVALID_PASS2, NO_MATCH, NAME_TAKEN
     }
 
     static void showAndWait(Stage parentStage) {
@@ -93,6 +94,10 @@ class CreateAccountPage {
                     errorMessage.setText("Passwords do not match");
                     break;
                 }
+                case NAME_TAKEN: {
+                    errorMessage.setText("User with this name already exists");
+                    break;
+                }
                 }
             }, Throwable::printStackTrace);
         });
@@ -113,11 +118,13 @@ class CreateAccountPage {
         });
 
         // Organize and apply layout to error message and button
-        var createAccRow = new HBox(errorMessage, registerButton);
-        createAccRow.setAlignment(Pos.CENTER);
+        var buttonRow = new BorderPane();
+        buttonRow.setLeft(errorMessage);
+        buttonRow.setRight(registerButton);
+        buttonRow.setMaxWidth(250.0);
 
         // Align everything in a column
-        var col = new VBox(signUp, entries, createAccRow);
+        var col = new VBox(signUp, entries, buttonRow);
         col.setSpacing(10.0);
         col.setAlignment(Pos.CENTER);
         col.setPadding(new Insets(25.0));
@@ -133,7 +140,7 @@ class CreateAccountPage {
     /**
      * Registers a user by inserting new data into a JSON file.
      * 
-     * @param user  Username of person
+     * @param name  Username of person
      * @param pass1 Password of person
      * @param pass2 Second password which should match <code>pass1</code>
      * 
@@ -144,8 +151,8 @@ class CreateAccountPage {
      *                     other errors thrown by <code>JsonService</code>
      *                     otherwise.
      */
-    private static RegisterCode register(String user, String pass1, String pass2) throws IOException {
-        if (user.isBlank()) {
+    private static RegisterCode register(String name, String pass1, String pass2) throws IOException {
+        if (name.isBlank()) {
             return RegisterCode.INVALID_USER;
         }
         if (pass1.isBlank()) {
@@ -157,7 +164,9 @@ class CreateAccountPage {
         if (!pass1.equals(pass2)) {
             return RegisterCode.NO_MATCH;
         }
-        JsonService.createAccount(user, pass1);
+        if (!JsonService.createAccount(name, pass1)) {
+            return RegisterCode.NAME_TAKEN;
+        }
         return RegisterCode.SUCCESS;
     }
 }
