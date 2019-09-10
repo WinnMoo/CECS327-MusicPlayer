@@ -134,6 +134,7 @@ class MainPage {
             });
         });
 
+
         final var col = new VBox(menuBar, label, searchBar, table);
         col.setSpacing(10.0);
         col.setPadding(new Insets(10.0));
