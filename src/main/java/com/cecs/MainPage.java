@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class MainPage {
     static void show(Stage stage, User user) {
         int songIndex = 0;
+        SongPlayer player = new SongPlayer();
 
         var listOfMusic = FXCollections.<Music>observableArrayList();
         Flowable.fromCallable(JsonService::loadDatabase).subscribe(listOfMusic::addAll, Throwable::printStackTrace);
@@ -35,6 +36,7 @@ class MainPage {
         var playButton = new Button("|>");
         var nextSongButton = new Button(">>");
         var prevSongButton = new Button("<<");
+        var stopSongButton = new Button("[]");
 
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
@@ -71,12 +73,16 @@ class MainPage {
             try {
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                SongPlayer.playSong(song.getSong().getId() + ".mp3");
+                player.playSong(song.getSong().getId() + ".mp3");
             } catch (NullPointerException e) { // Catch for case when there's no selected item
                 var song = table.getItems().get(songIndex);
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                SongPlayer.playSong(song.getSong().getId() + ".mp3");
+                player.playSong(song.getSong().getId() + ".mp3");
             }
+        });
+
+        stopSongButton.setOnAction(action -> {
+            player.stopSong();
         });
 
         nextSongButton.setOnAction(action -> {
@@ -88,8 +94,9 @@ class MainPage {
         });
 
         var controlButtonRow = new BorderPane();
-        controlButtonRow.setLeft(prevSongButton);
-        controlButtonRow.setCenter(playButton);
+        //controlButtonRow.setLeft(prevSongButton);
+        controlButtonRow.setLeft(playButton);
+        controlButtonRow.setCenter(stopSongButton);
         controlButtonRow.setRight(nextSongButton);
         controlButtonRow.setMaxWidth(250.0);
 
