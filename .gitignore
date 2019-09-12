@@ -25,3 +25,7 @@ hs_err_pid*
 .project
 .settings/*
 target/*
+bin/
+/users.json
+*.xml
+.idea/workspace.xml
