@@ -29,3 +29,7 @@ bin/
 /users.json
 *.xml
 .idea/workspace.xml
+.idea/*
+assignment1.iml
+assignment1.iml
+.idea/workspace.xml
