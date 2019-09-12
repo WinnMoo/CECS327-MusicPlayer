@@ -11,14 +11,15 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:12.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:12.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:12.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:12.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:12.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:12.0.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjava:2.2.12" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: javazoom:jlayer:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:mac:12.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:mac:12.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:mac:12.0.2" level="project" />
+    <orderEntry type="library" name="javafx-swt" level="application" />
   </component>
 </module>
