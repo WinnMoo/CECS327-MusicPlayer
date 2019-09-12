@@ -1,14 +1,16 @@
 package com.cecs;
 
 import io.reactivex.Flowable;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -16,10 +18,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Slider;
 
-import java.io.FileNotFoundException;
-import java.util.concurrent.atomic.AtomicInteger;
+import javafx.util.Callback;
+
+import javafx.event.ActionEvent;
 
 class MainPage {
     static void show(Stage stage, User user) {
@@ -45,8 +47,78 @@ class MainPage {
 
         var list = new FilteredList<>(listOfMusic, m -> true);
         var table = new TableView<>(list);
+
+        // add Add Playlist button
+        TableColumn<Music, Void> colBtn = new TableColumn("Add to Playlist");
+
+        Callback<TableColumn<Music, Void>, TableCell<Music, Void>> btnCellFact = new Callback<TableColumn<Music, Void>, TableCell<Music, Void>>() {
+            @Override
+            public TableCell<Music, Void> call(final TableColumn<Music, Void> param) {
+                final TableCell<Music, Void> cell = new TableCell<Music, Void>() {
+
+                    private final Button btn = new Button("Add");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Music music = getTableView().getItems().get(getIndex());
+                            System.out.println("selected song: " + music.getSong().getId());
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
+        colBtn.setCellFactory(btnCellFact);
+
+        // Playlists ComboBox
+        TableColumn<Music, Playlist> colCob = new TableColumn("My Playlists");
+        ObservableList<Playlist> playlists = FXCollections.observableArrayList(user.userPlaylists);
+        colCob.setCellValueFactory(new Callback<>() {
+            @Override
+            public ObservableValue<Playlist> call(TableColumn.CellDataFeatures<Music, Playlist> userVoidCellDataFeatures) {
+
+                Playlist playlist = null;
+                String playlistName;
+                if(!user.userPlaylists.isEmpty()) {
+                    playlist = user.userPlaylists.get(0);
+                    playlistName = playlist.getName();
+                }
+
+                return new SimpleObjectProperty<>(playlist);
+            }
+        });
+        colCob.setCellFactory(tableCol -> {
+            ComboBoxTableCell<Music, Playlist> ct = new ComboBoxTableCell<>();
+            ct.getItems().addAll(user.userPlaylists);
+            ct.setComboBoxEditable(true);
+
+            return ct;
+        });
+        /*
+
+        colCob.setCellFactory(ComboBoxTableCell.forTableColumn(playlists));
+
+        colCob.setOnEditCommit((TableColumn.CellEditEvent<Music, Playlist> event) -> {
+            TablePosition<Music, Playlist> pos = event.getTablePosition();
+
+            int row = pos.getRow();
+
+        });*/
+
+       // colCob.setMinWidth(120);
+
         table.setEditable(true);
-        table.getColumns().addAll(songs, releases, artists);
+        table.getColumns().addAll(songs, releases, artists, colCob, colBtn);
 
         var searchBar = new TextField();
         searchBar.setPromptText("Search for artist, release, or song...");
