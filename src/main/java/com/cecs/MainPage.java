@@ -33,10 +33,10 @@ class MainPage {
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
         var playbackSlider = new Slider();
-        var playButton = new Button("|>");
-        var nextSongButton = new Button(">>");
-        var prevSongButton = new Button("<<");
-        var stopSongButton = new Button("[]");
+        var playButton = new Button("▶");
+        var nextSongButton = new Button("⏭");
+        var prevSongButton = new Button("⏮");
+        var stopSongButton = new Button("⏹");
 
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
@@ -83,6 +83,7 @@ class MainPage {
 
         stopSongButton.setOnAction(action -> {
             player.stopSong();
+            stage.setTitle("Music Player 1.0");
         });
 
         nextSongButton.setOnAction(action -> {
@@ -94,7 +95,7 @@ class MainPage {
         });
 
         var controlButtonRow = new BorderPane();
-        //controlButtonRow.setLeft(prevSongButton);
+        controlButtonRow.setLeft(prevSongButton);
         controlButtonRow.setLeft(playButton);
         controlButtonRow.setCenter(stopSongButton);
         controlButtonRow.setRight(nextSongButton);

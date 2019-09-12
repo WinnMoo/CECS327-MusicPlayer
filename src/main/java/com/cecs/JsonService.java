@@ -1,5 +1,6 @@
 package com.cecs;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,20 +24,14 @@ class JsonService {
      * @return <code>true</code> If new user is added to file, <code>false</code> if
      *         the username already exists
      * 
-     * @throws IOException
+     * @throws IOException If file could not be modified or created
      */
     static boolean createAccount(String name, String pass) throws IOException {
         var newUser = new User(name, pass);
         var gson = new GsonBuilder().setPrettyPrinting().create();
-        var file = new File("users.json");
-        if (!file.exists()) {
-            file.createNewFile();
-        }
+        var users = loadUsers(gson);
 
-        // Load previous Users from user file
-        var reader = new FileReader(file, StandardCharsets.UTF_8);
-        var users = gson.fromJson(reader, User[].class);
-        User[] newUsers = null;
+        User[] newUsers;
         if (users == null) {
             newUsers = new User[] { newUser };
         } else {
@@ -75,18 +70,12 @@ class JsonService {
      * @return User if their credentials match ones in the JSON file and
      *         <code>null</code> otherwise
      * 
-     * @throws IOException
+     * @throws IOException If file could not be modified or created
      */
     static User login(String name, String pass) throws IOException {
         var loginUser = new User(name, pass);
         var gson = new GsonBuilder().setPrettyPrinting().create();
-        var file = new File("users.json");
-        if (!file.exists()) {
-            return null;
-        }
-
-        var reader = new FileReader(file, StandardCharsets.UTF_8);
-        var users = gson.fromJson(reader, User[].class);
+        var users = loadUsers(gson);
 
         // Check if login user is in JSON file
         for (var user : users) {
@@ -103,14 +92,7 @@ class JsonService {
      */
     static void DeleteAccount(User userToDelete) throws IOException {
         var gson = new GsonBuilder().setPrettyPrinting().create();
-        var file = new File("users.json");
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-
-        // Load current Users from user file
-        var reader = new FileReader(file, StandardCharsets.UTF_8);
-        var users = gson.fromJson(reader, User[].class);
+        var users = loadUsers(gson);
         var newUsers = new User[users.length - 1];
 
         // Copy all Users to new array except for deleted User
@@ -129,5 +111,19 @@ class JsonService {
         var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
         var musics = new GsonBuilder().create().fromJson(reader, Music[].class);
         return FXCollections.observableArrayList(musics);
+    }
+
+    /**
+     * Loads the users.json file into the program.
+     *
+     * @throws IOException If file could not be modified or created
+     */
+    private static User[] loadUsers(Gson gson) throws IOException {
+        var file = new File("users.json");
+        file.createNewFile();
+
+        // Load current Users from user file
+        var reader = new FileReader(file, StandardCharsets.UTF_8);
+        return gson.fromJson(reader, User[].class);
     }
 }
