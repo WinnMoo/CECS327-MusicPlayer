@@ -1,6 +1,7 @@
 package com.cecs;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
@@ -36,7 +37,7 @@ class MainPage {
         var playButton = new Button("▶");
         var nextSongButton = new Button("⏭");
         var prevSongButton = new Button("⏮");
-        var stopSongButton = new Button("⏹");
+        var pauseSongButton = new Button("⏸");
 
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
@@ -72,17 +73,19 @@ class MainPage {
         playButton.setOnAction(action -> {
             try {
                 var song = table.getSelectionModel().getSelectedItem();
+                System.out.println("Playing " + song);
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
                 player.playSong(song.getSong().getId() + ".mp3");
             } catch (NullPointerException e) { // Catch for case when there's no selected item
                 var song = table.getItems().get(songIndex);
+                System.out.println("Playing from catch block " + song);
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
                 player.playSong(song.getSong().getId() + ".mp3");
             }
         });
 
-        stopSongButton.setOnAction(action -> {
-            player.stopSong();
+        pauseSongButton.setOnAction(action -> {
+            player.pauseSong();
             stage.setTitle("Music Player 1.0");
         });
 
@@ -97,7 +100,7 @@ class MainPage {
         var controlButtonRow = new BorderPane();
         controlButtonRow.setLeft(prevSongButton);
         controlButtonRow.setLeft(playButton);
-        controlButtonRow.setCenter(stopSongButton);
+        controlButtonRow.setCenter(pauseSongButton);
         controlButtonRow.setRight(nextSongButton);
         controlButtonRow.setMaxWidth(250.0);
 
