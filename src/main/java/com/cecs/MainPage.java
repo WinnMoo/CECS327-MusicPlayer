@@ -1,7 +1,6 @@
 package com.cecs;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
@@ -18,9 +17,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Slider;
-
-import java.io.FileNotFoundException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 class MainPage {
     static void show(Stage stage, User user) {
@@ -58,7 +54,7 @@ class MainPage {
         var playbackSlider = new Slider();
         playbackSlider.setDisable(true);
         playbackSlider.setOnMouseReleased(it -> {
-            player.unblockUpdates();;
+            player.unblockUpdates();
             player.updateTrack(playbackSlider.getValue());
         });
         playbackSlider.setOnMouseDragged(it -> {
@@ -85,10 +81,8 @@ class MainPage {
         var prevSongButton = new Button("⏮");
         prevSongButton.setDisable(true);
         prevSongButton.setOnAction(action -> {
-            int currentIndex = table.getSelectionModel().getSelectedIndex();
-            int prevIndex = currentIndex - 1;
-            var song = table.getItems().get(prevIndex);
-            table.getSelectionModel().select(prevIndex);
+            table.getSelectionModel().selectPrevious();
+            var song = table.getSelectionModel().getSelectedItem();
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
             player.playSong(song.getSong().getId() + ".mp3");
             playButton.setText("⏸");
@@ -97,19 +91,15 @@ class MainPage {
         var nextSongButton = new Button("⏭");
         nextSongButton.setDisable(true);
         nextSongButton.setOnAction(action -> {
-            int currentIndex = table.getSelectionModel().getSelectedIndex();
-            int nextIndex = currentIndex + 1;
-            var song = table.getItems().get(nextIndex);
-            table.getSelectionModel().select(nextIndex);
+            table.getSelectionModel().selectNext();
+            var song = table.getSelectionModel().getSelectedItem();
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
             player.playSong(song.getSong().getId() + ".mp3");
             playButton.setText("⏸");
         });
 
-        table.getSelectionModel().selectedItemProperty().addListener((_0, oldSelection, newSelection) -> {
-            System.out.println("Focus changed!");
+        table.getSelectionModel().selectedItemProperty().addListener((_0, _1, newSelection) -> {
             if (newSelection == null) {
-                System.out.println("Nothing is selected.");
                 prevSongButton.setDisable(true);
                 playButton.setDisable(true);
                 nextSongButton.setDisable(true);

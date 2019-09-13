@@ -59,8 +59,10 @@ public class SongPlayer {
                 });
                 thread_music.start();
             }
-        } catch (JavaLayerException | IOException exception) {
-            exception.printStackTrace();
+        } catch (JavaLayerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Could not find song requested.");
         }
     }
 
