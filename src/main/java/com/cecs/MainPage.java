@@ -57,6 +57,9 @@ class MainPage {
         });
 
         var playbackSlider = new Slider();
+        playbackSlider.setOnMouseReleased(it -> {
+            player.updateTrack(playbackSlider.getValue());
+        });
         player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var prevSongButton = new Button("⏮");
@@ -64,8 +67,9 @@ class MainPage {
             int currentIndex = table.getSelectionModel().getSelectedIndex();
             int prevIndex = currentIndex - 1;
             var song = table.getItems().get(prevIndex);
+            table.getSelectionModel().select(prevIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            // SongPlayer.playSong(song.getSong().getId() + ".mp3");
+            player.playSong(song.getSong().getId() + ".mp3");
         });
 
         var playButton = new Button("▶");
@@ -93,8 +97,9 @@ class MainPage {
             int currentIndex = table.getSelectionModel().getSelectedIndex();
             int nextIndex = currentIndex + 1;
             var song = table.getItems().get(nextIndex);
+            table.getSelectionModel().select(nextIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            // SongPlayer.playSong(song.getSong().getId());
+            player.playSong(song.getSong().getId() + ".mp3");
         });
 
         var controlButtonRow = new BorderPane();

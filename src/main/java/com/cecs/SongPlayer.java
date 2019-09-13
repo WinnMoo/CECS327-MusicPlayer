@@ -22,8 +22,7 @@ public class SongPlayer {
         player = null;
         currentSong = null;
         trackObservable = Observable.interval(1, TimeUnit.SECONDS).timeInterval()
-                .filter(it -> currentSong != null && is != null)
-                .map(it -> 100 * (1 - (double) pollLength() / (double) totalFrames));
+                .filter(it -> currentSong != null && is != null).map(it -> trackByteToDouble(pollLength()));
     }
 
     void playSong(String filename) {
@@ -61,6 +60,42 @@ public class SongPlayer {
         } catch (JavaLayerException | IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    /**
+     * Reposition header of marker and resume song from that point
+     */
+    void updateTrack(double percent) {
+        var marker = trackDoubleToByte(percent);
+        if (thread_music == null) {
+            return;
+        }
+        stopMusic();
+        try {
+            is = new CECS327InputStream(currentSong);
+            player = new Player(is);
+            is.skipNBytes(marker);
+            thread_music = new Thread(() -> {
+                try {
+                    player.play();
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+            });
+            thread_music.start();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (JavaLayerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private double trackByteToDouble(int bite) {
+        return 100 * (1 - (double) bite / (double) totalFrames);
+    }
+
+    private int trackDoubleToByte(double percent) {
+        return (int) (totalFrames * (percent / 100));
     }
 
     void pauseSong() {
