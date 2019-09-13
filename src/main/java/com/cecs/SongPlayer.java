@@ -17,12 +17,14 @@ public class SongPlayer {
     private int totalFrames;
     private Thread thread_music;
     private Observable<Double> trackObservable;
+    private boolean updateLock;
 
     SongPlayer() {
         player = null;
         currentSong = null;
+        updateLock = false;
         trackObservable = Observable.interval(1, TimeUnit.SECONDS).timeInterval()
-                .filter(it -> currentSong != null && is != null).map(it -> trackByteToDouble(pollLength()));
+                .filter(it -> currentSong != null && is != null && !updateLock).map(it -> trackByteToDouble(pollLength()));
     }
 
     void playSong(String filename) {
@@ -121,6 +123,18 @@ public class SongPlayer {
      */
     Observable<Double> getEvents() {
         return trackObservable;
+    }
+
+    void blockUpdates() {
+        updateLock = true;
+    }
+
+    void unblockUpdates() {
+        updateLock = false;
+    }
+
+    String nowPlaying() {
+        return currentSong;
     }
 
     /**

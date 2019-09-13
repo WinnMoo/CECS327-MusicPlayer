@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class MainPage {
     static void show(Stage stage, User user) {
-        int songIndex = 0;
         SongPlayer player = new SongPlayer();
 
         var listOfMusic = FXCollections.<Music>observableArrayList();
@@ -57,34 +56,25 @@ class MainPage {
         });
 
         var playbackSlider = new Slider();
+        playbackSlider.setDisable(true);
         playbackSlider.setOnMouseReleased(it -> {
+            player.unblockUpdates();;
             player.updateTrack(playbackSlider.getValue());
+        });
+        playbackSlider.setOnMouseDragged(it -> {
+            player.blockUpdates();
         });
         player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
-        var prevSongButton = new Button("⏮");
-        prevSongButton.setOnAction(action -> {
-            int currentIndex = table.getSelectionModel().getSelectedIndex();
-            int prevIndex = currentIndex - 1;
-            var song = table.getItems().get(prevIndex);
-            table.getSelectionModel().select(prevIndex);
-            stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            player.playSong(song.getSong().getId() + ".mp3");
-        });
-
         var playButton = new Button("▶");
+        playButton.setDisable(true);
         playButton.setOnAction(action -> {
             if (playButton.getText().equals("▶")) { // lol
-                try {
-                    var song = table.getSelectionModel().getSelectedItem();
-                    stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                    player.playSong(song.getSong().getId() + ".mp3");
-                } catch (NullPointerException e) { // Catch for case when there's no selected item
-                    var song = table.getItems().get(songIndex);
-                    stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                    player.playSong(song.getSong().getId() + ".mp3");
-                }
+                var song = table.getSelectionModel().getSelectedItem();
+                stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+                player.playSong(song.getSong().getId() + ".mp3");
                 playButton.setText("⏸");
+                playbackSlider.setDisable(false);
             } else {
                 player.pauseSong();
                 stage.setTitle("Music Player 1.0");
@@ -92,7 +82,20 @@ class MainPage {
             }
         });
 
+        var prevSongButton = new Button("⏮");
+        prevSongButton.setDisable(true);
+        prevSongButton.setOnAction(action -> {
+            int currentIndex = table.getSelectionModel().getSelectedIndex();
+            int prevIndex = currentIndex - 1;
+            var song = table.getItems().get(prevIndex);
+            table.getSelectionModel().select(prevIndex);
+            stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+            player.playSong(song.getSong().getId() + ".mp3");
+            playButton.setText("⏸");
+        });
+
         var nextSongButton = new Button("⏭");
+        nextSongButton.setDisable(true);
         nextSongButton.setOnAction(action -> {
             int currentIndex = table.getSelectionModel().getSelectedIndex();
             int nextIndex = currentIndex + 1;
@@ -100,10 +103,40 @@ class MainPage {
             table.getSelectionModel().select(nextIndex);
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
             player.playSong(song.getSong().getId() + ".mp3");
+            playButton.setText("⏸");
+        });
+
+        table.getSelectionModel().selectedItemProperty().addListener((_0, oldSelection, newSelection) -> {
+            System.out.println("Focus changed!");
+            if (newSelection == null) {
+                System.out.println("Nothing is selected.");
+                prevSongButton.setDisable(true);
+                playButton.setDisable(true);
+                nextSongButton.setDisable(true);
+            } else {
+                var currentIndex = table.getSelectionModel().getSelectedIndex();
+                var prevDisabled = currentIndex == 0;
+                var nextDisabled = currentIndex == table.getItems().size() - 1;
+
+                if (player.nowPlaying() != null) {
+                    if (!player.nowPlaying().equals(newSelection.getSong().getId() + ".mp3")) {
+                        playButton.setText("▶");
+                    } else {
+                        playButton.setText("⏸");
+                    }
+                } else {
+                    prevDisabled = true;
+                    nextDisabled = true;
+                }
+
+                prevSongButton.setDisable(prevDisabled);
+                playButton.setDisable(false);
+                nextSongButton.setDisable(nextDisabled);
+            }
         });
 
         var controlButtonRow = new BorderPane();
-        controlButtonRow.setLeft(prevSongButton); // Currently throws Exception
+        controlButtonRow.setLeft(prevSongButton);
         controlButtonRow.setCenter(playButton);
         controlButtonRow.setRight(nextSongButton);
         controlButtonRow.setMaxWidth(750.0);
