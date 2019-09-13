@@ -5,6 +5,9 @@ import javazoom.jl.player.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
 
 public class SongPlayer {
     private Player player;
@@ -13,15 +16,17 @@ public class SongPlayer {
     private int pausedFrame;
     private int totalFrames;
     private Thread thread_music;
+    private Observable<Double> trackObservable;
 
-    public SongPlayer() {
+    SongPlayer() {
         player = null;
         currentSong = null;
-        pausedFrame = 0;
+        trackObservable = Observable.interval(1, TimeUnit.SECONDS).timeInterval()
+                .filter(it -> currentSong != null && is != null)
+                .map(it -> 100 * (1 - (double) pollLength() / (double) totalFrames));
     }
 
-    public void playSong(String filename) {
-        System.out.println("Play button pressed");
+    void playSong(String filename) {
         try {
             // If playing a new song, not just resuming
             if (currentSong == null || !currentSong.equals(filename)) {
@@ -31,51 +36,38 @@ public class SongPlayer {
                 // It uses CECS327InputStream as InputStream to play the song
                 is = new CECS327InputStream(filename);
                 player = new Player(is);
-                // When the input stream is fresh, available gives us the total number of bytes
-                // of the song
-                totalFrames = is.available();
-                thread_music = new Thread() {
-                    public void run() {
-                        try {
-                            System.out.println("Now playing...");
-                            player.play();
-                        } catch (JavaLayerException e) {
-                            e.printStackTrace();
-                        }
+                thread_music = new Thread(() -> {
+                    try {
+                        player.play();
+                    } catch (JavaLayerException e) {
+                        e.printStackTrace();
                     }
-                };
+                });
                 thread_music.start();
                 currentSong = filename;
             } else {
                 stopMusic();
                 player = new Player(is);
-                thread_music = new Thread() {
-                    public void run() {
-                        try {
-                            System.out.println("Resuming at " + pausedFrame);
-                            player.play();
-                        } catch (JavaLayerException e) {
-                            e.printStackTrace();
-                        }
+                thread_music = new Thread(() -> {
+                    try {
+                        player.play();
+                    } catch (JavaLayerException e) {
+                        e.printStackTrace();
                     }
-                };
+                });
                 thread_music.start();
             }
-        } catch (JavaLayerException exception) {
-            exception.printStackTrace();
-        } catch (IOException exception) {
+        } catch (JavaLayerException | IOException exception) {
             exception.printStackTrace();
         }
     }
 
-    public void pauseSong() {
+    void pauseSong() {
         if (currentSong == null) {
             return;
         }
         if (player != null) {
             try {
-                pausedFrame = player.getPosition();
-                System.out.println("Song paused at " + pausedFrame);
                 stopMusic();
             } catch (SecurityException e) {
                 e.printStackTrace();
@@ -83,28 +75,16 @@ public class SongPlayer {
         }
     }
 
-    public int totalLength() {
-        return totalFrames;
-    }
-
-    public int pollLength() throws IOException {
+    private int pollLength() throws IOException {
         return is.available();
     }
 
-    public void stopSong() {
-        if (currentSong == null) {
-            return;
-        }
-        if (player != null) {
-            try {
-                System.out.println("Song stopped");
-                currentSong = null;
-                pausedFrame = 0;
-                stopMusic();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    /**
+     * Returns an Observable that emits the percentage of the song completed at a
+     * given point
+     */
+    Observable<Double> getEvents() {
+        return trackObservable;
     }
 
     /**

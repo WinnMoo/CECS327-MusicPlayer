@@ -33,12 +33,6 @@ class MainPage {
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
-        var playbackSlider = new Slider();
-        var playButton = new Button("▶");
-        var nextSongButton = new Button("⏭");
-        var prevSongButton = new Button("⏮");
-        var pauseSongButton = new Button("⏸");
-
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
         var releases = new TableColumn<Music, String>("Release");
@@ -62,6 +56,11 @@ class MainPage {
             });
         });
 
+        var playbackSlider = new Slider();
+        player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace,
+                () -> System.out.println("Completed!"));
+
+        var prevSongButton = new Button("⏮");
         prevSongButton.setOnAction(action -> {
             int currentIndex = table.getSelectionModel().getSelectedIndex();
             int prevIndex = currentIndex - 1;
@@ -70,25 +69,27 @@ class MainPage {
             // SongPlayer.playSong(song.getSong().getId() + ".mp3");
         });
 
+        var playButton = new Button("▶");
         playButton.setOnAction(action -> {
-            try {
-                var song = table.getSelectionModel().getSelectedItem();
-                System.out.println("Playing " + song);
-                stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                player.playSong(song.getSong().getId() + ".mp3");
-            } catch (NullPointerException e) { // Catch for case when there's no selected item
-                var song = table.getItems().get(songIndex);
-                System.out.println("Playing from catch block " + song);
-                stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                player.playSong(song.getSong().getId() + ".mp3");
+            if (playButton.getText().equals("▶")) { // lol
+                try {
+                    var song = table.getSelectionModel().getSelectedItem();
+                    stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+                    player.playSong(song.getSong().getId() + ".mp3");
+                } catch (NullPointerException e) { // Catch for case when there's no selected item
+                    var song = table.getItems().get(songIndex);
+                    stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+                    player.playSong(song.getSong().getId() + ".mp3");
+                }
+                playButton.setText("⏸");
+            } else {
+                player.pauseSong();
+                stage.setTitle("Music Player 1.0");
+                playButton.setText("▶");
             }
         });
 
-        pauseSongButton.setOnAction(action -> {
-            player.pauseSong();
-            stage.setTitle("Music Player 1.0");
-        });
-
+        var nextSongButton = new Button("⏭");
         nextSongButton.setOnAction(action -> {
             int currentIndex = table.getSelectionModel().getSelectedIndex();
             int nextIndex = currentIndex + 1;
@@ -98,11 +99,10 @@ class MainPage {
         });
 
         var controlButtonRow = new BorderPane();
-        controlButtonRow.setLeft(prevSongButton);
-        controlButtonRow.setLeft(playButton);
-        controlButtonRow.setCenter(pauseSongButton);
+        controlButtonRow.setLeft(prevSongButton); // Currently throws Exception
+        controlButtonRow.setCenter(playButton);
         controlButtonRow.setRight(nextSongButton);
-        controlButtonRow.setMaxWidth(250.0);
+        controlButtonRow.setMaxWidth(750.0);
 
         final var col = new VBox(label, searchBar, table, playbackSlider, controlButtonRow);
         col.setSpacing(10.0);
