@@ -57,8 +57,7 @@ class MainPage {
         });
 
         var playbackSlider = new Slider();
-        player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace,
-                () -> System.out.println("Completed!"));
+        player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var prevSongButton = new Button("⏮");
         prevSongButton.setOnAction(action -> {

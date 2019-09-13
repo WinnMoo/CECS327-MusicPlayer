@@ -36,6 +36,7 @@ public class SongPlayer {
                 // It uses CECS327InputStream as InputStream to play the song
                 is = new CECS327InputStream(filename);
                 player = new Player(is);
+                totalFrames = pollLength();
                 thread_music = new Thread(() -> {
                     try {
                         player.play();
