@@ -78,7 +78,7 @@ public class SongPlayer {
         try {
             is = new CECS327InputStream(currentSong);
             player = new Player(is);
-            is.skipNBytes(marker);
+            //is.skipNBytes(marker);
             thread_music = new Thread(() -> {
                 try {
                     player.play();
