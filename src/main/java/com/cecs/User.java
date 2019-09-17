@@ -52,7 +52,7 @@ public class User implements Comparable<User> {
     @Override
     public int compareTo(User other) {
         var userCmp = this.username.compareToIgnoreCase(other.username);
-        var passCmp = this.username.compareTo(other.password);
+        var passCmp = this.password.compareTo(other.password);
         if (userCmp == 0) {
             return passCmp;
         }
