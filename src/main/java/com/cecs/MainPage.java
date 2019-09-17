@@ -21,9 +21,10 @@ import javafx.stage.Stage;
 import javafx.scene.control.Slider;
 import javafx.scene.control.MenuBar;
 
+
 class MainPage {
     static void show(Stage stage, User user) {
-        BorderPane borderPane = new BorderPane();
+
 
         Menu MainMenu = new Menu("All Songs");
         Menu PlaylistMenu = new Menu("Playlists");
@@ -177,11 +178,28 @@ class MainPage {
         controlButtonRow.setRight(nextSongButton);
         controlButtonRow.setMaxWidth(750.0);
 
-        final var col = new VBox(menuBar, label, searchBar, table, playbackSlider, controlButtonRow);
+        VBox vbox = new VBox();
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(25,25,25,25));
+        vbox.getChildren().add(label);
+        vbox.getChildren().add(searchBar);
+        vbox.getChildren().add(table);
+        vbox.getChildren().add(playbackSlider);
+
+//        final var musicRow = new vBox(label, searchBar, table, playbackSlider);
+//        musicRow.setSpacing(10.0);
+//        musicRow.setPadding(new Insets(10.0));
+
+        BorderPane menuPane = new BorderPane();
+        menuPane.setTop(menuBar);
+
+
+        //final var col = new VBox(menuPane, label, searchBar, table, playbackSlider, controlButtonRow);
+        final var col = new VBox(menuPane, vbox, controlButtonRow);
         col.setSpacing(10.0);
-        col.setPadding(new Insets(25.0));
+        //col.setPadding(new Insets(25.0));
         final var scene = new Scene(col, 800, 600);
-        borderPane.setTop(menuBar);
+
 
         stage.setScene(scene);
         stage.show();
