@@ -20,11 +20,22 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Slider;
 import javafx.scene.control.MenuBar;
+import javafx.scene.Node;
 
 
 class MainPage {
     static void show(Stage stage, User user) {
 
+//        private final static int dataSize = 10_023;
+//        private final static int rowsPerPage = 1000;
+//        private Node createPage(int pageIndex) {
+//
+//            int fromIndex = pageIndex * rowsPerPage;
+//            int toIndex = Math.min(fromIndex + rowsPerPage, data.size());
+//            table.setItems(FXCollections.observableArrayList(data.subList(fromIndex, toIndex)));
+//
+//            return new BorderPane(table);
+//        }
 
         Menu MainMenu = new Menu("All Songs");
         Menu PlaylistMenu = new Menu("Playlists");
