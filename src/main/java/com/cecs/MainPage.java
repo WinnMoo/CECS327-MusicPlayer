@@ -6,6 +6,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -17,9 +19,53 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Slider;
+import javafx.scene.control.MenuBar;
 
 class MainPage {
     static void show(Stage stage, User user) {
+        BorderPane borderPane = new BorderPane();
+
+        Menu MainMenu = new Menu("All Songs");
+        Menu PlaylistMenu = new Menu("Playlists");
+        Menu ProfileMenu = new Menu("User Profile");
+        Menu SettingsMenu = new Menu("Settings");
+
+        Slider slider = new Slider(0, 100, 50);
+        CustomMenuItem customMenuItem = new CustomMenuItem();
+        customMenuItem.setContent(slider);
+        customMenuItem.setHideOnClick(false);
+        SettingsMenu.getItems().add(customMenuItem);
+
+        Button button = new Button("Custom Menu Item Button");
+        CustomMenuItem customMenuItem2 = new CustomMenuItem();
+        customMenuItem2.setContent(button);
+        customMenuItem2.setHideOnClick(false);
+        SettingsMenu.getItems().add(customMenuItem2);
+
+        Button mainpageButton = new Button("View All");
+        CustomMenuItem customMenuItem_Main = new CustomMenuItem();
+        customMenuItem_Main.setContent(mainpageButton);
+
+
+        customMenuItem_Main.setHideOnClick(false);
+
+
+        MainMenu.getItems().add(customMenuItem_Main);
+
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().add(MainMenu);
+        menuBar.getMenus().add(PlaylistMenu);
+        menuBar.getMenus().add(ProfileMenu);
+        menuBar.getMenus().add(SettingsMenu);
+
+        menuBar.prefWidthProperty().bind(stage.widthProperty());
+
+
+
+
+
+
         SongPlayer player = new SongPlayer();
 
         var listOfMusic = FXCollections.<Music>observableArrayList();
@@ -131,10 +177,11 @@ class MainPage {
         controlButtonRow.setRight(nextSongButton);
         controlButtonRow.setMaxWidth(750.0);
 
-        final var col = new VBox(label, searchBar, table, playbackSlider, controlButtonRow);
+        final var col = new VBox(menuBar, label, searchBar, table, playbackSlider, controlButtonRow);
         col.setSpacing(10.0);
         col.setPadding(new Insets(25.0));
         final var scene = new Scene(col, 800, 600);
+        borderPane.setTop(menuBar);
 
         stage.setScene(scene);
         stage.show();
