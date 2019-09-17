@@ -31,24 +31,37 @@ class MainPage {
         Menu ProfileMenu = new Menu("User Profile");
         Menu SettingsMenu = new Menu("Settings");
 
+        //Main Menu
+        Button mainpageButton = new Button("View All");
+        CustomMenuItem customMenuItem_Main = new CustomMenuItem();
+        customMenuItem_Main.setContent(mainpageButton);
+        customMenuItem_Main.setHideOnClick(false);
+        MainMenu.getItems().add(customMenuItem_Main);
+
+        //Main Menu
+        Button PlaylistMenuButton = new Button("View All");
+        CustomMenuItem playlistItem = new CustomMenuItem();
+        playlistItem.setContent(PlaylistMenuButton);
+        playlistItem.setHideOnClick(false);
+        PlaylistMenu.getItems().add(playlistItem);
+
+
+        //Settings Menu Items
         Slider slider = new Slider(0, 100, 50);
         CustomMenuItem customMenuItem = new CustomMenuItem();
         customMenuItem.setContent(slider);
         customMenuItem.setHideOnClick(false);
         SettingsMenu.getItems().add(customMenuItem);
 
-        Button button = new Button("Custom Menu Item Button");
+        Button customButton = new Button("Custom Menu Item Button");
         CustomMenuItem customMenuItem2 = new CustomMenuItem();
-        customMenuItem2.setContent(button);
+        customMenuItem2.setContent(customButton);
         customMenuItem2.setHideOnClick(false);
         SettingsMenu.getItems().add(customMenuItem2);
 
-        Button mainpageButton = new Button("View All");
-        CustomMenuItem customMenuItem_Main = new CustomMenuItem();
-        customMenuItem_Main.setContent(mainpageButton);
 
 
-        customMenuItem_Main.setHideOnClick(false);
+
 
 
         MainMenu.getItems().add(customMenuItem_Main);
