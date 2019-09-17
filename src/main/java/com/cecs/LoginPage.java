@@ -1,26 +1,29 @@
 package com.cecs;
 
+import java.io.IOException;
+
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 class LoginPage {
     enum LoginCode {
-        SUCCESS, INVALID_USER, INVALID_PASS,
+        SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
     static void show(Stage stage) {
+        var signIn = new Text("Sign In");
+        signIn.setFont(new Font(null, 36.0));
+
         var userLabel = new Label("Username");
         var passLabel = new Label("Password");
         var labels = new VBox(userLabel, passLabel);
@@ -38,29 +41,22 @@ class LoginPage {
         entries.setAlignment(Pos.CENTER);
         entries.maxWidth(225.0);
 
-        var signIn = new Text("Sign In");
-        signIn.setFont(new Font(null, 36.0));
-
-        var button = new Button("Sign In");
+        var loginButton = new Button("Sign In");
         var errorMessage = new Label("");
         errorMessage.setTextFill(Color.color(1.0, 0.2, 0.2));
 
-        var createAcc = new Text("Create Account");
-        createAcc.setFont(new Font(null, 36.0));
+        var createAccText = new Text("Need an account? ");
+        var createAccLink = new Hyperlink("Sign Up");
+        var createAccRow = new HBox(createAccText, createAccLink);
+        createAccRow.setAlignment(Pos.CENTER);
 
-        var createAccButton = new Button("Create Account");
+        createAccLink.setOnAction(action -> CreateAccountPage.showAndWait(stage));
 
-        createAccButton.setOnAction(action -> {
-            CreateAccountPage.show(stage);
-        });
-
-        button.setOnAction(action -> {
-            var u = userField.getText();
-            var p = passField.getText();
-            Flowable.fromCallable(() -> authenticate(u, p)).subscribe(code -> {
-                switch (code) {
+        loginButton.setOnAction(action -> {
+            Flowable.fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
+                switch (pair.getKey()) {
                 case SUCCESS: {
-                    MainPage.show(stage, new User(u, p));
+                    MainPage.show(stage, pair.getValue());
                     break;
                 }
                 case INVALID_USER: {
@@ -69,28 +65,35 @@ class LoginPage {
                 }
                 case INVALID_PASS: {
                     errorMessage.setText("Password cannot be blank");
+                    break;
+                }
+                case INCORRECT_CREDENTIALS: {
+                    errorMessage.setText("Incorrect username or password");
+                    break;
                 }
                 }
+            }, error -> {
+                System.err.println("An error has occurred.\n");
+                error.printStackTrace();
             });
         });
         userField.setOnKeyReleased(actionEvent -> {
             if (actionEvent.getCode() == KeyCode.ENTER) {
-                button.fire();
+                loginButton.fire();
             }
         });
         passField.setOnKeyReleased(actionEvent -> {
             if (actionEvent.getCode() == KeyCode.ENTER) {
-                button.fire();
+                loginButton.fire();
             }
         });
 
         var buttonRow = new BorderPane();
-        buttonRow.setLeft(createAccButton);
-        buttonRow.setCenter(errorMessage);
-        buttonRow.setRight(button);
-        buttonRow.setMaxWidth(400.0);
+        buttonRow.setLeft(errorMessage);
+        buttonRow.setRight(loginButton);
+        buttonRow.setMaxWidth(250.0);
 
-        var col = new VBox(signIn, entries, buttonRow);
+        var col = new VBox(signIn, entries, buttonRow, createAccRow);
         col.setSpacing(10.0);
         col.setAlignment(Pos.CENTER);
         col.setPadding(new Insets(25.0));
@@ -100,11 +103,19 @@ class LoginPage {
         stage.show();
     }
 
-    private static LoginCode authenticate(String user, String pass) {
-        if (user.isBlank())
-            return LoginCode.INVALID_USER;
-        if (pass.isBlank())
-            return LoginCode.INVALID_PASS;
-        return LoginCode.SUCCESS;
+    private static Pair<LoginCode, User> authenticate(String name, String pass) throws IOException {
+        User user = null;
+        var code = LoginCode.SUCCESS;
+        if (name.isBlank()) {
+            code = LoginCode.INVALID_USER;
+        } else if (pass.isBlank()) {
+            code = LoginCode.INVALID_PASS;
+        } else {
+            user = JsonService.login(name, pass);
+            if (user == null) {
+                code = LoginCode.INCORRECT_CREDENTIALS;
+            }
+        }
+        return new Pair<>(code, user);
     }
 }

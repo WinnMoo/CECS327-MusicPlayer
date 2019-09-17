@@ -12,7 +12,8 @@ public class Artist {
     private String similar;
     private float hotness;
 
-    public Artist(float terms_freq, String terms, String name, String familiarity, String longitude, String id, String location, String latitude, String similar, float hotness) {
+    public Artist(float terms_freq, String terms, String name, String familiarity, String longitude, String id,
+            String location, String latitude, String similar, float hotness) {
         this.terms_freq = terms_freq;
         this.terms = terms;
         this.name = name;
@@ -106,5 +107,7 @@ public class Artist {
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name;
+    }
 }
