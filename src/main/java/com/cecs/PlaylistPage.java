@@ -3,17 +3,23 @@ package com.cecs;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import io.reactivex.Flowable;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -21,116 +27,63 @@ import javafx.scene.control.MenuBar;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-public class PlaylistPage {
+class PlaylistPage {
+    static void show(Stage parentStage, User user) {
+        //show application visible to user
+        var stage = new Stage();
+        var signUp = new Text("Add Playlist");
+        signUp.setFont(new Font(null, 36.0));
 
+        // Playlist entry
+        var playlistLabel = new Label("Playlist Name");
+        var playlistField = new TextField();
 
+        // Organize and apply layout to form
+        var entry = new HBox(playlistLabel, playlistField);
+        entry.setSpacing(20.0);
+        entry.setAlignment(Pos.CENTER);
+        entry.maxWidth(225.0);
 
+        // Appears beside the register button whenever an error occurs during
+        // registration
+        var errorMessage = new Label("");
+        errorMessage.setTextFill(Color.color(1.0, 0.2, 0.2));
 
-    //Load files prior to application running
-    public void init () throws Exception {
-        System.out.println("Before application");
-    }
-
-    //show application visible to user
-    public static void show (Stage stage, User user){
-        BorderPane root = new BorderPane();
-        stage.setTitle("Stage Title");
-
-
-        //VBox root = new VBox();
-        //var button1 = new Button("Sign In");
-
-
-        Menu MainMenu = new Menu("All Songs");
-        Menu PlaylistMenu = new Menu("Playlists");
-        Menu ProfileMenu = new Menu("User Profile");
-        Menu SettingsMenu = new Menu("Settings");
-
-        Slider slider = new Slider(0, 100, 50);
-        CustomMenuItem customMenuItem = new CustomMenuItem();
-        customMenuItem.setContent(slider);
-        customMenuItem.setHideOnClick(false);
-        SettingsMenu.getItems().add(customMenuItem);
-
-        Button button = new Button("Custom Menu Item Button");
-        CustomMenuItem customMenuItem2 = new CustomMenuItem();
-        customMenuItem2.setContent(button);
-        customMenuItem2.setHideOnClick(false);
-        SettingsMenu.getItems().add(customMenuItem2);
-
-        Button mainpageButton = new Button("View All");
-        CustomMenuItem customMenuItem_Main = new CustomMenuItem();
-        customMenuItem_Main.setContent(mainpageButton);
-
-
-        customMenuItem_Main.setHideOnClick(false);
-
-
-        MainMenu.getItems().add(customMenuItem_Main);
-
-
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(MainMenu);
-        menuBar.getMenus().add(PlaylistMenu);
-        menuBar.getMenus().add(ProfileMenu);
-        menuBar.getMenus().add(SettingsMenu);
-
-        menuBar.prefWidthProperty().bind(stage.widthProperty());
-        root.setTop(menuBar);
-
-        //initialize variable
-        var musics = new Music[0];
-        //try catch to retrieve music from json file
-        try {
-            var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music2.json"), StandardCharsets.UTF_8);
-            musics = new GsonBuilder().create().fromJson(reader, Music[].class);
-        } catch (NullPointerException e) {
-            System.err.println("Instantiating input stream failed.");
-        } catch (JsonSyntaxException | JsonIOException e) {
-            System.err.println("Could not populate music list.");
-        }
-
-        //use FX to display array of music
-        var listOfMusic = FXCollections.observableArrayList(musics);
-
-        //Display text above music
-        final var label = new Text("Playlist 1");
-        label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
-
-        //Song Array UI
-        var songs = new TableColumn<Music, String>("Song");
-        songs.setCellValueFactory(new PropertyValueFactory<>("song"));
-        var releases = new TableColumn<Music, String>("Release");
-        releases.setCellValueFactory(new PropertyValueFactory<>("release"));
-        var artists = new TableColumn<Music, String>("Artist");
-        artists.setCellValueFactory(new PropertyValueFactory<>("artist"));
-
-        var list = new FilteredList<>(listOfMusic, m -> true);
-        var table = new TableView<>(list);
-        table.setEditable(true);
-        table.getColumns().addAll(songs, releases, artists);
-
-        var searchBar = new TextField();
-        searchBar.setPromptText("Search for artist, release, or song...");
-        searchBar.setOnKeyReleased(keyEvent -> {
-            list.setPredicate(p -> {
-                final var query = searchBar.getText().toLowerCase().trim();
-                return p.getArtist().toString().toLowerCase().contains(query) ||
-                        p.getRelease().toString().toLowerCase().contains(query) ||
-                        p.getSong().toString().toLowerCase().contains(query);
-            });
+        // Button used to confirm adding a new entry to the user list
+        // Its action method will catch any exceptions raised by JsonService
+        var addButton = new Button("Add Playlist");
+        addButton.setOnAction(action -> {
+            var name = playlistField.getText();
+            if (!name.isBlank()) {
+                user.userPlaylists.add(new Playlist(name));
+                stage.close();
+            } else {
+                errorMessage.setText("Cannot leave field empty!");
+            }
+        });
+        playlistField.setOnKeyReleased(actionEvent -> {
+            if (actionEvent.getCode() == KeyCode.ENTER) {
+                addButton.fire();
+            }
         });
 
-        final var col = new VBox(menuBar, label, searchBar, table);
+        // Organize and apply layout to error message and button
+        var buttonRow = new BorderPane();
+        buttonRow.setLeft(errorMessage);
+        buttonRow.setRight(addButton);
+        buttonRow.setMaxWidth(250.0);
+
+        // Align everything in a column
+        var col = new VBox(signUp, entry, buttonRow);
         col.setSpacing(10.0);
-        col.setPadding(new Insets(10.0));
-        final var scene = new Scene(col, 800, 600);
+        col.setAlignment(Pos.CENTER);
+        col.setPadding(new Insets(25.0));
 
-
-
-        stage.setScene(scene);
-        stage.show();
+        // Show this window on top of login page and prevent activity there until this
+        // window is gone
+        stage.setScene(new Scene(col, 300, 150));
+        stage.initOwner(parentStage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
     }
-
-
 }

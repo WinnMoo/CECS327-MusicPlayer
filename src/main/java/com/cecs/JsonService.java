@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.binarySearch;
 
@@ -17,13 +18,11 @@ import static java.util.Arrays.binarySearch;
 class JsonService {
     /**
      * Function to create a new User and add the User to a JSON file
-     * 
+     *
      * @param name Name of user
      * @param pass Password of user
-     * 
      * @return <code>true</code> If new user is added to file, <code>false</code> if
      *         the username already exists
-     * 
      * @throws IOException If file could not be modified or created
      */
     static boolean createAccount(String name, String pass) throws IOException {
@@ -39,10 +38,8 @@ class JsonService {
             newUsers = new User[len + 1];
 
             // Check is username is already taken
-            for (var user : users) {
-                if (newUser.username.equalsIgnoreCase(user.username)) {
-                    return false;
-                }
+            if (Arrays.stream(users).anyMatch(it -> it.username.equalsIgnoreCase(newUser.username))) {
+                return false;
             }
 
             // Append new User to old User list
@@ -61,15 +58,14 @@ class JsonService {
     }
 
     // TODO: Create use-case for testing
+
     /**
      * Searches for user, and if found, returns deserialized object
-     * 
+     *
      * @param name Name of user
      * @param pass Password of user
-     * 
      * @return User if their credentials match ones in the JSON file and
      *         <code>null</code> otherwise
-     * 
      * @throws IOException If file could not be modified or created
      */
     static User login(String name, String pass) throws IOException {
@@ -78,12 +74,9 @@ class JsonService {
         var users = loadUsers(gson);
 
         // Check if login user is in JSON file
-        for (var user : users) {
-            if (user.username.equalsIgnoreCase(loginUser.username) && user.password.equals(loginUser.password)) {
-                return loginUser;
-            }
-        }
-        return null;
+        return Arrays.stream(users).filter(
+                it -> it.username.equalsIgnoreCase(loginUser.username) && it.password.equals(loginUser.password))
+                .findFirst().orElse(null);
     }
 
     // TODO: Create use-case for testing
@@ -125,5 +118,23 @@ class JsonService {
         // Load current Users from user file
         var reader = new FileReader(file, StandardCharsets.UTF_8);
         return gson.fromJson(reader, User[].class);
+    }
+
+    static void save(User newerUser) throws IOException {
+        var gson = new GsonBuilder().setPrettyPrinting().create();
+        var users = loadUsers(gson);
+
+        // Binary search won't help us
+        var userIdx = IntStream.range(0, users.length)
+                .filter(idx -> users[idx].username.equalsIgnoreCase(newerUser.username)).findFirst().getAsInt();
+
+        // Don't modify the username stored in the database, just the playlist
+        users[userIdx].userPlaylists = newerUser.userPlaylists;
+
+        // Create string from array of Users and write to file
+        var jsonUsers = gson.toJson(users);
+        var writer = new FileWriter("users.json");
+        writer.write(jsonUsers);
+        writer.close();
     }
 }

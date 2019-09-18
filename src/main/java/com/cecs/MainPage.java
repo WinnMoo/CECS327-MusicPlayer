@@ -22,6 +22,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 
+import java.io.IOException;
+
 class MainPage {
     static void show(Stage stage, User user) {
         // Initialize Song Player service
@@ -36,10 +38,8 @@ class MainPage {
         var mainMenu = new Menu("All Songs", null, viewAll);
 
         // Playlist Menu
-        var playlistItem = new MenuItem("Go to Playlists");
-        playlistItem.setOnAction(action -> {
-            PlaylistPage.show(stage, user);
-        });
+        var playlistItem = new MenuItem("Add Playlist");
+        playlistItem.setOnAction(action -> PlaylistPage.show(stage, user));
         var playlistMenu = new Menu("Playlists", null, playlistItem);
 
         // Profile Menu
@@ -80,14 +80,12 @@ class MainPage {
 
         var searchBar = new TextField();
         searchBar.setPromptText("Search for artist, release, or song...");
-        searchBar.setOnKeyReleased(keyEvent -> {
-            list.setPredicate(p -> {
-                final var query = searchBar.getText().toLowerCase().trim();
-                return p.getArtist().toString().toLowerCase().contains(query)
-                        || p.getRelease().toString().toLowerCase().contains(query)
-                        || p.getSong().toString().toLowerCase().contains(query);
-            });
-        });
+        searchBar.setOnKeyReleased(keyEvent -> list.setPredicate(p -> {
+            final var query = searchBar.getText().toLowerCase().trim();
+            return p.getArtist().toString().toLowerCase().contains(query)
+                    || p.getRelease().toString().toLowerCase().contains(query)
+                    || p.getSong().toString().toLowerCase().contains(query);
+        }));
 
         // Track slider, controls when to stop/continue track updates
         var playbackSlider = new Slider();
@@ -96,9 +94,7 @@ class MainPage {
             player.unblockUpdates();
             player.updateTrack(playbackSlider.getValue());
         });
-        playbackSlider.setOnMouseDragged(it -> {
-            player.blockUpdates();
-        });
+        playbackSlider.setOnMouseDragged(it -> player.blockUpdates());
         player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var playButton = new Button("▶");
@@ -179,10 +175,16 @@ class MainPage {
         borderPane.setCenter(vbox);
         borderPane.setTop(menuBar);
         borderPane.setBottom(controlButtonRow);
-        // col.setPadding(new Insets(25.0));
         final var scene = new Scene(borderPane, 800, 600);
 
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(close -> {
+            try {
+                player.pauseSong();
+                JsonService.save(user);
+            } catch (IOException ignored) {
+            }
+        });
     }
 }

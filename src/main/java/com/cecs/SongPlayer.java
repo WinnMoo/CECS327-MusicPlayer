@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 
-public class SongPlayer {
+class SongPlayer {
     private Player player;
-    private InputStream is;
+    private CECS327InputStream is;
     private String currentSong;
     private int pausedFrame;
     private int totalFrames;
@@ -79,7 +79,7 @@ public class SongPlayer {
         try {
             is = new CECS327InputStream(currentSong);
             player = new Player(is);
-            is.skipNBytes(marker);
+            is.skip(marker);
             thread_music = new Thread(() -> {
                 try {
                     player.play();
@@ -116,7 +116,7 @@ public class SongPlayer {
         }
     }
 
-    private int pollLength() throws IOException {
+    private int pollLength() {
         return is.available();
     }
 
