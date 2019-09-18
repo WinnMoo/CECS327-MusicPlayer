@@ -139,30 +139,21 @@ class JsonService {
 
     static boolean updateUser(User newUser) throws IOException {
         var gson = new GsonBuilder().setPrettyPrinting().create();
-        var file = new File("users.json");
-        if (!file.exists()) {
-            return false;
-        }
-        // Load previous Users from user file
-        var reader = new FileReader(file, StandardCharsets.UTF_8);
-        var users = gson.fromJson(reader, User[].class);
+        var users = loadUsers(gson);
 
         if (users == null) {
             return false;
         } else {
-
             for (var user : users) {
                 if (newUser.username.equalsIgnoreCase(user.username)) {
                     user.setUserPlaylists(newUser.getUserPlaylists());
                     break;
                 }
             }
-
         }
 
         var jsonUsers = gson.toJson(users);
         var writer = new FileWriter("users.json");
-
         writer.write(jsonUsers);
         writer.close();
         return true;
