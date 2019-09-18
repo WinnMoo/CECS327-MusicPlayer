@@ -19,13 +19,13 @@ import static java.util.Arrays.binarySearch;
 class JsonService {
     /**
      * Function to create a new User and add the User to a JSON file
-     *
+     * 
      * @param name Name of user
      * @param pass Password of user
-     *
+     * 
      * @return <code>true</code> If new user is added to file, <code>false</code> if
      *         the username already exists
-     *
+     * 
      * @throws IOException If file could not be modified or created
      */
     static boolean createAccount(String name, String pass) throws IOException {
@@ -65,13 +65,13 @@ class JsonService {
     // TODO: Create use-case for testing
     /**
      * Searches for user, and if found, returns deserialized object
-     *
+     * 
      * @param name Name of user
      * @param pass Password of user
-     *
+     * 
      * @return User if their credentials match ones in the JSON file and
      *         <code>null</code> otherwise
-     *
+     * 
      * @throws IOException If file could not be modified or created
      */
     static User login(String name, String pass) throws IOException {

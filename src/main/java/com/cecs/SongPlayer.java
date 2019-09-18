@@ -24,7 +24,8 @@ public class SongPlayer {
         currentSong = null;
         updateLock = false;
         trackObservable = Observable.interval(1, TimeUnit.SECONDS).timeInterval()
-                .filter(it -> currentSong != null && is != null && !updateLock).map(it -> trackByteToDouble(pollLength()));
+                .filter(it -> currentSong != null && is != null && !updateLock)
+                .map(it -> trackByteToDouble(pollLength()));
     }
 
     void playSong(String filename) {
@@ -70,7 +71,7 @@ public class SongPlayer {
      * Reposition header of marker and resume song from that point
      */
     void updateTrack(double percent) {
-        var marker = trackDoubleToByte(percent);
+        long marker = trackDoubleToByte(percent);
         if (thread_music == null) {
             return;
         }
@@ -78,7 +79,7 @@ public class SongPlayer {
         try {
             is = new CECS327InputStream(currentSong);
             player = new Player(is);
-            //is.skipNBytes(marker);
+            is.skipNBytes(marker);
             thread_music = new Thread(() -> {
                 try {
                     player.play();

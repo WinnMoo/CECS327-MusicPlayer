@@ -1,22 +1,11 @@
 package com.cecs;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-public class User {
+public class User implements Comparable<User> {
     String username;
-    private String password;
-    private ArrayList<Playlist> userPlaylists;
-
-    @Deprecated
-    public User(String pass) {
-        Random rand = new Random();
-        int n = rand.nextInt(999999999); // If no username is provided, generate a random num for it
-
-        this.username = String.valueOf(n);
-        this.password = pass;
-        this.userPlaylists = new ArrayList<Playlist>();
-    }
+    String password;
+    public ArrayList<Playlist> userPlaylists;
 
     User(String name, String pass) {
         this.username = name;
@@ -88,5 +77,15 @@ public class User {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(User other) {
+        var userCmp = this.username.compareToIgnoreCase(other.username);
+        var passCmp = this.password.compareTo(other.password);
+        if (userCmp == 0) {
+            return passCmp;
+        }
+        return userCmp;
     }
 }

@@ -7,10 +7,10 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -22,8 +22,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import javafx.event.ActionEvent;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +30,41 @@ import java.util.Map;
 
 class MainPage {
     static void show(Stage stage, User user) {
+        // Initialize Song Player service
+        SongPlayer player = new SongPlayer();
+
+        // Main Menu
+        var viewAll = new MenuItem("View All");
+        viewAll.setOnAction(action -> {
+            System.out.println("View all selected");
+            // TODO: Functionality, use your imagination.
+        });
+        var mainMenu = new Menu("All Songs", null, viewAll);
+
+        // Playlist Menu
+        var playlistItem = new MenuItem("Go to Playlists");
+        playlistItem.setOnAction(action -> {
+            PlaylistPage.show(stage, user);
+        });
+        var playlistMenu = new Menu("Playlists", null, playlistItem);
+
+        // Profile Menu
+        var profileMenu = new Menu("User Profile");
+
+        // Settings Menu Items
+        var menuSlider = new Slider(0, 100, 50);
+        var customMenuItem = new CustomMenuItem();
+        customMenuItem.setContent(menuSlider);
+        customMenuItem.setHideOnClick(false);
+        var otherSettingItem = new MenuItem("Other Settings Item");
+        otherSettingItem.setOnAction(action -> {
+            System.out.println("Other setting selected");
+            // TODO: Functionality, use your imagination.
+        });
+        var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
+
+        // Menu Bar
+        var menuBar = new MenuBar(mainMenu, playlistMenu, profileMenu, settingsMenu);
 
 
         /*Menu MainMenu = new Menu("All Songs");
@@ -77,8 +110,6 @@ class MainPage {
 
         menuBar.prefWidthProperty().bind(stage.widthProperty());*/
 
-
-        SongPlayer player = new SongPlayer();
         var listOfMusic = FXCollections.<Music>observableArrayList();
         Flowable.fromCallable(JsonService::loadDatabase).subscribe(listOfMusic::addAll, Throwable::printStackTrace);
         final var label = new Text("Welcome back, " + user.username);
@@ -179,6 +210,7 @@ class MainPage {
             });
         });
 
+        // Track slider, controls when to stop/continue track updates
         var playbackSlider = new Slider();
         playbackSlider.setDisable(true);
         playbackSlider.setOnMouseReleased(it -> {
@@ -226,6 +258,7 @@ class MainPage {
             playButton.setText("⏸");
         });
 
+        // Convoluted logic for determining when a play previous/next is warranted
         table.getSelectionModel().selectedItemProperty().addListener((_0, _1, newSelection) -> {
             if (newSelection == null) {
                 prevSongButton.setDisable(true);
@@ -234,7 +267,7 @@ class MainPage {
             } else {
                 var currentIndex = table.getSelectionModel().getSelectedIndex();
                 var prevDisabled = currentIndex == 0;
-                var nextDisabled = currentIndex == table.getItems().size() - 1;
+                var nextDisabled = currentIndex == table.getItems().size() - 1; // Not tested yet
 
                 if (player.nowPlaying() != null) {
                     if (!player.nowPlaying().equals(newSelection.getSong().getId() + ".mp3")) {
@@ -257,27 +290,25 @@ class MainPage {
         controlButtonRow.setLeft(prevSongButton);
         controlButtonRow.setCenter(playButton);
         controlButtonRow.setRight(nextSongButton);
-        controlButtonRow.setMaxWidth(750.0);
-
+        controlButtonRow.setPadding(new Insets(20.0));
         var headline = new HBox(label, myPlaylist);
         headline.setSpacing(30.0);
-
-        VBox vbox = new VBox();
-        vbox.setSpacing(10);
-        vbox.setPadding(new Insets(25,25,25,25));
+        var vbox = new VBox(label, searchBar, table, playbackSlider);
         vbox.getChildren().add(headline);
         vbox.getChildren().add(cbMyPlaylist);
-        vbox.getChildren().add(searchBar);
-        vbox.getChildren().add(table);
-        vbox.getChildren().add(playbackSlider);
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(25.0));
 
-        final var col = new VBox(vbox, controlButtonRow);
-
+        final var borderPane = new BorderPane();
+        borderPane.setCenter(vbox);
+        borderPane.setTop(menuBar);
+        borderPane.setBottom(controlButtonRow);
+        // col.setPadding(new Insets(25.0));
         // Go to MyPlaylistPage
         myPlaylist.setOnAction(actionEvent -> MyPlaylistPage.show(stage, user));
+        final var scene = new Scene(borderPane, 800, 600);
 
-        col.setSpacing(10.0);
-        final var scene = new Scene(col, 800, 600);
+        
         stage.setScene(scene);
         stage.show();
     }
