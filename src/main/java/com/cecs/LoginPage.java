@@ -56,7 +56,7 @@ class LoginPage {
             Flowable.fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
                 switch (pair.getKey()) {
                     case SUCCESS: {
-                        MainPage.show(stage, pair.getValue());
+                        MainPage.show(stage, new SongPlayer(), pair.getValue());
                         break;
                     }
                     case INVALID_USER: {

@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyPlaylistPage {
-    static void show(Stage stage, User user) {
+class MyPlaylistPage {
+    static void show(Stage stage, SongPlayer player, User user) {
 
         ObservableList<Song> songs = FXCollections.observableArrayList();
         if (user.getUserPlaylists().size() > 0) {
@@ -41,23 +41,22 @@ public class MyPlaylistPage {
 
         final var label = new Text("Playlists of " + user.username);
         var btMainPage = new Button("Search songs");
-        btMainPage.setOnAction(e -> MainPage.show(stage, user));
+        btMainPage.setOnAction(e -> MainPage.show(stage, player, user));
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
         var line = new HBox(label, btMainPage);
         line.setSpacing(30.0);
 
-        List<String> pls = new ArrayList<>();
-        Map<String, Playlist> map = new HashMap<>();
+        var obv = FXCollections.<String>observableArrayList();
+        // var map = new HashMap<String, Playlist>();
 
         for (Playlist pl : user.getUserPlaylists()) {
-            pls.add(pl.getName());
-            map.put(pl.getName(), pl);
+            obv.add(pl.getName());
+            // map.put(pl.getName(), pl);
         }
 
-        ComboBox cbMyPlaylist = new ComboBox<>();
-        cbMyPlaylist.getItems().addAll(pls);
+        var cbMyPlaylist = new ComboBox<>(obv);
 
-        cbMyPlaylist.setValue((pls.isEmpty()) ? "" : pls.get(0));
+        cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
         cbMyPlaylist.setOnAction(e -> {
             for (Playlist pl : user.getUserPlaylists()) {
                 if (pl.getName().equals(cbMyPlaylist.getValue())) {
@@ -66,6 +65,7 @@ public class MyPlaylistPage {
             }
             table.setItems(songs);
         });
+
         final var col = new VBox(line, cbMyPlaylist, table);
         col.setSpacing(10.0);
         col.setPadding(new Insets(25.0));

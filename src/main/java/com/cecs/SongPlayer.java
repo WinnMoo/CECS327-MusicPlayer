@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 
-public class SongPlayer {
+class SongPlayer {
     private Player player;
     private CECS327InputStream is;
     private String currentSong;
@@ -38,26 +38,12 @@ public class SongPlayer {
                 is = new CECS327InputStream(filename);
                 player = new Player(is);
                 totalFrames = pollLength();
-                thread_music = new Thread(() -> {
-                    try {
-                        player.play();
-                    } catch (JavaLayerException e) {
-                        e.printStackTrace();
-                    }
-                });
-                thread_music.start();
+                playMusic();
                 currentSong = filename;
             } else {
                 stopMusic();
                 player = new Player(is);
-                thread_music = new Thread(() -> {
-                    try {
-                        player.play();
-                    } catch (JavaLayerException e) {
-                        e.printStackTrace();
-                    }
-                });
-                thread_music.start();
+                playMusic();
             }
         } catch (JavaLayerException e) {
             e.printStackTrace();
@@ -79,17 +65,8 @@ public class SongPlayer {
             is = new CECS327InputStream(currentSong);
             player = new Player(is);
             is.skip(marker);
-            thread_music = new Thread(() -> {
-                try {
-                    player.play();
-                } catch (JavaLayerException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread_music.start();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (JavaLayerException e) {
+            playMusic();
+        } catch (IOException | JavaLayerException e) {
             e.printStackTrace();
         }
     }
@@ -146,5 +123,16 @@ public class SongPlayer {
     private void stopMusic() {
         player.close();
         thread_music.interrupt();
+    }
+
+    private void playMusic() {
+        thread_music = new Thread(() -> {
+            try {
+                player.play();
+            } catch (JavaLayerException e) {
+                e.printStackTrace();
+            }
+        });
+        thread_music.start();
     }
 }

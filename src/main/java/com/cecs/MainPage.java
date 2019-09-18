@@ -29,10 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 class MainPage {
-    static void show(Stage stage, User user) {
-        // Initialize Song Player service
-        SongPlayer player = new SongPlayer();
-
+    static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
         var viewAll = new MenuItem("View All");
         viewAll.setOnAction(action -> {
@@ -305,7 +302,7 @@ class MainPage {
         borderPane.setBottom(controlButtonRow);
         // col.setPadding(new Insets(25.0));
         // Go to MyPlaylistPage
-        myPlaylist.setOnAction(actionEvent -> MyPlaylistPage.show(stage, user));
+        myPlaylist.setOnAction(e -> MyPlaylistPage.show(stage, player, user));
         final var scene = new Scene(borderPane, 800, 600);
 
         
