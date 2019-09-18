@@ -81,7 +81,8 @@ class JsonService {
 
         // Check if login user is in JSON file
         for (var user : users) {
-            if (user.getUsername().equalsIgnoreCase(loginUser.getUsername()) && user.getPassword().equals(loginUser.getPassword())) {
+            if (user.getUsername().equalsIgnoreCase(loginUser.getUsername())
+                    && user.getPassword().equals(loginUser.getPassword())) {
                 loginUser.setUserPlaylists(user.getUserPlaylists());
                 return loginUser;
             }
@@ -113,7 +114,7 @@ class JsonService {
     static ObservableList<Music> loadDatabase() {
         var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
         var musics = new GsonBuilder().create().fromJson(reader, Music[].class);
-        for(Music music : musics){
+        for (Music music : musics) {
             music.getSong().setArtist(music.getArtist().getName());
         }
         return FXCollections.observableArrayList(musics);
@@ -122,19 +123,12 @@ class JsonService {
     static List<Playlist> loadPlaylistFromUsername(String username) throws IOException {
         List<Playlist> ret = new ArrayList<>();
         var gson = new GsonBuilder().setPrettyPrinting().create();
-        var file = new File("users.json");
-        if (!file.exists()) {
-            return ret;
-        }
-
-        // Load  Users from user file
-        var reader = new FileReader(file, StandardCharsets.UTF_8);
-        var users = gson.fromJson(reader, User[].class);
+        var users = loadUsers(gson);
 
         if (users != null) {
             // find user' playlist
             for (var user : users) {
-                if (user.getUsername().equals(username)) {
+                if (user.getUsername().equalsIgnoreCase(username)) {
                     ret = user.getUserPlaylists();
                     break;
                 }
@@ -143,7 +137,7 @@ class JsonService {
         return ret;
     }
 
-    static boolean updateUser(User newUser) throws IOException{
+    static boolean updateUser(User newUser) throws IOException {
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var file = new File("users.json");
         if (!file.exists()) {
@@ -156,7 +150,6 @@ class JsonService {
         if (users == null) {
             return false;
         } else {
-
 
             for (var user : users) {
                 if (newUser.username.equalsIgnoreCase(user.username)) {
@@ -174,7 +167,6 @@ class JsonService {
         writer.close();
         return true;
     }
-
 
     /**
      * Loads the users.json file into the program.

@@ -18,12 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 public class MyPlaylistPage {
-    static void show(Stage stage, User user){
+    static void show(Stage stage, User user) {
 
         ObservableList<Song> songs = FXCollections.observableArrayList();
-        songs.addAll(user.getUserPlaylists().get(0).getSongs());
+        if (user.getUserPlaylists().size() > 0) {
+            songs.addAll(user.getUserPlaylists().get(0).getSongs());
+        }
 
-        //Columns
+        // Columns
         TableColumn<Song, String> titleCol = new TableColumn<>("Title");
         titleCol.setMinWidth(200);
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -47,7 +49,7 @@ public class MyPlaylistPage {
         List<String> pls = new ArrayList<>();
         Map<String, Playlist> map = new HashMap<>();
 
-        for(Playlist pl: user.getUserPlaylists()){
+        for (Playlist pl : user.getUserPlaylists()) {
             pls.add(pl.getName());
             map.put(pl.getName(), pl);
         }
@@ -57,8 +59,8 @@ public class MyPlaylistPage {
 
         cbMyPlaylist.setValue((pls.isEmpty()) ? "" : pls.get(0));
         cbMyPlaylist.setOnAction(e -> {
-            for(Playlist pl : user.getUserPlaylists()){
-                if(pl.getName().equals(cbMyPlaylist.getValue())){
+            for (Playlist pl : user.getUserPlaylists()) {
+                if (pl.getName().equals(cbMyPlaylist.getValue())) {
                     songs.setAll(pl.getSongs());
                 }
             }

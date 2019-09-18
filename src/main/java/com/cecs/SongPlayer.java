@@ -4,14 +4,13 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 
 public class SongPlayer {
     private Player player;
-    private InputStream is;
+    private CECS327InputStream is;
     private String currentSong;
     private int pausedFrame;
     private int totalFrames;
@@ -79,7 +78,7 @@ public class SongPlayer {
         try {
             is = new CECS327InputStream(currentSong);
             player = new Player(is);
-            is.skipNBytes(marker);
+            is.skip(marker);
             thread_music = new Thread(() -> {
                 try {
                     player.play();
