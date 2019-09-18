@@ -6,6 +6,10 @@ public class Playlist {
     private String name;
     private ArrayList<Song> songs;
 
+    public Playlist() {
+        this.name = "";
+        this.songs = new ArrayList<>();
+    }
     public Playlist(String name, ArrayList<Song> songs) {
         this.name = name;
         this.songs = songs;

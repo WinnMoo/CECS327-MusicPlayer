@@ -6,7 +6,7 @@ import java.util.Random;
 public class User {
     String username;
     private String password;
-    public ArrayList<Playlist> userPlaylists;
+    private ArrayList<Playlist> userPlaylists;
 
     @Deprecated
     public User(String pass) {
@@ -22,6 +22,36 @@ public class User {
         this.username = name;
         this.password = pass;
         this.userPlaylists = new ArrayList<Playlist>();
+    }
+
+    public Boolean containsPlaylist(String playlistName){
+        for(Playlist playlist : userPlaylists){
+            if(playlist.getName().equals(playlistName)) return true;
+        }
+        return false;
+    }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public ArrayList<Playlist> getUserPlaylists() {
+        return userPlaylists;
+    }
+
+    public void setUserPlaylists(ArrayList<Playlist> userPlaylists) {
+        this.userPlaylists = userPlaylists;
     }
 
     public void changeUsername(String newUsername) {

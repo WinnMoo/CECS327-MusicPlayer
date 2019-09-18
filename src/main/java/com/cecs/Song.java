@@ -24,6 +24,7 @@ public class Song {
     private String mode;
     private String time_signature;
     private String loudness;
+    private String artist;
 
     public Song(String key, String mode_confidence, String artist_mbtags_count, String key_confidence,
             String tatums_start, String year, String duration, String hotttnesss, String beats_start,
@@ -53,6 +54,14 @@ public class Song {
         this.mode = mode;
         this.time_signature = time_signature;
         this.loudness = loudness;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public String getKey() {

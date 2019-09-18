@@ -1,5 +1,7 @@
 package com.cecs;
 
+import java.io.IOException;
+
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,10 +13,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 class LoginPage {
     enum LoginCode {
-        SUCCESS, INVALID_USER, INVALID_PASS,
+        SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
     static void show(Stage stage) {
@@ -50,21 +53,24 @@ class LoginPage {
         createAccLink.setOnAction(action -> CreateAccountPage.showAndWait(stage));
 
         loginButton.setOnAction(action -> {
-            var u = userField.getText();
-            var p = passField.getText();
-            Flowable.fromCallable(() -> authenticate(u, p)).subscribe(code -> {
-                switch (code) {
-                case SUCCESS: {
-                    MainPage.show(stage, new User(u, p));
-                    break;
-                }
-                case INVALID_USER: {
-                    errorMessage.setText("Username cannot be blank");
-                    break;
-                }
-                case INVALID_PASS: {
-                    errorMessage.setText("Password cannot be blank");
-                }
+            Flowable.fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
+                switch (pair.getKey()) {
+                    case SUCCESS: {
+                        MainPage.show(stage, pair.getValue());
+                        break;
+                    }
+                    case INVALID_USER: {
+                        errorMessage.setText("Username cannot be blank");
+                        break;
+                    }
+                    case INVALID_PASS: {
+                        errorMessage.setText("Password cannot be blank");
+                        break;
+                    }
+                    case INCORRECT_CREDENTIALS: {
+                        errorMessage.setText("Incorrect username or password");
+                        break;
+                    }
                 }
             }, error -> {
                 System.err.println("An error has occurred.\n");
@@ -97,11 +103,19 @@ class LoginPage {
         stage.show();
     }
 
-    private static LoginCode authenticate(String user, String pass) {
-        if (user.isBlank())
-            return LoginCode.INVALID_USER;
-        if (pass.isBlank())
-            return LoginCode.INVALID_PASS;
-        return LoginCode.SUCCESS;
+    private static Pair<LoginCode, User> authenticate(String name, String pass) throws IOException {
+        User user = null;
+        var code = LoginCode.SUCCESS;
+        if (name.isBlank()) {
+            code = LoginCode.INVALID_USER;
+        } else if (pass.isBlank()) {
+            code = LoginCode.INVALID_PASS;
+        } else {
+            user = JsonService.login(name, pass);
+            if (user == null) {
+                code = LoginCode.INCORRECT_CREDENTIALS;
+            }
+        }
+        return new Pair<>(code, user);
     }
 }

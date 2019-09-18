@@ -1,42 +1,90 @@
 package com.cecs;
 
 import io.reactivex.Flowable;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import javafx.util.Callback;
 
 import javafx.event.ActionEvent;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 class MainPage {
     static void show(Stage stage, User user) {
-        int songIndex = 0;
 
+
+        /*Menu MainMenu = new Menu("All Songs");
+        Menu PlaylistMenu = new Menu("Playlists");
+        Menu ProfileMenu = new Menu("User Profile");
+        Menu SettingsMenu = new Menu("Settings");
+
+        //Main Menu
+        Button mainpageButton = new Button("View All");
+        CustomMenuItem customMenuItem_Main = new CustomMenuItem();
+        customMenuItem_Main.setContent(mainpageButton);
+        customMenuItem_Main.setHideOnClick(false);
+        MainMenu.getItems().add(customMenuItem_Main);
+
+        //Main Menu
+        Button PlaylistMenuButton = new Button("View All");
+        CustomMenuItem playlistItem = new CustomMenuItem();
+        playlistItem.setContent(PlaylistMenuButton);
+        playlistItem.setHideOnClick(false);
+        PlaylistMenu.getItems().add(playlistItem);
+
+
+        //Settings Menu Items
+        Slider slider = new Slider(0, 100, 50);
+        CustomMenuItem customMenuItem = new CustomMenuItem();
+        customMenuItem.setContent(slider);
+        customMenuItem.setHideOnClick(false);
+        SettingsMenu.getItems().add(customMenuItem);
+
+        Button customButton = new Button("Custom Menu Item Button");
+        CustomMenuItem customMenuItem2 = new CustomMenuItem();
+        customMenuItem2.setContent(customButton);
+        customMenuItem2.setHideOnClick(false);
+        SettingsMenu.getItems().add(customMenuItem2);
+
+        MainMenu.getItems().add(customMenuItem_Main);
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().add(MainMenu);
+        menuBar.getMenus().add(PlaylistMenu);
+        menuBar.getMenus().add(ProfileMenu);
+        menuBar.getMenus().add(SettingsMenu);
+
+        menuBar.prefWidthProperty().bind(stage.widthProperty());*/
+
+
+        SongPlayer player = new SongPlayer();
         var listOfMusic = FXCollections.<Music>observableArrayList();
         Flowable.fromCallable(JsonService::loadDatabase).subscribe(listOfMusic::addAll, Throwable::printStackTrace);
-
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
-        var playbackSlider  = new Slider();
-        var playButton = new Button("|>");
-        var nextSongButton = new Button(">>");
-        var prevSongButton = new Button("<<");
+        var myPlaylist = new Button("My Playlist");
 
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
@@ -48,9 +96,25 @@ class MainPage {
         var list = new FilteredList<>(listOfMusic, m -> true);
         var table = new TableView<>(list);
 
-        // add Add Playlist button
         TableColumn<Music, Void> colBtn = new TableColumn("Add to Playlist");
 
+        List<String> pls = new ArrayList<>();
+        Map<String, Playlist> map = new HashMap<>();
+
+        for(Playlist pl: user.getUserPlaylists()){
+            pls.add(pl.getName());
+            map.put(pl.getName(), pl);
+
+        }
+
+        //ObservableList<String> playlists = FXCollections.observableArrayList(pls);
+        ComboBox cbMyPlaylist = new ComboBox<>();
+        cbMyPlaylist.getItems().addAll(pls);
+
+        cbMyPlaylist.setEditable(true);
+        cbMyPlaylist.setValue((pls.isEmpty()) ? "" : pls.get(0));
+
+        // Create Add Playlist button
         Callback<TableColumn<Music, Void>, TableCell<Music, Void>> btnCellFact = new Callback<TableColumn<Music, Void>, TableCell<Music, Void>>() {
             @Override
             public TableCell<Music, Void> call(final TableColumn<Music, Void> param) {
@@ -60,7 +124,28 @@ class MainPage {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Music music = getTableView().getItems().get(getIndex());
-                            System.out.println("selected song: " + music.getSong().getId());
+                            Song song =  music.getSong();
+                            String plName = (String) cbMyPlaylist.getValue();
+                            if(user.containsPlaylist(plName)){
+                                for(Playlist pl : user.getUserPlaylists()){
+                                    if(pl.getName().equals(plName))
+                                        pl.addSong(song);
+                                }
+                            }
+                            else {
+                                Playlist pl = new Playlist();
+                                pl.setName(plName);
+                                pl.addSong(song);
+                                user.getUserPlaylists().add(pl);
+                                pls.add(plName);
+                                cbMyPlaylist.getItems().add(plName);
+                            }
+                            try {
+                                JsonService.updateUser(user);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
                         });
                     }
 
@@ -80,45 +165,8 @@ class MainPage {
 
         colBtn.setCellFactory(btnCellFact);
 
-        // Playlists ComboBox
-        TableColumn<Music, Playlist> colCob = new TableColumn("My Playlists");
-        ObservableList<Playlist> playlists = FXCollections.observableArrayList(user.userPlaylists);
-        colCob.setCellValueFactory(new Callback<>() {
-            @Override
-            public ObservableValue<Playlist> call(TableColumn.CellDataFeatures<Music, Playlist> userVoidCellDataFeatures) {
-
-                Playlist playlist = null;
-                String playlistName;
-                if(!user.userPlaylists.isEmpty()) {
-                    playlist = user.userPlaylists.get(0);
-                    playlistName = playlist.getName();
-                }
-
-                return new SimpleObjectProperty<>(playlist);
-            }
-        });
-        colCob.setCellFactory(tableCol -> {
-            ComboBoxTableCell<Music, Playlist> ct = new ComboBoxTableCell<>();
-            ct.getItems().addAll(user.userPlaylists);
-            ct.setComboBoxEditable(true);
-
-            return ct;
-        });
-        /*
-
-        colCob.setCellFactory(ComboBoxTableCell.forTableColumn(playlists));
-
-        colCob.setOnEditCommit((TableColumn.CellEditEvent<Music, Playlist> event) -> {
-            TablePosition<Music, Playlist> pos = event.getTablePosition();
-
-            int row = pos.getRow();
-
-        });*/
-
-       // colCob.setMinWidth(120);
-
         table.setEditable(true);
-        table.getColumns().addAll(songs, releases, artists, colCob, colBtn);
+        table.getColumns().addAll(songs, releases, artists, colBtn);
 
         var searchBar = new TextField();
         searchBar.setPromptText("Search for artist, release, or song...");
@@ -131,45 +179,105 @@ class MainPage {
             });
         });
 
-        prevSongButton.setOnAction(action -> {
-            int currentIndex = table.getSelectionModel().getSelectedIndex();
-            int prevIndex = currentIndex - 1;
-            var song = table.getItems().get(prevIndex);
-            stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            //SongPlayer.playSong(song.getSong().getId() + ".mp3");
+        var playbackSlider = new Slider();
+        playbackSlider.setDisable(true);
+        playbackSlider.setOnMouseReleased(it -> {
+            player.unblockUpdates();
+            player.updateTrack(playbackSlider.getValue());
         });
+        playbackSlider.setOnMouseDragged(it -> {
+            player.blockUpdates();
+        });
+        player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
+        var playButton = new Button("▶");
+        playButton.setDisable(true);
         playButton.setOnAction(action -> {
-            try {
+            if (playButton.getText().equals("▶")) { // lol
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                SongPlayer.playSong(song.getSong().getId() + ".mp3");
-            } catch(NullPointerException e) { // Catch for case when there's no selected item
-                var song = table.getItems().get(songIndex);
-                stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                SongPlayer.playSong(song.getSong().getId() + ".mp3");
+                player.playSong(song.getSong().getId() + ".mp3");
+                playButton.setText("⏸");
+                playbackSlider.setDisable(false);
+            } else {
+                player.pauseSong();
+                stage.setTitle("Music Player 1.0");
+                playButton.setText("▶");
             }
         });
 
-        nextSongButton.setOnAction(action -> {
-            int currentIndex = table.getSelectionModel().getSelectedIndex();
-            int nextIndex = currentIndex + 1;
-            var song = table.getItems().get(nextIndex);
+        var prevSongButton = new Button("⏮");
+        prevSongButton.setDisable(true);
+        prevSongButton.setOnAction(action -> {
+            table.getSelectionModel().selectPrevious();
+            var song = table.getSelectionModel().getSelectedItem();
             stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-            //SongPlayer.playSong(song.getSong().getId());
+            player.playSong(song.getSong().getId() + ".mp3");
+            playButton.setText("⏸");
+        });
+
+        var nextSongButton = new Button("⏭");
+        nextSongButton.setDisable(true);
+        nextSongButton.setOnAction(action -> {
+            table.getSelectionModel().selectNext();
+            var song = table.getSelectionModel().getSelectedItem();
+            stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
+            player.playSong(song.getSong().getId() + ".mp3");
+            playButton.setText("⏸");
+        });
+
+        table.getSelectionModel().selectedItemProperty().addListener((_0, _1, newSelection) -> {
+            if (newSelection == null) {
+                prevSongButton.setDisable(true);
+                playButton.setDisable(true);
+                nextSongButton.setDisable(true);
+            } else {
+                var currentIndex = table.getSelectionModel().getSelectedIndex();
+                var prevDisabled = currentIndex == 0;
+                var nextDisabled = currentIndex == table.getItems().size() - 1;
+
+                if (player.nowPlaying() != null) {
+                    if (!player.nowPlaying().equals(newSelection.getSong().getId() + ".mp3")) {
+                        playButton.setText("▶");
+                    } else {
+                        playButton.setText("⏸");
+                    }
+                } else {
+                    prevDisabled = true;
+                    nextDisabled = true;
+                }
+
+                prevSongButton.setDisable(prevDisabled);
+                playButton.setDisable(false);
+                nextSongButton.setDisable(nextDisabled);
+            }
         });
 
         var controlButtonRow = new BorderPane();
         controlButtonRow.setLeft(prevSongButton);
         controlButtonRow.setCenter(playButton);
         controlButtonRow.setRight(nextSongButton);
-        controlButtonRow.setMaxWidth(250.0);
+        controlButtonRow.setMaxWidth(750.0);
 
-        final var col = new VBox(label, searchBar, table, playbackSlider, controlButtonRow);
+        var headline = new HBox(label, myPlaylist);
+        headline.setSpacing(30.0);
+
+        VBox vbox = new VBox();
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(25,25,25,25));
+        vbox.getChildren().add(headline);
+        vbox.getChildren().add(cbMyPlaylist);
+        vbox.getChildren().add(searchBar);
+        vbox.getChildren().add(table);
+        vbox.getChildren().add(playbackSlider);
+
+        final var col = new VBox(vbox, controlButtonRow);
+
+        // Go to MyPlaylistPage
+        myPlaylist.setOnAction(actionEvent -> MyPlaylistPage.show(stage, user));
+
         col.setSpacing(10.0);
-        col.setPadding(new Insets(25.0));
         final var scene = new Scene(col, 800, 600);
-
         stage.setScene(scene);
         stage.show();
     }
