@@ -4,7 +4,6 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
