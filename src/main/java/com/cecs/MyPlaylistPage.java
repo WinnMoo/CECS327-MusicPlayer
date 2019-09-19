@@ -56,9 +56,6 @@ class MyPlaylistPage {
         var label = new Text("Playlists of " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
-        var btMainPage = new Button("Search songs");
-        btMainPage.setOnAction(e -> MainPage.show(stage, player, user));
-
         ObservableList<Song> songs = FXCollections.observableArrayList();
         if (user.getUserPlaylists().size() > 0) {
             songs.addAll(user.getUserPlaylists().get(0).getSongs());
@@ -138,7 +135,7 @@ class MyPlaylistPage {
 
         });
 
-        var line = new HBox(cbMyPlaylist, btDelete, btMainPage);
+        var line = new HBox(cbMyPlaylist, btDelete);
         line.setSpacing(20.0);
 
         // Track slider, controls when to stop/continue track updates

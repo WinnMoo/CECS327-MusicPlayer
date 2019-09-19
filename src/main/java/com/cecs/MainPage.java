@@ -62,10 +62,6 @@ class MainPage {
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
-        // Go to MyPlaylistPage
-        var myPlaylistButton = new Button("My Playlists");
-        myPlaylistButton.setOnAction(e -> MyPlaylistPage.show(stage, player, user));
-
         // Create list of Playlist's name for comboBox cbMyPlaylist
         var obv = FXCollections.<String>observableArrayList();
         for (Playlist pl : user.getUserPlaylists()) {
@@ -196,7 +192,7 @@ class MainPage {
         searchBar.prefWidthProperty().bind(Bindings.divide(stage.widthProperty(), 2));
 
         // De-clutter bottom of track slider
-        var searchRow = new HBox(searchBar, myPlaylistButton, cbMyPlaylist);
+        var searchRow = new HBox(searchBar, cbMyPlaylist);
         searchRow.setSpacing(10.0);
 
         // Track slider, controls when to stop/continue track updates
