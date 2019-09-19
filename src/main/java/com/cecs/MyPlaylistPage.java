@@ -18,6 +18,41 @@ import java.io.IOException;
 
 class MyPlaylistPage {
     static void show(Stage stage, SongPlayer player, User user) {
+        // Main Menu
+        var viewAll = new MenuItem("View All");
+        viewAll.setOnAction(action -> {
+            System.out.println("View all selected");
+            MainPage.show(stage, player, user);
+        });
+        var mainMenu = new Menu("All Songs", null, viewAll);
+
+        // Playlist Menu
+        var playlistItem = new MenuItem("Go to Playlists");
+        playlistItem.setOnAction(action -> {
+            MyPlaylistPage.show(stage, player, user);
+        });
+        var playlistMenu = new Menu("Playlists", null, playlistItem);
+
+        // Profile Menu
+        var profileMenu = new Menu("User Profile");
+
+        // Settings Menu Items
+        var menuSlider = new Slider(0, 100, 50);
+        var customMenuItem = new CustomMenuItem();
+        customMenuItem.setContent(menuSlider);
+        customMenuItem.setHideOnClick(false);
+        var otherSettingItem = new MenuItem("Other Settings Item");
+        otherSettingItem.setOnAction(action -> {
+            System.out.println("Other setting selected");
+            // TODO: Functionality, use your imagination.
+        });
+        var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
+
+        // Menu Bar
+        var menuBar = new MenuBar(mainMenu, playlistMenu, profileMenu, settingsMenu);
+
+
+
         var label = new Text("Playlists of " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
@@ -186,10 +221,15 @@ class MyPlaylistPage {
         controlButtonRow.setCenter(playButton);
         controlButtonRow.setRight(nextSongButton);
 
-        final var col = new VBox(label, line, table, playbackSlider, controlButtonRow);
+        final var borderpane = new BorderPane();
+        borderpane.setTop(menuBar);
+
+        final var col = new VBox(label, line, table, playbackSlider);
+        borderpane.setCenter(col);
+        borderpane.setBottom(controlButtonRow);
         col.setSpacing(10.0);
         col.setPadding(new Insets(25.0));
-        final var scene = new Scene(col, 800, 600);
+        final var scene = new Scene(borderpane, 800, 600);
         stage.setScene(scene);
         stage.show();
     }

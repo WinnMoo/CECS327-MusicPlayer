@@ -28,14 +28,14 @@ class MainPage {
         var viewAll = new MenuItem("View All");
         viewAll.setOnAction(action -> {
             System.out.println("View all selected");
-            // TODO: Functionality, use your imagination.
+            MainPage.show(stage, player, user);
         });
         var mainMenu = new Menu("All Songs", null, viewAll);
 
         // Playlist Menu
         var playlistItem = new MenuItem("Go to Playlists");
         playlistItem.setOnAction(action -> {
-            PlaylistPage.show(stage, user);
+            MyPlaylistPage.show(stage, player, user);
         });
         var playlistMenu = new Menu("Playlists", null, playlistItem);
 
