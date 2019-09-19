@@ -64,6 +64,13 @@ public class User implements Comparable<User> {
         return this.userPlaylists.remove((playlistToRemove));
     }
 
+    public Playlist findPlaylistByName(String name){
+        for(Playlist playlist : userPlaylists){
+            if(playlist.getName().equals(name)) return playlist;
+        }
+        return null;
+    }
+
     // I suggest naming this logout
     public void deleteUser() {
         this.username = null;

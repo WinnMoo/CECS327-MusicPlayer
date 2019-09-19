@@ -2,9 +2,9 @@ package com.cecs;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-//import javafx.scene.control.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import java.io.IOException;
 
 class MyPlaylistPage {
     static void show(Stage stage, SongPlayer player, User user) {
@@ -28,6 +29,13 @@ class MyPlaylistPage {
             songs.addAll(user.getUserPlaylists().get(0).getSongs());
         }
 
+        var obv = FXCollections.<String>observableArrayList();
+
+        for (Playlist pl : user.getUserPlaylists()) {
+            obv.add(pl.getName());
+        }
+        var cbMyPlaylist = new ComboBox<>(obv);
+        TableView<Song> table = new TableView<>(songs);
         // Columns
         TableColumn<Song, String> titleCol = new TableColumn<>("Title");
         titleCol.setMinWidth(200);
@@ -37,19 +45,42 @@ class MyPlaylistPage {
         artistCol.setMinWidth(200);
         artistCol.setCellValueFactory(new PropertyValueFactory<>("artist"));
 
-        TableView<Song> table = new TableView<>(songs);
+        var colBtDelete = new TableColumn<Song, Void>("Delete Song");
+        colBtDelete.setCellFactory((TableColumn<Song, Void> features) -> new TableCell<>() {
+
+            private final Button btn = new Button("Delete" );
+            {
+                btn.setOnAction((ActionEvent event) -> {
+                    Song song = getTableView().getItems().get(getIndex());
+                    songs.remove(song);
+                    table.setItems(songs);
+
+                    user.findPlaylistByName(cbMyPlaylist.getValue()).removeSong(song);
+                    try {
+                        JsonService.updateUser(user);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            @Override
+            public void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btn);
+                }
+            }
+        });
+
         table.setEditable(true);
-        table.getColumns().addAll(titleCol, artistCol);
+        table.getColumns().addAll(titleCol, artistCol, colBtDelete);
 
-        var obv = FXCollections.<String>observableArrayList();
-
-        for (Playlist pl : user.getUserPlaylists()) {
-            obv.add(pl.getName());
-        }
-
-        var cbMyPlaylist = new ComboBox<>(obv);
         cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
         cbMyPlaylist.setOnAction(e -> {
+            songs.clear();
             for (Playlist pl : user.getUserPlaylists()) {
                 if (pl.getName().equals(cbMyPlaylist.getValue())) {
                     songs.setAll(pl.getSongs());
@@ -58,8 +89,22 @@ class MyPlaylistPage {
             table.setItems(songs);
         });
 
-        var line = new HBox(cbMyPlaylist, btMainPage);
-        line.setSpacing(10.0);
+        var btDelete = new Button("Delete");
+        btDelete.setOnAction(e -> {
+            user.deletePlaylist(user.findPlaylistByName(cbMyPlaylist.getValue()));
+            obv.remove(cbMyPlaylist.getValue());
+            cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
+
+            try {
+                JsonService.updateUser(user);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        });
+
+        var line = new HBox(cbMyPlaylist, btDelete, btMainPage);
+        line.setSpacing(20.0);
 
         // Track slider, controls when to stop/continue track updates
         var playbackSlider = new Slider();
@@ -147,6 +192,5 @@ class MyPlaylistPage {
         final var scene = new Scene(col, 800, 600);
         stage.setScene(scene);
         stage.show();
-
     }
 }

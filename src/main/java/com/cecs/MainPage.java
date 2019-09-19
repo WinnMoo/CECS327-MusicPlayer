@@ -105,7 +105,8 @@ class MainPage {
                                 }
                             } else {
                                 Playlist pl = new Playlist(plName, new ArrayList<>(List.of(song)));
-                                user.getUserPlaylists().add(pl);
+                                //user.getUserPlaylists().add(pl);
+                                user.addNewPlaylist(pl);
                                 obv.add(plName);
                                 //cbMyPlaylist.getItems().add(plName);
                             }
