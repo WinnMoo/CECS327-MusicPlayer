@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+//import javafx.scene.control.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -13,10 +14,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 class MyPlaylistPage {
     static void show(Stage stage, SongPlayer player, User user) {
@@ -45,11 +42,9 @@ class MyPlaylistPage {
         table.getColumns().addAll(titleCol, artistCol);
 
         var obv = FXCollections.<String>observableArrayList();
-        // var map = new HashMap<String, Playlist>();
 
         for (Playlist pl : user.getUserPlaylists()) {
             obv.add(pl.getName());
-            // map.put(pl.getName(), pl);
         }
 
         var cbMyPlaylist = new ComboBox<>(obv);

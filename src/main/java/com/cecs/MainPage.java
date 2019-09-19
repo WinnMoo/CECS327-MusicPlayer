@@ -2,6 +2,8 @@ package com.cecs;
 
 import io.reactivex.Flowable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -11,19 +13,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class MainPage {
     static void show(Stage stage, SongPlayer player, User user) {
@@ -69,17 +66,69 @@ class MainPage {
         var myPlaylistButton = new Button("My Playlists");
         myPlaylistButton.setOnAction(e -> MyPlaylistPage.show(stage, player, user));
 
+        // Create list of Playlist's name for comboBox cbMyPlaylist
         var obv = FXCollections.<String>observableArrayList();
-        // var map = new HashMap<String, Playlist>();
-
         for (Playlist pl : user.getUserPlaylists()) {
             obv.add(pl.getName());
-            // map.put(pl.getName(), pl);
         }
 
+        // column Add Playlist button
+        var colBtn = new TableColumn<Music, Void>("Add to Playlist");
         var cbMyPlaylist = new ComboBox<>(obv);
-        cbMyPlaylist.setEditable(true);
-        cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
+        cbMyPlaylist.setEditable(true); // So, user can enter new playlist
+
+        // Setup comboBox
+        if(obv.isEmpty()){
+            cbMyPlaylist.setPromptText("Create new playlist here");
+        }else{
+            cbMyPlaylist.setValue( obv.get(0));
+        }
+
+        // Update button text when user change the playlist
+        cbMyPlaylist.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                //update button text with t1
+                colBtn.setCellFactory((TableColumn<Music, Void> features) -> new TableCell<>() {
+                    // Create Add Playlist button
+                    //String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
+                    private final Button btn = new Button("Add to " + t1);
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Music music = getTableView().getItems().get(getIndex());
+                            Song song = music.getSong();
+                            String plName = cbMyPlaylist.getValue();
+                            if (user.containsPlaylist(plName)) {
+                                for (Playlist pl : user.getUserPlaylists()) {
+                                    if (pl.getName().equals(plName))
+                                        pl.addSong(song);
+                                }
+                            } else {
+                                Playlist pl = new Playlist(plName, new ArrayList<>(List.of(song)));
+                                user.getUserPlaylists().add(pl);
+                                obv.add(plName);
+                                //cbMyPlaylist.getItems().add(plName);
+                            }
+                            try {
+                                JsonService.updateUser(user);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                });
+            }
+        });
 
         var songs = new TableColumn<Music, String>("Song");
         songs.setCellValueFactory(new PropertyValueFactory<>("song"));
@@ -87,10 +136,12 @@ class MainPage {
         releases.setCellValueFactory(new PropertyValueFactory<>("release"));
         var artists = new TableColumn<Music, String>("Artist");
         artists.setCellValueFactory(new PropertyValueFactory<>("artist"));
-        var colBtn = new TableColumn<Music, Void>("Add to Playlist");
+
+
         colBtn.setCellFactory((TableColumn<Music, Void> features) -> new TableCell<>() {
             // Create Add Playlist button
-            private final Button btn = new Button("Add");
+            String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
+            private final Button btn = new Button("Add to " + name);
             {
                 btn.setOnAction((ActionEvent event) -> {
                     Music music = getTableView().getItems().get(getIndex());
@@ -105,7 +156,7 @@ class MainPage {
                         Playlist pl = new Playlist(plName, new ArrayList<>(List.of(song)));
                         user.getUserPlaylists().add(pl);
                         obv.add(plName);
-                        cbMyPlaylist.getItems().add(plName);
+                        //cbMyPlaylist.getItems().add(plName);
                     }
                     try {
                         JsonService.updateUser(user);
@@ -237,7 +288,7 @@ class MainPage {
         borderPane.setTop(menuBar);
         borderPane.setCenter(vbox);
         borderPane.setBottom(controlButtonRow);
-        // col.setPadding(new Insets(25.0));
+
         final var scene = new Scene(borderPane, 800, 600);
 
         stage.setScene(scene);

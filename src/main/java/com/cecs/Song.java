@@ -30,7 +30,7 @@ public class Song {
             String tatums_start, String year, String duration, String hotttnesss, String beats_start,
             String time_signature_confidence, String title, String bars_confidence, String id, String bars_start,
             String artist_mbtags, String start_of_fade_out, String tempo, String end_of_fade_in,
-            String beats_confidence, String tatums_confidence, String mode, String time_signature, String loudness) {
+            String beats_confidence, String tatums_confidence, String mode, String time_signature, String loudness, String artist) {
         this.key = key;
         this.mode_confidence = mode_confidence;
         this.artist_mbtags_count = artist_mbtags_count;
@@ -54,6 +54,7 @@ public class Song {
         this.mode = mode;
         this.time_signature = time_signature;
         this.loudness = loudness;
+        this.artist = artist;
     }
 
     public String getArtist() {
