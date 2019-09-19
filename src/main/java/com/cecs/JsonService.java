@@ -79,15 +79,9 @@ class JsonService {
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
 
-        // Check if login user is in JSON file
-        for (var user : users) {
-            if (user.getUsername().equalsIgnoreCase(loginUser.getUsername())
-                    && user.getPassword().equals(loginUser.getPassword())) {
-                loginUser.setUserPlaylists(user.getUserPlaylists());
-                return loginUser;
-            }
-        }
-        return null;
+        return (users == null) ? null : Arrays.stream(users).filter(
+                it -> it.username.equalsIgnoreCase(loginUser.username) && it.password.equals(loginUser.password))
+                .findFirst().orElse(null);
     }
 
     // TODO: Create use-case for testing
@@ -120,22 +114,6 @@ class JsonService {
         return FXCollections.observableArrayList(musics);
     }
 
-    static List<Playlist> loadPlaylistFromUsername(String username) throws IOException {
-        List<Playlist> ret = new ArrayList<>();
-        var gson = new GsonBuilder().setPrettyPrinting().create();
-        var users = loadUsers(gson);
-
-        if (users != null) {
-            // find user' playlist
-            for (var user : users) {
-                if (user.getUsername().equalsIgnoreCase(username)) {
-                    ret = user.getUserPlaylists();
-                    break;
-                }
-            }
-        }
-        return ret;
-    }
 
     static boolean updateUser(User newUser) throws IOException {
         var gson = new GsonBuilder().setPrettyPrinting().create();
