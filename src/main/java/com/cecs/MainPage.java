@@ -149,7 +149,7 @@ class MainPage {
                                 pl.addSong(song);
                         }
                     } else {
-                        String name = (plName == null) ? "Playlist" :plName;
+                        String name = (plName == null) ? "Playlist" : plName;
                         Playlist pl = new Playlist(name, new ArrayList<>(List.of(song)));
                         user.getUserPlaylists().add(pl);
                         obv.add(name);
@@ -208,6 +208,9 @@ class MainPage {
         player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var playButton = new Button("▶");
+        var prevSongButton = new Button("⏮");
+        var nextSongButton = new Button("⏭");
+
         playButton.setDisable(true);
         playButton.setOnAction(action -> {
             if (playButton.getText().equals("▶")) { // lol
@@ -216,6 +219,14 @@ class MainPage {
                 player.playSong(song.getSong().getId() + ".mp3");
                 playButton.setText("⏸");
                 playbackSlider.setDisable(false);
+
+                var idx = table.getSelectionModel().getSelectedIndex();
+                if (Utils.canPlayPrev(idx)) {
+                    prevSongButton.setDisable(false);
+                }
+                if (Utils.canPlayNext(idx, table.getItems().size())) {
+                    nextSongButton.setDisable(false);
+                }
             } else {
                 player.pauseSong();
                 stage.setTitle("Music Player 1.0");
@@ -223,7 +234,6 @@ class MainPage {
             }
         });
 
-        var prevSongButton = new Button("⏮");
         prevSongButton.setDisable(true);
         prevSongButton.setOnAction(action -> {
             table.getSelectionModel().selectPrevious();
@@ -233,7 +243,6 @@ class MainPage {
             playButton.setText("⏸");
         });
 
-        var nextSongButton = new Button("⏭");
         nextSongButton.setDisable(true);
         nextSongButton.setOnAction(action -> {
             table.getSelectionModel().selectNext();
@@ -251,8 +260,8 @@ class MainPage {
                 nextSongButton.setDisable(true);
             } else {
                 var currentIndex = table.getSelectionModel().getSelectedIndex();
-                var prevDisabled = currentIndex == 0;
-                var nextDisabled = currentIndex == table.getItems().size() - 1; // Not tested yet
+                var prevDisabled = !Utils.canPlayPrev(currentIndex);
+                var nextDisabled = !Utils.canPlayNext(currentIndex, table.getItems().size());
 
                 if (player.nowPlaying() != null) {
                     if (!player.nowPlaying().equals(newSelection.getSong().getId() + ".mp3")) {
