@@ -51,8 +51,6 @@ class MyPlaylistPage {
         // Menu Bar
         var menuBar = new MenuBar(mainMenu, playlistMenu, profileMenu, settingsMenu);
 
-
-
         var label = new Text("Playlists of " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
@@ -80,7 +78,7 @@ class MyPlaylistPage {
         var colBtDelete = new TableColumn<Song, Void>("Delete Song");
         colBtDelete.setCellFactory((TableColumn<Song, Void> features) -> new TableCell<>() {
 
-            private final Button btn = new Button("Delete" );
+            private final Button btn = new Button("Delete");
             {
                 btn.setOnAction((ActionEvent event) -> {
                     Song song = getTableView().getItems().get(getIndex());
@@ -121,7 +119,7 @@ class MyPlaylistPage {
             table.setItems(songs);
         });
 
-        var btDelete = new Button("Delete");
+        var btDelete = new Button("Remove Playlist");
         btDelete.setOnAction(e -> {
             user.deletePlaylist(user.findPlaylistByName(cbMyPlaylist.getValue()));
             obv.remove(cbMyPlaylist.getValue());
@@ -217,6 +215,7 @@ class MyPlaylistPage {
         controlButtonRow.setLeft(prevSongButton);
         controlButtonRow.setCenter(playButton);
         controlButtonRow.setRight(nextSongButton);
+        controlButtonRow.setPadding(new Insets(20.0));
 
         final var borderpane = new BorderPane();
         borderpane.setTop(menuBar);
@@ -229,5 +228,8 @@ class MyPlaylistPage {
         final var scene = new Scene(borderpane, 800, 600);
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(close -> {
+            player.pauseSong();
+        });
     }
 }

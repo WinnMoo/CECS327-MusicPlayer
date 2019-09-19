@@ -74,20 +74,20 @@ class MainPage {
         cbMyPlaylist.setEditable(true); // So, user can enter new playlist
 
         // Setup comboBox
-        if(obv.isEmpty()){
+        if (obv.isEmpty()) {
             cbMyPlaylist.setPromptText("Create new playlist here");
-        }else{
-            cbMyPlaylist.setValue( obv.get(0));
+        } else {
+            cbMyPlaylist.setValue(obv.get(0));
         }
 
         // Update button text when user change the playlist
         cbMyPlaylist.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                //update button text with t1
+                // update button text with t1
                 colBtn.setCellFactory((TableColumn<Music, Void> features) -> new TableCell<>() {
                     // Create Add Playlist button
-                    //String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
+                    // String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
                     private final Button btn = new Button("Add to " + t1);
                     {
                         btn.setOnAction((ActionEvent event) -> {
@@ -101,10 +101,10 @@ class MainPage {
                                 }
                             } else {
                                 Playlist pl = new Playlist(plName, new ArrayList<>(List.of(song)));
-                                //user.getUserPlaylists().add(pl);
+                                // user.getUserPlaylists().add(pl);
                                 user.addNewPlaylist(pl);
                                 obv.add(plName);
-                                //cbMyPlaylist.getItems().add(plName);
+                                // cbMyPlaylist.getItems().add(plName);
                             }
                             try {
                                 JsonService.updateUser(user);
@@ -133,7 +133,6 @@ class MainPage {
         releases.setCellValueFactory(new PropertyValueFactory<>("release"));
         var artists = new TableColumn<Music, String>("Artist");
         artists.setCellValueFactory(new PropertyValueFactory<>("artist"));
-
 
         colBtn.setCellFactory((TableColumn<Music, Void> features) -> new TableCell<>() {
             // Create Add Playlist button
@@ -291,5 +290,8 @@ class MainPage {
 
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(close -> {
+            player.pauseSong();
+        });
     }
 }
