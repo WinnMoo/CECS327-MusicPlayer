@@ -150,10 +150,11 @@ class MainPage {
                                 pl.addSong(song);
                         }
                     } else {
-                        Playlist pl = new Playlist(plName, new ArrayList<>(List.of(song)));
+                        String name = (plName == null) ? "Playlist" :plName;
+                        Playlist pl = new Playlist(name, new ArrayList<>(List.of(song)));
                         user.getUserPlaylists().add(pl);
-                        obv.add(plName);
-                        //cbMyPlaylist.getItems().add(plName);
+                        obv.add(name);
+                        cbMyPlaylist.setValue(name);
                     }
                     try {
                         JsonService.updateUser(user);
