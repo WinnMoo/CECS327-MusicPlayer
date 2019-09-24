@@ -1,4 +1,4 @@
-package com.cecs;
+package com.cecs.model;
 
 import java.util.ArrayList;
 
@@ -10,6 +10,7 @@ public class Playlist {
         this.name = "";
         this.songs = new ArrayList<>();
     }
+
     public Playlist(String name, ArrayList<Song> songs) {
         this.name = name;
         this.songs = songs;
@@ -44,6 +45,5 @@ public class Playlist {
             songs.remove(0);
         }
     }
-
 
 }

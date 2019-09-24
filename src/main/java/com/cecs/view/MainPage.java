@@ -1,4 +1,4 @@
-package com.cecs;
+package com.cecs.view;
 
 import io.reactivex.Flowable;
 import javafx.beans.binding.Bindings;
@@ -22,8 +22,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class MainPage {
-    static void show(Stage stage, SongPlayer player, User user) {
+import com.cecs.controller.JsonService;
+import com.cecs.controller.SongPlayer;
+import com.cecs.controller.Utils;
+import com.cecs.model.Music;
+import com.cecs.model.Playlist;
+import com.cecs.model.Song;
+import com.cecs.model.User;
+
+public class MainPage {
+    public static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
         var viewAll = new MenuItem("View All");
         viewAll.setOnAction(action -> {

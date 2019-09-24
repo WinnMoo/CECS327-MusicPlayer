@@ -1,24 +1,26 @@
-package com.cecs;
+package com.cecs.model;
 
 import java.util.ArrayList;
 
 public class User implements Comparable<User> {
-    String username;
-    String password;
+    public String username;
+    public String password;
     public ArrayList<Playlist> userPlaylists;
 
-    User(String name, String pass) {
+    public User(String name, String pass) {
         this.username = name;
         this.password = pass;
         this.userPlaylists = new ArrayList<Playlist>();
     }
 
-    public Boolean containsPlaylist(String playlistName){
-        for(Playlist playlist : userPlaylists){
-            if(playlist.getName().equals(playlistName)) return true;
+    public Boolean containsPlaylist(String playlistName) {
+        for (Playlist playlist : userPlaylists) {
+            if (playlist.getName().equals(playlistName))
+                return true;
         }
         return false;
     }
+
     public String getUsername() {
         return username;
     }
@@ -64,9 +66,10 @@ public class User implements Comparable<User> {
         return this.userPlaylists.remove((playlistToRemove));
     }
 
-    public Playlist findPlaylistByName(String name){
-        for(Playlist playlist : userPlaylists){
-            if(playlist.getName().equals(name)) return playlist;
+    public Playlist findPlaylistByName(String name) {
+        for (Playlist playlist : userPlaylists) {
+            if (playlist.getName().equals(name))
+                return playlist;
         }
         return null;
     }

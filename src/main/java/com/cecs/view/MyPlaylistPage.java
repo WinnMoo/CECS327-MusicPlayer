@@ -1,4 +1,4 @@
-package com.cecs;
+package com.cecs.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +15,13 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
+
+import com.cecs.controller.JsonService;
+import com.cecs.controller.SongPlayer;
+import com.cecs.controller.Utils;
+import com.cecs.model.Playlist;
+import com.cecs.model.Song;
+import com.cecs.model.User;
 
 class MyPlaylistPage {
     static void show(Stage stage, SongPlayer player, User user) {

@@ -1,4 +1,4 @@
-package com.cecs;
+package com.cecs.controller;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.*;
@@ -8,17 +8,16 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 
-class SongPlayer {
+public class SongPlayer {
     private Player player;
     private CECS327InputStream is;
     private String currentSong;
-    private int pausedFrame;
     private int totalFrames;
     private Thread thread_music;
     private Observable<Double> trackObservable;
     private boolean updateLock;
 
-    SongPlayer() {
+    public SongPlayer() {
         player = null;
         currentSong = null;
         updateLock = false;
@@ -27,7 +26,7 @@ class SongPlayer {
                 .map(it -> trackByteToDouble(pollLength()));
     }
 
-    void playSong(String filename) {
+    public void playSong(String filename) {
         try {
             // If playing a new song, not just resuming
             if (currentSong == null || !currentSong.equals(filename)) {
@@ -55,7 +54,7 @@ class SongPlayer {
     /**
      * Reposition header of marker and resume song from that point
      */
-    void updateTrack(double percent) {
+    public void updateTrack(double percent) {
         long marker = trackDoubleToByte(percent);
         if (thread_music == null) {
             return;
@@ -79,7 +78,7 @@ class SongPlayer {
         return (int) (totalFrames * (percent / 100));
     }
 
-    void pauseSong() {
+    public void pauseSong() {
         if (currentSong == null) {
             return;
         }
@@ -100,19 +99,19 @@ class SongPlayer {
      * Returns an Observable that emits the percentage of the song completed at a
      * given point
      */
-    Observable<Double> getEvents() {
+    public Observable<Double> getEvents() {
         return trackObservable;
     }
 
-    void blockUpdates() {
+    public void blockUpdates() {
         updateLock = true;
     }
 
-    void unblockUpdates() {
+    public void unblockUpdates() {
         updateLock = false;
     }
 
-    String nowPlaying() {
+    public String nowPlaying() {
         return currentSong;
     }
 

@@ -1,4 +1,4 @@
-package com.cecs;
+package com.cecs.view;
 
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
@@ -17,6 +17,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
+import com.cecs.controller.JsonService;
 
 class CreateAccountPage {
     enum RegisterCode {
