@@ -27,17 +27,12 @@ class MyPlaylistPage {
     static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
         var viewAll = new MenuItem("View All");
-        viewAll.setOnAction(action -> {
-            System.out.println("View all selected");
-            MainPage.show(stage, player, user);
-        });
+        viewAll.setOnAction(action -> MainPage.show(stage, player, user));
         var mainMenu = new Menu("All Songs", null, viewAll);
 
         // Playlist Menu
         var playlistItem = new MenuItem("Go to Playlists");
-        playlistItem.setOnAction(action -> {
-            MyPlaylistPage.show(stage, player, user);
-        });
+        playlistItem.setOnAction(action -> MyPlaylistPage.show(stage, player, user));
         var playlistMenu = new Menu("Playlists", null, playlistItem);
 
         // Profile Menu
@@ -49,10 +44,7 @@ class MyPlaylistPage {
         customMenuItem.setContent(menuSlider);
         customMenuItem.setHideOnClick(false);
         var otherSettingItem = new MenuItem("Other Settings Item");
-        otherSettingItem.setOnAction(action -> {
-            System.out.println("Other setting selected");
-            // TODO: Functionality, use your imagination.
-        });
+        otherSettingItem.setOnAction(action -> System.out.println("Other setting selected"));
         var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
 
         // Menu Bar
