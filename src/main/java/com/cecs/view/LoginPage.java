@@ -1,6 +1,10 @@
-package com.cecs;
+package com.cecs.view;
 
 import java.io.IOException;
+
+import com.cecs.controller.JsonService;
+import com.cecs.controller.SongPlayer;
+import com.cecs.model.User;
 
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
@@ -15,12 +19,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-class LoginPage {
+public class LoginPage {
     enum LoginCode {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
-    static void show(Stage stage) {
+    public static void show(Stage stage) {
         var signIn = new Text("Sign In");
         signIn.setFont(new Font(null, 36.0));
 
@@ -56,7 +60,7 @@ class LoginPage {
             Flowable.fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
                 switch (pair.getKey()) {
                 case SUCCESS: {
-                    MainPage.show(stage, pair.getValue());
+                    MainPage.show(stage, new SongPlayer(), pair.getValue());
                     break;
                 }
                 case INVALID_USER: {

@@ -1,16 +1,10 @@
-package com.cecs;
-
-import java.io.IOException;
+package com.cecs.view;
 
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -21,6 +15,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+
+import com.cecs.controller.JsonService;
 
 class CreateAccountPage {
     enum RegisterCode {

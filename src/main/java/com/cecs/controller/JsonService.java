@@ -1,5 +1,8 @@
-package com.cecs;
+package com.cecs.controller;
 
+import com.cecs.App;
+import com.cecs.model.Music;
+import com.cecs.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.collections.FXCollections;
@@ -7,6 +10,7 @@ import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -15,7 +19,7 @@ import static java.util.Arrays.binarySearch;
 /**
  * Class that handles services needed by the Gson library
  */
-class JsonService {
+public class JsonService {
     /**
      * Function to create a new User and add the User to a JSON file
      *
@@ -25,7 +29,7 @@ class JsonService {
      *         the username already exists
      * @throws IOException If file could not be modified or created
      */
-    static boolean createAccount(String name, String pass) throws IOException {
+    public static boolean createAccount(String name, String pass) throws IOException {
         var newUser = new User(name, pass);
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
@@ -57,8 +61,6 @@ class JsonService {
         return true;
     }
 
-    // TODO: Create use-case for testing
-
     /**
      * Searches for user, and if found, returns deserialized object
      *
@@ -68,7 +70,7 @@ class JsonService {
      *         <code>null</code> otherwise
      * @throws IOException If file could not be modified or created
      */
-    static User login(String name, String pass) throws IOException {
+    public static User login(String name, String pass) throws IOException {
         var loginUser = new User(name, pass);
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
@@ -83,7 +85,7 @@ class JsonService {
     /*
      * Function to delete a User and update users lists in json file
      */
-    static void DeleteAccount(User userToDelete) throws IOException {
+    public static void DeleteAccount(User userToDelete) throws IOException {
         var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
         var newUsers = new User[users.length - 1];
@@ -100,10 +102,35 @@ class JsonService {
         writer.close();
     }
 
-    static ObservableList<Music> loadDatabase() {
-        var reader = new InputStreamReader(MainPage.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
+    public static ObservableList<Music> loadDatabase() {
+        var reader = new InputStreamReader(App.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
         var musics = new GsonBuilder().create().fromJson(reader, Music[].class);
+        for (Music music : musics) {
+            music.getSong().setArtist(music.getArtist().getName());
+        }
         return FXCollections.observableArrayList(musics);
+    }
+
+    public static boolean updateUser(User newUser) throws IOException {
+        var gson = new GsonBuilder().setPrettyPrinting().create();
+        var users = loadUsers(gson);
+
+        if (users == null) {
+            return false;
+        } else {
+            for (var user : users) {
+                if (newUser.username.equalsIgnoreCase(user.username)) {
+                    user.setUserPlaylists(newUser.getUserPlaylists());
+                    break;
+                }
+            }
+        }
+
+        var jsonUsers = gson.toJson(users);
+        var writer = new FileWriter("users.json");
+        writer.write(jsonUsers);
+        writer.close();
+        return true;
     }
 
     /**

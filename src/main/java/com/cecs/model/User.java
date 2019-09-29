@@ -1,16 +1,48 @@
-package com.cecs;
+package com.cecs.model;
 
 import java.util.ArrayList;
 
 public class User implements Comparable<User> {
-    String username;
-    String password;
+    public String username;
+    public String password;
     public ArrayList<Playlist> userPlaylists;
 
-    User(String name, String pass) {
+    public User(String name, String pass) {
         this.username = name;
         this.password = pass;
         this.userPlaylists = new ArrayList<Playlist>();
+    }
+
+    public Boolean containsPlaylist(String playlistName) {
+        for (Playlist playlist : userPlaylists) {
+            if (playlist.getName().equals(playlistName))
+                return true;
+        }
+        return false;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public ArrayList<Playlist> getUserPlaylists() {
+        return userPlaylists;
+    }
+
+    public void setUserPlaylists(ArrayList<Playlist> userPlaylists) {
+        this.userPlaylists = userPlaylists;
     }
 
     public void changeUsername(String newUsername) {
@@ -32,6 +64,14 @@ public class User implements Comparable<User> {
 
     public boolean deletePlaylist(Playlist playlistToRemove) {
         return this.userPlaylists.remove((playlistToRemove));
+    }
+
+    public Playlist findPlaylistByName(String name) {
+        for (Playlist playlist : userPlaylists) {
+            if (playlist.getName().equals(name))
+                return playlist;
+        }
+        return null;
     }
 
     // I suggest naming this logout
