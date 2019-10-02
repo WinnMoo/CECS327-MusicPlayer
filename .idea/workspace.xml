@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="" />
+    <list default="true" id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/CECS327InputStream2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/SongDispatcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cecs/def/DispatcherInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cecs/def/ProxyInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,6 +21,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -45,11 +56,16 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="add_unversioned_files" value="true" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.3816092" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.cecs" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -63,7 +79,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.AppTest.testDispatch">
     <configuration name="App" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="12" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -72,7 +88,7 @@
       <option name="VM_PARAMETERS" value="--module-path &quot;C:\javafx-sdk-12.0.2\lib&quot; --add-modules javafx.controls,javafx.fxml" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.cecs.model.*" />
+          <option name="PATTERN" value="com.cecs.def.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -80,8 +96,36 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AppTest.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="assignment1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cecs.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cecs" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="App.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="assignment1" />
+      <option name="PACKAGE_NAME" value="com.cecs" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.App" />
+      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AppTest.testDispatch" />
+        <item itemvalue="JUnit.App.testDispatch" />
         <item itemvalue="Application.App" />
         <item itemvalue="Application.App" />
       </list>
@@ -103,6 +147,11 @@
       <workItem from="1567625340927" duration="3585000" />
       <workItem from="1567705120698" duration="4610000" />
       <workItem from="1568916285531" duration="4541000" />
+      <workItem from="1569520355518" duration="51000" />
+      <workItem from="1569523378249" duration="11516000" />
+      <workItem from="1569951523970" duration="12697000" />
+      <workItem from="1570003614803" duration="872000" />
+      <workItem from="1570032750395" duration="5124000" />
     </task>
     <servers />
   </component>
