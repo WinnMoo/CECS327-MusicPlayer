@@ -5,6 +5,7 @@ import com.cecs.model.Music;
 import com.cecs.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -12,6 +13,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import static java.util.Arrays.binarySearch;
@@ -151,5 +153,17 @@ public class JsonService {
         // Load current Users from user file
         var reader = new FileReader(file, StandardCharsets.UTF_8);
         return gson.fromJson(reader, User[].class);
+    }
+
+    /**
+     * Extracts the ret string from a server response
+     *
+     * @param ret The response from the server, in the form of a string
+     * @return String value stored in "ret" field, if possible
+     */
+    public static byte[] unpackBytes(String ret) {
+        var parser = new JsonParser();
+        var request = parser.parse(ret).getAsJsonObject();
+        return Base64.getDecoder().decode(request.get("ret").getAsString());
     }
 }

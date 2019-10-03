@@ -15,7 +15,7 @@ import java.util.Map;
 public class Dispatcher implements DispatcherInterface {
     private HashMap<String, Object> listOfObjects;
     private static final int port = 5500;
-    private static final byte[] buffer = new byte[4096];
+    private static final byte[] buffer = new byte[16384];
 
     public Dispatcher() {
         listOfObjects = new HashMap<>();
