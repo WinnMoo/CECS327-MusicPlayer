@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.cecs.controller.JsonService;
 import com.cecs.controller.SongPlayer;
@@ -32,6 +33,8 @@ import com.cecs.model.User;
 
 public class MainPage {
     public static void show(Stage stage, SongPlayer player, User user) {
+
+
         // Main Menu
         var viewAll = new MenuItem("View All");
         viewAll.setOnAction(action -> {
@@ -184,8 +187,21 @@ public class MainPage {
 
         var list = new FilteredList<>(listOfMusic, m -> true);
         var table = new TableView<>(list);
+
+
         table.setEditable(true);
         table.getColumns().addAll(songs, releases, artists, colBtn);
+
+        // Pagination
+        int rowsPerPage = 20;
+        Pagination pagination = new Pagination((list.size() / rowsPerPage + 1), 0);
+        pagination.setPageFactory(pageIndex -> {
+            int fromIndex = pageIndex * rowsPerPage;
+            int toIndex = Math.min(fromIndex + rowsPerPage, list.size());
+            table.setItems(FXCollections.observableArrayList(list.subList(fromIndex, toIndex)));
+
+            return new BorderPane(table);
+        });
 
         var searchBar = new TextField();
         searchBar.setPromptText("Search for artist, release, or song...");
@@ -196,6 +212,11 @@ public class MainPage {
                         || p.getRelease().toString().toLowerCase().contains(query)
                         || p.getSong().toString().toLowerCase().contains(query);
             });
+
+            // to update page
+            table.getItems().setAll(list);
+            pagination.setCurrentPageIndex(0);
+            pagination.setPageCount(list.size() / rowsPerPage + 1);
         });
         searchBar.prefWidthProperty().bind(Bindings.divide(stage.widthProperty(), 2));
 
@@ -288,7 +309,7 @@ public class MainPage {
             }
         });
 
-        var vbox = new VBox(label, searchRow, table, playbackSlider);
+        var vbox = new VBox(label, searchRow, pagination, playbackSlider);
         vbox.setSpacing(10.0);
         vbox.setPadding(new Insets(25.0));
 
