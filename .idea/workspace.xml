@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -92,7 +91,7 @@
       </method>
     </configuration>
     <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="assignment1" />
+      <module name="CECS327-MusicPlayer" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.cecs.*" />
@@ -101,7 +100,9 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.cecs" />
       <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
+      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -132,6 +133,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.App" />
+      <item itemvalue="JUnit.App.testDispatch" />
+      <item itemvalue="JUnit.AppTest" />
+      <item itemvalue="JUnit.AppTest.testDispatch" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.AppTest" />

@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.cecs.controller.JsonService;
 import com.cecs.controller.SongPlayer;
@@ -33,7 +33,8 @@ import com.cecs.model.User;
 
 public class MainPage {
     public static void show(Stage stage, SongPlayer player, User user) {
-
+        final int rowsPerPage = 20;
+        AtomicInteger currentPage = new AtomicInteger(1);
 
         // Main Menu
         var viewAll = new MenuItem("View All");
@@ -193,7 +194,7 @@ public class MainPage {
         table.getColumns().addAll(songs, releases, artists, colBtn);
 
         // Pagination
-        int rowsPerPage = 20;
+
         Pagination pagination = new Pagination((list.size() / rowsPerPage + 1), 0);
         pagination.setPageFactory(pageIndex -> {
             int fromIndex = pageIndex * rowsPerPage;
@@ -202,6 +203,24 @@ public class MainPage {
 
             return new BorderPane(table);
         });
+
+        //TODO: Add next and previous page buttons
+        var nextPageButton = new Button(">");
+        var prevPageButton = new Button("<");
+
+        nextPageButton.setOnAction(action -> {
+            currentPage.getAndIncrement();
+            int startingIndex = currentPage.get() * rowsPerPage;
+            JsonService.getSongs(startingIndex, rowsPerPage);
+        });
+
+        prevPageButton.setOnAction(action -> {
+            currentPage.getAndDecrement();
+            int startingIndex = currentPage.get() * rowsPerPage;
+            JsonService.getSongs(startingIndex, rowsPerPage);
+            //look into line 202 to figure out how to update list
+        });
+
 
         var searchBar = new TextField();
         searchBar.setPromptText("Search for artist, release, or song...");

@@ -2,6 +2,7 @@ package com.cecs.controller;
 
 import com.cecs.App;
 import com.cecs.model.Music;
+import com.cecs.model.Song;
 import com.cecs.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -165,5 +166,14 @@ public class JsonService {
         var parser = new JsonParser();
         var request = parser.parse(ret).getAsJsonObject();
         return Base64.getDecoder().decode(request.get("ret").getAsString());
+    }
+
+    public static ArrayList<Song> getSongs(int startingIndex, int songsPerPage){
+        ArrayList<Song> retrievedSongs = new ArrayList();
+        //take both variables and put into json
+        //http get with json to server
+        //server will return json with songs
+        //parse json into arraylist
+        return retrievedSongs;
     }
 }
