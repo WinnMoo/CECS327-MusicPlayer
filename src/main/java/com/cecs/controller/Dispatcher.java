@@ -33,6 +33,7 @@ public class Dispatcher implements DispatcherInterface {
             final var packet = new DatagramPacket(out, out.length, address, port);
             System.out.println("Closing server");
             socket.send(packet);
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,9 +42,8 @@ public class Dispatcher implements DispatcherInterface {
     /*
      * dispatch: Executes the remote method in the corresponding Object
      *
-     * @param request: Request: it is a Json file { "remoteMethod":
-     * "getSongChunk", "objectName": "SongServices", "param": { "song": 490183,
-     * "fragment": 2 } }
+     * @param request: Request: it is a Json file { "remoteMethod": "getSongChunk",
+     * "objectName": "SongServices", "param": { "song": 490183, "fragment": 2 } }
      */
     @Override
     public String dispatch(String request) {
@@ -63,6 +63,7 @@ public class Dispatcher implements DispatcherInterface {
             packet = new DatagramPacket(buffer, buffer.length);
             socket.receive(packet);
             System.out.println("Message received!");
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,40 +108,39 @@ public class Dispatcher implements DispatcherInterface {
             // Prepare parameters
             for (int i = 0; i < types.length; i++) {
                 switch (types[i].getCanonicalName()) {
-                    case "java.lang.Long":
-                        parameter[i] = Long.parseLong(strParam[i]);
-                        break;
-                    case "java.lang.Integer":
-                        parameter[i] = Integer.parseInt(strParam[i]);
-                        break;
-                    case "String":
-                        parameter[i] = strParam[i];
-                        break;
+                case "java.lang.Long":
+                    parameter[i] = Long.parseLong(strParam[i]);
+                    break;
+                case "java.lang.Integer":
+                    parameter[i] = Integer.parseInt(strParam[i]);
+                    break;
+                case "String":
+                    parameter[i] = strParam[i];
+                    break;
                 }
             }
             // Prepare the return
             Class returnType = method.getReturnType();
             String ret = "";
             switch (returnType.getCanonicalName()) {
-                case "java.lang.Long":
-                case "java.lang.Integer":
-                    ret = method.invoke(object, parameter).toString();
-                    break;
-                case "java.lang.String":
-                    ret = (String) method.invoke(object, parameter);
-                    break;
+            case "java.lang.Long":
+            case "java.lang.Integer":
+                ret = method.invoke(object, parameter).toString();
+                break;
+            case "java.lang.String":
+                ret = (String) method.invoke(object, parameter);
+                break;
             }
             jsonReturn.addProperty("ret", ret);
 
         } catch (InvocationTargetException | IllegalAccessException e) {
             // System.out.println(e);
             jsonReturn.addProperty("error", "Error on " + jsonRequest.get("objectName").getAsString() + "."
-            + jsonRequest.get("remoteMethod").getAsString());
+                    + jsonRequest.get("remoteMethod").getAsString());
         }
 
         return jsonReturn.toString();
     }
-
 
     /*
      * registerObject: It register the objects that handle the request

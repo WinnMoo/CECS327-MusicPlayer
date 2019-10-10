@@ -3,9 +3,11 @@ package com.cecs.controller;
 import com.cecs.App;
 import com.cecs.model.Music;
 import com.cecs.model.Song;
+import com.cecs.model.Playlist;
 import com.cecs.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +25,7 @@ import static java.util.Arrays.binarySearch;
  * Class that handles services needed by the Gson library
  */
 public class JsonService {
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     /**
      * Function to create a new User and add the User to a JSON file
      * 
@@ -36,7 +39,6 @@ public class JsonService {
      */
     public static boolean createAccount(String name, String pass) throws IOException {
         var newUser = new User(name, pass);
-        var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
 
         User[] newUsers;
@@ -82,7 +84,6 @@ public class JsonService {
      */
     public static User login(String name, String pass) throws IOException {
         var loginUser = new User(name, pass);
-        var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
 
         return (users == null) ? null
@@ -95,7 +96,6 @@ public class JsonService {
      * Function to delete a User and update users lists in json file
      */
     public static void DeleteAccount(User userToDelete) throws IOException {
-        var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
         var newUsers = new User[users.length - 1];
 
@@ -121,7 +121,6 @@ public class JsonService {
     }
 
     public static boolean updateUser(User newUser) throws IOException {
-        var gson = new GsonBuilder().setPrettyPrinting().create();
         var users = loadUsers(gson);
 
         if (users == null) {
@@ -157,15 +156,35 @@ public class JsonService {
     }
 
     /**
-     * Extracts the ret string from a server response
+     * Extracts the byte array from a server response
      *
-     * @param ret The response from the server, in the form of a string
-     * @return String value stored in "ret" field, if possible
+     * @param ret The response from the server, in the form of a byte array
+     * @return 8192-sized byte value representing sequence in a song
      */
     public static byte[] unpackBytes(String ret) {
         var parser = new JsonParser();
         var request = parser.parse(ret).getAsJsonObject();
-        return Base64.getDecoder().decode(request.get("ret").getAsString());
+        var val = request.get("ret").getAsString();
+        var g = gson.fromJson(val, String.class);
+        return Base64.getDecoder().decode(g);
+    }
+
+    /**
+     * Extracts the list of Playlists from a server response
+     *
+     * @param ret The response from the server, in the form of a list of playlists, where a null signifies that the user credentials do not match
+     * @return value stored in "ret" field, if possible
+     */
+    public static Playlist[] unpackPlaylists(String ret) {
+        var parser = new JsonParser();
+        var request = parser.parse(ret).getAsJsonObject();
+        var get = request.get("ret");
+        if (get.isJsonNull()) {
+            return null;
+        } else {
+            var arr = request.get("ret").getAsString();
+            return gson.fromJson(arr, Playlist[].class);
+        }
     }
 
     public static ArrayList<Song> getSongs(int startingIndex, int songsPerPage){
