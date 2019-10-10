@@ -4,10 +4,7 @@ import com.cecs.App;
 import com.cecs.model.Music;
 import com.cecs.model.Playlist;
 import com.cecs.model.User;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -157,12 +154,10 @@ public class JsonService {
     /**
      * Extracts the byte array from a server response
      *
-     * @param ret The response from the server, in the form of a byte array
+     * @param request The response from the server, in the form of a byte array
      * @return 8192-sized byte value representing sequence in a song
      */
-    public static byte[] unpackBytes(String ret) {
-        var parser = new JsonParser();
-        var request = parser.parse(ret).getAsJsonObject();
+    public static byte[] unpackBytes(JsonObject request) {
         var val = request.get("ret").getAsString();
         var g = gson.fromJson(val, String.class);
         return Base64.getDecoder().decode(g);
@@ -171,18 +166,30 @@ public class JsonService {
     /**
      * Extracts the list of Playlists from a server response
      *
-     * @param ret The response from the server, in the form of a list of playlists, where a null signifies that the user credentials do not match
+     * @param request The response from the server, in the form of a list of playlists, where a null signifies that the user credentials do not match
      * @return value stored in "ret" field, if possible
      */
-    public static Playlist[] unpackPlaylists(String ret) {
-        var parser = new JsonParser();
-        var request = parser.parse(ret).getAsJsonObject();
+    public static Playlist[] unpackPlaylists(JsonObject request) {
         var get = request.get("ret");
         if (get.isJsonNull()) {
             return null;
         } else {
             var arr = request.get("ret").getAsString();
             return gson.fromJson(arr, Playlist[].class);
+        }
+    }
+
+    public static User unpackUser(JsonObject request) {
+        var get = request.get("ret");
+        var err = request.get("error");
+        if (err != null || get.isJsonNull()) {
+            if (err != null) {
+                System.err.println(err.getAsString());
+            }
+            return null;
+        } else {
+            var arr = request.get("ret").getAsString();
+            return gson.fromJson(arr, User.class);
         }
     }
 }

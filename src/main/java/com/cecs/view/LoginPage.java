@@ -1,11 +1,16 @@
 package com.cecs.view;
 
 import java.io.IOException;
+import java.util.Base64;
 
+import com.cecs.controller.Dispatcher;
 import com.cecs.controller.JsonService;
+import com.cecs.controller.Proxy;
 import com.cecs.controller.SongPlayer;
+import com.cecs.def.ProxyInterface;
 import com.cecs.model.User;
 
+import com.google.gson.JsonObject;
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,6 +28,8 @@ public class LoginPage {
     enum LoginCode {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
+
+    private static ProxyInterface proxy = new Proxy(new Dispatcher(), "UserServices");
 
     public static void show(Stage stage) {
         var signIn = new Text("Sign In");
@@ -115,7 +122,9 @@ public class LoginPage {
         } else if (pass.isBlank()) {
             code = LoginCode.INVALID_PASS;
         } else {
-            user = JsonService.login(name, pass);
+            var param = new String[] {name, pass};
+            var request = proxy.synchExecution("login", param);
+            user = JsonService.unpackUser(request);
             if (user == null) {
                 code = LoginCode.INCORRECT_CREDENTIALS;
             }

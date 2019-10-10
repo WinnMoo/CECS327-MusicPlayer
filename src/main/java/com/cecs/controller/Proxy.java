@@ -5,10 +5,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Proxy implements ProxyInterface {
-    Dispatcher dispacher; // This is only for test. it should use the Communication Module
+    private Dispatcher dispatcher; // This is only for test. it should use the Communication Module
+    private String objectName;
 
-    public Proxy(Dispatcher dispacher) {
-        this.dispacher = dispacher;
+    public Proxy(Dispatcher dispatcher, String objectName) {
+        this.dispatcher = dispatcher;
+        this.objectName = objectName;
     }
 
     /*
@@ -20,7 +22,7 @@ public class Proxy implements ProxyInterface {
         JsonObject jsonParam = new JsonObject();
 
         jsonRequest.addProperty("remoteMethod", remoteMethod);
-        jsonRequest.addProperty("objectName", "SongServices");
+        jsonRequest.addProperty("objectName", objectName);
         // It is hardcoded. Instead it should be dynamic using RemoteRef
         if (remoteMethod.equals("getSongChunk")) {
 
@@ -31,10 +33,14 @@ public class Proxy implements ProxyInterface {
         if (remoteMethod.equals("getFileSize")) {
             jsonParam.addProperty("song", param[0]);
         }
+        if (remoteMethod.equals("login")) {
+            jsonParam.addProperty("username", param[0]);
+            jsonParam.addProperty("password", param[1]);
+        }
         jsonRequest.add("param", jsonParam);
 
         JsonParser parser = new JsonParser();
-        String strRet = this.dispacher.dispatch(jsonRequest.toString());
+        String strRet = this.dispatcher.dispatch(jsonRequest.toString());
 
         return parser.parse(strRet).getAsJsonObject();
     }
