@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="b25b93a7-165d-4836-a196-a9956bd60060" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+=======
+    <list default="true" id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="">
+>>>>>>> long_final
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,32 +20,60 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
         <option value="package.json" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="final" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="vUnDQMXA" />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+        <option name="vmOptionsForImporter" value="-Xmx768m" />
+      </MavenImportingSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="1Q6y85TjdUAyXbxxgQ0JaQYunqk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="add_unversioned_files" value="true" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+<<<<<<< HEAD
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.3816092" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
+=======
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.3816092" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.cecs" />
+    </key>
+>>>>>>> long_final
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -53,13 +87,16 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.AppTest">
+    <configuration name="App" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="12" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="com.cecs.App" />
       <module name="assignment1" />
+      <option name="VM_PARAMETERS" value="--module-path &quot;C:\javafx-sdk-12.0.2\lib&quot; --add-modules javafx.controls,javafx.fxml" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.cecs.Tab" />
+          <option name="PATTERN" value="com.cecs.def.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -67,8 +104,53 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="assignment1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cecs.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cecs" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppTest.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="assignment1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cecs.Tab" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cecs" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="App.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="assignment1" />
+      <option name="PACKAGE_NAME" value="com.cecs" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.App" />
+      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AppTest" />
+        <item itemvalue="JUnit.AppTest.testDispatch" />
+        <item itemvalue="JUnit.App.testDispatch" />
+        <item itemvalue="Application.App" />
         <item itemvalue="Application.App" />
       </list>
     </recent_temporary>
@@ -78,15 +160,30 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b25b93a7-165d-4836-a196-a9956bd60060" name="Default Changelist" comment="" />
+      <changelist id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="" />
       <created>1567105177057</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567105177057</updated>
       <workItem from="1567188609978" duration="13173000" />
+<<<<<<< HEAD
       <workItem from="1567910739867" duration="13000" />
       <workItem from="1568099970995" duration="644000" />
       <workItem from="1568137038084" duration="1439000" />
+=======
+      <workItem from="1567531896735" duration="4749000" />
+      <workItem from="1567621879103" duration="908000" />
+      <workItem from="1567625340927" duration="3585000" />
+      <workItem from="1567705120698" duration="4610000" />
+      <workItem from="1568916285531" duration="4541000" />
+      <workItem from="1569520355518" duration="51000" />
+      <workItem from="1569523378249" duration="11516000" />
+      <workItem from="1569951523970" duration="12697000" />
+      <workItem from="1570003614803" duration="872000" />
+      <workItem from="1570032750395" duration="5430000" />
+      <workItem from="1570122625417" duration="3579000" />
+      <workItem from="1570552513507" duration="240000" />
+>>>>>>> long_final
     </task>
     <servers />
   </component>
@@ -105,5 +202,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/bin" />
+    </ignored-roots>
   </component>
 </project>

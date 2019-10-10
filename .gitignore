@@ -30,3 +30,8 @@ bin/
 *.xml
 .idea/workspace.xml
 .idea/*
+<<<<<<< HEAD
+=======
+assignment1.iml
+
+>>>>>>> long_final
