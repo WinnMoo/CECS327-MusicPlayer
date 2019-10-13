@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppTest {
     private final String jasonBuffer = "{ \"remoteMethod\": \"getSongChunk\", \"objectName\": \"SongServices\", \"param\": { \"song\": \"SOMZWCG12A8C13C480\", \"fragment\": 2 } }";
@@ -55,14 +56,35 @@ class AppTest {
     }
 
     @Test
-    void testUser() {
+    void testCreation() {
+        var proxy = new Proxy(new Dispatcher(), "UserServices");
+        var params = new String[] { "added", "account" };
+        var request = proxy.synchExecution("createAccount", params);
+        var ret = JsonService.unpackBool(request);
+
+        assertTrue(ret);
+    }
+
+    @Test
+    void testDeletion() {
+        var proxy = new Proxy(new Dispatcher(), "UserServices");
+        var param = new User("added", "account");
+        var params = new String[] { JsonService.serialize(param) };
+        var request = proxy.synchExecution("deleteAccount", params);
+        var ret = JsonService.unpackBool(request);
+
+        assertTrue(ret);
+    }
+
+    @Test
+    void testUpdate() {
         var proxy = new Proxy(new Dispatcher(), "UserServices");
         var param = JsonService.serialize(new User("new", "geer"));
         var params = new String[] { param };
         var request = proxy.synchExecution("updateUser", params);
         var ret = JsonService.unpackBool(request);
 
-        assertEquals(true, ret);
+        assertTrue(ret);
     }
 
     @AfterAll

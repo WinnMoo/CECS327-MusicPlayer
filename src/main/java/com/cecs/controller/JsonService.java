@@ -20,26 +20,6 @@ import static java.util.Arrays.binarySearch;
 public class JsonService {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    // TODO: Create use-case for testing
-    /*
-     * Function to delete a User and update users lists in json file
-     */
-    public static void DeleteAccount(User userToDelete) throws IOException {
-        var users = loadUsers(gson);
-        var newUsers = new User[users.length - 1];
-
-        // Copy all Users to new array except for deleted User
-        int deleteIdx = binarySearch(users, userToDelete);
-        System.arraycopy(users, 0, newUsers, 0, users.length - 1);
-        System.arraycopy(users, deleteIdx, newUsers, deleteIdx - 1, newUsers.length - deleteIdx);
-
-        // Create string from array of Users and write to file
-        var jsonUsers = gson.toJson(newUsers);
-        var writer = new FileWriter("users.json");
-        writer.write(jsonUsers);
-        writer.close();
-    }
-
     public static ObservableList<Music> loadDatabase() {
         var reader = new InputStreamReader(App.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
         var musics = new GsonBuilder().create().fromJson(reader, Music[].class);
@@ -47,20 +27,6 @@ public class JsonService {
             music.getSong().setArtist(music.getArtist().getName());
         }
         return FXCollections.observableArrayList(musics);
-    }
-
-    /**
-     * Loads the users.json file into the program.
-     *
-     * @throws IOException If file could not be modified or created
-     */
-    private static User[] loadUsers(Gson gson) throws IOException {
-        var file = new File("users.json");
-        file.createNewFile();
-
-        // Load current Users from user file
-        var reader = new FileReader(file, StandardCharsets.UTF_8);
-        return gson.fromJson(reader, User[].class);
     }
 
     /**

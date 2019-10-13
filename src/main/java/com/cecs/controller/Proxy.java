@@ -33,12 +33,12 @@ public class Proxy implements ProxyInterface {
         if (remoteMethod.equals("getFileSize")) {
             jsonParam.addProperty("song", param[0]);
         }
-        if (remoteMethod.equals("login")) {
+        if (remoteMethod.equals("login") || remoteMethod.equals("createAccount")) {
             jsonParam.addProperty("username", param[0]);
             jsonParam.addProperty("password", param[1]);
         }
-        if (remoteMethod.equals("updateUser")) {
-            jsonParam.addProperty("newUser", param[0]);
+        if (remoteMethod.equals("updateUser") || remoteMethod.equals("deleteAccount")) {
+            jsonParam.addProperty("user", param[0]);
         }
         jsonRequest.add("param", jsonParam);
 
