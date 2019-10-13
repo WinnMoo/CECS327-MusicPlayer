@@ -37,6 +37,9 @@ public class Proxy implements ProxyInterface {
             jsonParam.addProperty("username", param[0]);
             jsonParam.addProperty("password", param[1]);
         }
+        if (remoteMethod.equals("updateUser")) {
+            jsonParam.addProperty("newUser", param[0]);
+        }
         jsonRequest.add("param", jsonParam);
 
         JsonParser parser = new JsonParser();
@@ -54,4 +57,3 @@ public class Proxy implements ProxyInterface {
         return;
     }
 }
-

@@ -18,22 +18,24 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
+import com.cecs.controller.Dispatcher;
 import com.cecs.controller.JsonService;
+import com.cecs.controller.Proxy;
 import com.cecs.controller.SongPlayer;
 import com.cecs.controller.Utils;
+import com.cecs.def.ProxyInterface;
 import com.cecs.model.Music;
 import com.cecs.model.Playlist;
 import com.cecs.model.Song;
 import com.cecs.model.User;
 
 public class MainPage {
-    public static void show(Stage stage, SongPlayer player, User user) {
+    private static ProxyInterface proxy = new Proxy(new Dispatcher(), "UserServices");
 
+    public static void show(Stage stage, SongPlayer player, User user) {
 
         // Main Menu
         var viewAll = new MenuItem("View All");
@@ -117,11 +119,7 @@ public class MainPage {
                                 obv.add(plName);
                                 // cbMyPlaylist.getItems().add(plName);
                             }
-                            try {
-                                JsonService.updateUser(user);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
                         });
                     }
 
@@ -147,7 +145,7 @@ public class MainPage {
 
         colBtn.setCellFactory((TableColumn<Music, Void> features) -> new TableCell<>() {
             // Create Add Playlist button
-            String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
+            String name = (obv.isEmpty()) ? "New Playlist" : obv.get(0);
             private final Button btn = new Button("Add to " + name);
             {
                 btn.setOnAction((ActionEvent event) -> {
@@ -166,11 +164,7 @@ public class MainPage {
                         obv.add(name);
                         cbMyPlaylist.setValue(name);
                     }
-                    try {
-                        JsonService.updateUser(user);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
                 });
             }
 
@@ -187,7 +181,6 @@ public class MainPage {
 
         var list = new FilteredList<>(listOfMusic, m -> true);
         var table = new TableView<>(list);
-
 
         table.setEditable(true);
         table.getColumns().addAll(songs, releases, artists, colBtn);

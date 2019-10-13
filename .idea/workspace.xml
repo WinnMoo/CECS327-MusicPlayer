@@ -5,7 +5,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/CreateAccountPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/CreateAccountPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/MyPlaylistPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/MyPlaylistPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -75,7 +78,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.AppTest.testProxy">
+  <component name="RunManager" selected="JUnit.AppTest.testUser">
     <configuration name="App" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="12" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -155,11 +158,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="App.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AppTest.testUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="assignment1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cecs.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <option name="PACKAGE_NAME" value="com.cecs" />
-      <option name="MAIN_CLASS_NAME" value="com.cecs.App" />
-      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="METHOD_NAME" value="testUser" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -167,11 +176,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AppTest.testUser" />
         <item itemvalue="JUnit.AppTest.testProxy" />
         <item itemvalue="JUnit.AppTest.testDispatch" />
         <item itemvalue="JUnit.AppTest.testLogin" />
         <item itemvalue="JUnit.AppTest" />
-        <item itemvalue="JUnit.App.testDispatch" />
       </list>
     </recent_temporary>
   </component>
@@ -199,7 +208,7 @@
       <workItem from="1570122625417" duration="3579000" />
       <workItem from="1570552513507" duration="11432000" />
       <workItem from="1570726903287" duration="70000" />
-      <workItem from="1570727043690" duration="4504000" />
+      <workItem from="1570727043690" duration="10827000" />
     </task>
     <servers />
   </component>
@@ -230,8 +239,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java</url>
-          <line>47</line>
-          <option name="timeStamp" value="1" />
+          <line>59</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

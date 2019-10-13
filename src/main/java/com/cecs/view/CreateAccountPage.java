@@ -18,12 +18,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import com.cecs.controller.Dispatcher;
 import com.cecs.controller.JsonService;
+import com.cecs.controller.Proxy;
+import com.cecs.def.ProxyInterface;
 
 class CreateAccountPage {
     enum RegisterCode {
         SUCCESS, INVALID_USER, INVALID_PASS1, INVALID_PASS2, NO_MATCH, NAME_TAKEN
     }
+
+    private static ProxyInterface proxy = new Proxy(new Dispatcher(), "UserServices");
 
     static void showAndWait(Stage parentStage) {
         var stage = new Stage();
@@ -162,7 +167,10 @@ class CreateAccountPage {
         if (!pass1.equals(pass2)) {
             return RegisterCode.NO_MATCH;
         }
-        if (!JsonService.createAccount(name, pass1)) {
+        // TODO: Test!
+        var request = proxy.synchExecution("createAccount", new String[] { name, pass1 });
+        var ret = JsonService.unpackBool(request);
+        if (!ret) {
             return RegisterCode.NAME_TAKEN;
         }
         return RegisterCode.SUCCESS;
