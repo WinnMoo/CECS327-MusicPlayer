@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Dispatcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -205,7 +203,7 @@
       <workItem from="1570122625417" duration="3579000" />
       <workItem from="1570552513507" duration="11432000" />
       <workItem from="1570726903287" duration="70000" />
-      <workItem from="1570727043690" duration="13481000" />
+      <workItem from="1570727043690" duration="16493000" />
     </task>
     <servers />
   </component>
@@ -236,18 +234,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java</url>
-          <line>80</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java</url>
           <line>61</line>
           <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java</url>
-          <line>68</line>
-          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -18,27 +18,14 @@ public class Proxy implements ProxyInterface {
      * receives the reply of the message.
      */
     public JsonObject synchExecution(String remoteMethod, String[] param) {
-        JsonObject jsonRequest = new JsonObject();
-        JsonObject jsonParam = new JsonObject();
+        var jsonRequest = new JsonObject();
+        var jsonParam = new JsonObject();
 
         jsonRequest.addProperty("remoteMethod", remoteMethod);
         jsonRequest.addProperty("objectName", objectName);
-        // It is hardcoded. Instead it should be dynamic using RemoteRef
-        if (remoteMethod.equals("getSongChunk")) {
 
-            jsonParam.addProperty("song", param[0]);
-            jsonParam.addProperty("fragment", param[1]);
-
-        }
-        if (remoteMethod.equals("getFileSize")) {
-            jsonParam.addProperty("song", param[0]);
-        }
-        if (remoteMethod.equals("login") || remoteMethod.equals("createAccount")) {
-            jsonParam.addProperty("username", param[0]);
-            jsonParam.addProperty("password", param[1]);
-        }
-        if (remoteMethod.equals("updateUser") || remoteMethod.equals("deleteAccount")) {
-            jsonParam.addProperty("user", param[0]);
+        for (int i = 0; i < param.length; ++i) {
+            jsonParam.addProperty("p" + i, param[i]);
         }
         jsonRequest.add("param", jsonParam);
 
