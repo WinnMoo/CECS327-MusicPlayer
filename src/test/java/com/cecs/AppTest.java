@@ -1,6 +1,6 @@
 package com.cecs;
 
-import com.cecs.controller.Dispatcher;
+import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
 import com.google.gson.JsonParser;
@@ -15,7 +15,7 @@ class AppTest {
 
     @Test
     void testDispatch() {
-        var dispatch = new Dispatcher();
+        var dispatch = new Communication();
         var ret = dispatch.dispatch(jasonBuffer);
         var parser = new JsonParser();
         var request  = parser.parse(ret).getAsJsonObject();
@@ -26,7 +26,7 @@ class AppTest {
 
     @Test
     void testLogin() {
-        var dispatch = new Dispatcher();
+        var dispatch = new Communication();
         var ret = dispatch.dispatch(jasonLogin);
         var parser = new JsonParser();
         var request  = parser.parse(ret).getAsJsonObject();
@@ -43,7 +43,7 @@ class AppTest {
 
     @Test
     void testProxy() {
-        var proxy = new Proxy(new Dispatcher(), "UserServices");
+        var proxy = new Proxy(new Communication(), "UserServices");
         var params = new String[] {"chris", "greer"};
         var request = proxy.synchExecution("login", params);
         var user = JsonService.unpackUser(request);
@@ -54,7 +54,7 @@ class AppTest {
 
     @AfterAll
     static void closeServer() {
-        var dispatch = new Dispatcher();
+        var dispatch = new Communication();
         dispatch.send("end");
     }
 }

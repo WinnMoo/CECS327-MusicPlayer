@@ -5,17 +5,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Proxy implements ProxyInterface {
-    private Dispatcher dispatcher; // This is only for test. it should use the Communication Module
-    private String objectName;
 
-    public Proxy(Dispatcher dispatcher, String objectName) {
-        this.dispatcher = dispatcher;
+    private Communication communication;
+    private String objectName;
+    private Communication.Semantic semantic;
+    private static int requestId = 0;
+
+    public Proxy(Communication communication, String objectName, Communication.Semantic semantic) {
+        this.communication = communication;
         this.objectName = objectName;
+        this.semantic = semantic;
     }
 
     /*
      * Executes the remote method "remoteMethod". The method blocks until it
      * receives the reply of the message.
+     *  add semantic call along with json request
      */
     public JsonObject synchExecution(String remoteMethod, String[] param) {
         JsonObject jsonRequest = new JsonObject();
@@ -23,24 +28,19 @@ public class Proxy implements ProxyInterface {
 
         jsonRequest.addProperty("remoteMethod", remoteMethod);
         jsonRequest.addProperty("objectName", objectName);
-        // It is hardcoded. Instead it should be dynamic using RemoteRef
-        if (remoteMethod.equals("getSongChunk")) {
+        jsonRequest.addProperty("requestId", ++requestId);
+        jsonRequest.addProperty("semantic", semantic.toString());
+        if(requestId == Integer.MAX_VALUE) requestId = 0; // reset requestId
 
-            jsonParam.addProperty("song", param[0]);
-            jsonParam.addProperty("fragment", param[1]);
+        // make sure that the params are in correct order.
+        for(int i = 0; i < param.length; i++){
+            jsonParam.addProperty("param"+i, param[i]);
+        }
 
-        }
-        if (remoteMethod.equals("getFileSize")) {
-            jsonParam.addProperty("song", param[0]);
-        }
-        if (remoteMethod.equals("login")) {
-            jsonParam.addProperty("username", param[0]);
-            jsonParam.addProperty("password", param[1]);
-        }
         jsonRequest.add("param", jsonParam);
 
         JsonParser parser = new JsonParser();
-        String strRet = this.dispatcher.dispatch(jsonRequest.toString());
+        String strRet = this.communication.dispatch(jsonRequest.toString(), semantic);
 
         return parser.parse(strRet).getAsJsonObject();
     }

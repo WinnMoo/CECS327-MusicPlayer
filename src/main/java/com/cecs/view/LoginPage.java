@@ -1,16 +1,14 @@
 package com.cecs.view;
 
 import java.io.IOException;
-import java.util.Base64;
 
-import com.cecs.controller.Dispatcher;
+import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
 import com.cecs.controller.SongPlayer;
 import com.cecs.def.ProxyInterface;
 import com.cecs.model.User;
 
-import com.google.gson.JsonObject;
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,7 +27,7 @@ public class LoginPage {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
-    private static ProxyInterface proxy = new Proxy(new Dispatcher(), "UserServices");
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices", Communication.Semantic.AT_LEAST_ONCE);
 
     public static void show(Stage stage) {
         var signIn = new Text("Sign In");
