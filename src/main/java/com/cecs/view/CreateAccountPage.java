@@ -1,5 +1,8 @@
 package com.cecs.view;
 
+import com.cecs.controller.Communication;
+import com.cecs.controller.Proxy;
+import com.cecs.def.ProxyInterface;
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,6 +27,8 @@ class CreateAccountPage {
     enum RegisterCode {
         SUCCESS, INVALID_USER, INVALID_PASS1, INVALID_PASS2, NO_MATCH, NAME_TAKEN
     }
+
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices", Communication.Semantic.AT_MOST_ONCE);
 
     static void showAndWait(Stage parentStage) {
         var stage = new Stage();
@@ -149,7 +154,7 @@ class CreateAccountPage {
      *                     other errors thrown by <code>JsonService</code>
      *                     otherwise.
      */
-    private static RegisterCode register(String name, String pass1, String pass2) throws IOException {
+    private static RegisterCode register(String name, String pass1, String pass2) {
         if (name.isBlank()) {
             return RegisterCode.INVALID_USER;
         }
@@ -162,7 +167,9 @@ class CreateAccountPage {
         if (!pass1.equals(pass2)) {
             return RegisterCode.NO_MATCH;
         }
-        if (!JsonService.createAccount(name, pass1)) {
+        var request = proxy.synchExecution("createAccount", new String[] { name, pass1 });
+        var ret = JsonService.unpackBool(request);
+        if (!ret) {
             return RegisterCode.NAME_TAKEN;
         }
         return RegisterCode.SUCCESS;

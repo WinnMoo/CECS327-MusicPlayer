@@ -1,5 +1,7 @@
 package com.cecs.view;
 
+import com.cecs.controller.*;
+import com.cecs.def.ProxyInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,14 +18,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-import com.cecs.controller.JsonService;
-import com.cecs.controller.SongPlayer;
-import com.cecs.controller.Utils;
 import com.cecs.model.Playlist;
 import com.cecs.model.Song;
 import com.cecs.model.User;
 
 class MyPlaylistPage {
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
+            Communication.Semantic.AT_LEAST_ONCE);
+
     static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
         var viewAll = new MenuItem("View All");
@@ -85,11 +87,7 @@ class MyPlaylistPage {
                     table.setItems(songs);
 
                     user.findPlaylistByName(cbMyPlaylist.getValue()).removeSong(song);
-                    try {
-                        JsonService.updateUser(user);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
                 });
             }
 
@@ -124,12 +122,7 @@ class MyPlaylistPage {
             obv.remove(cbMyPlaylist.getValue());
             cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
 
-            try {
-                JsonService.updateUser(user);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
+            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
         });
 
         var line = new HBox(cbMyPlaylist, btDelete);
