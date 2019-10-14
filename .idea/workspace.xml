@@ -5,8 +5,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Communication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Communication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/CreateAccountPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/CreateAccountPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/LoginPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/MyPlaylistPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/MyPlaylistPage.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -230,7 +232,8 @@
       <workItem from="1570552513507" duration="11432000" />
       <workItem from="1570726903287" duration="70000" />
       <workItem from="1570727043690" duration="18693000" />
-      <workItem from="1571018580802" duration="11954000" />
+      <workItem from="1571018580802" duration="12051000" />
+      <workItem from="1571074750315" duration="2622000" />
     </task>
     <servers />
   </component>

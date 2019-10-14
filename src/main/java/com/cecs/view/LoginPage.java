@@ -1,7 +1,5 @@
 package com.cecs.view;
 
-import java.io.IOException;
-
 import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
@@ -27,7 +25,8 @@ public class LoginPage {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices", Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
+            Communication.Semantic.AT_LEAST_ONCE);
 
     public static void show(Stage stage) {
         var signIn = new Text("Sign In");
@@ -61,31 +60,30 @@ public class LoginPage {
 
         createAccLink.setOnAction(action -> CreateAccountPage.showAndWait(stage));
 
-        loginButton.setOnAction(action -> {
-            Flowable.fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
-                switch (pair.getKey()) {
-                case SUCCESS: {
-                    MainPage.show(stage, new SongPlayer(), pair.getValue());
-                    break;
-                }
-                case INVALID_USER: {
-                    errorMessage.setText("Username cannot be blank");
-                    break;
-                }
-                case INVALID_PASS: {
-                    errorMessage.setText("Password cannot be blank");
-                    break;
-                }
-                case INCORRECT_CREDENTIALS: {
-                    errorMessage.setText("Incorrect username or password");
-                    break;
-                }
-                }
-            }, error -> {
-                System.err.println("An error has occurred.\n");
-                error.printStackTrace();
-            });
-        });
+        loginButton.setOnAction(action -> Flowable
+                .fromCallable(() -> authenticate(userField.getText(), passField.getText())).subscribe(pair -> {
+                    switch (pair.getKey()) {
+                    case SUCCESS: {
+                        MainPage.show(stage, new SongPlayer(), pair.getValue());
+                        break;
+                    }
+                    case INVALID_USER: {
+                        errorMessage.setText("Username cannot be blank");
+                        break;
+                    }
+                    case INVALID_PASS: {
+                        errorMessage.setText("Password cannot be blank");
+                        break;
+                    }
+                    case INCORRECT_CREDENTIALS: {
+                        errorMessage.setText("Incorrect username or password");
+                        break;
+                    }
+                    }
+                }, error -> {
+                    System.err.println("An error has occurred.\n");
+                    error.printStackTrace();
+                }));
         userField.setOnKeyReleased(actionEvent -> {
             if (actionEvent.getCode() == KeyCode.ENTER) {
                 loginButton.fire();
@@ -112,7 +110,7 @@ public class LoginPage {
         stage.show();
     }
 
-    private static Pair<LoginCode, User> authenticate(String name, String pass) throws IOException {
+    private static Pair<LoginCode, User> authenticate(String name, String pass) {
         User user = null;
         var code = LoginCode.SUCCESS;
         if (name.isBlank()) {
@@ -120,8 +118,7 @@ public class LoginPage {
         } else if (pass.isBlank()) {
             code = LoginCode.INVALID_PASS;
         } else {
-            var param = new String[] {name, pass};
-            var request = proxy.synchExecution("login", param);
+            var request = proxy.synchExecution("login", new String[] { name, pass });
             user = JsonService.unpackUser(request);
             if (user == null) {
                 code = LoginCode.INCORRECT_CREDENTIALS;

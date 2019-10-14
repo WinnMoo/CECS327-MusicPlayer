@@ -1,6 +1,7 @@
 package com.cecs.view;
 
 import com.cecs.controller.*;
+import com.cecs.def.ProxyInterface;
 import io.reactivex.Flowable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -19,7 +20,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +29,9 @@ import com.cecs.model.Song;
 import com.cecs.model.User;
 
 public class MainPage {
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
+            Communication.Semantic.AT_MOST_ONCE);
+
     public static void show(Stage stage, SongPlayer player, User user) {
         final int rowsPerPage = 20;
         final int listSize = 10000;
@@ -36,10 +39,7 @@ public class MainPage {
 
         // Main Menu
         var viewAll = new MenuItem("View All");
-        viewAll.setOnAction(action -> {
-            System.out.println("View all selected");
-            MainPage.show(stage, player, user);
-        });
+        viewAll.setOnAction(action -> MainPage.show(stage, player, user));
         var mainMenu = new Menu("All Songs", null, viewAll);
 
         // Playlist Menu
@@ -58,7 +58,7 @@ public class MainPage {
         var otherSettingItem = new MenuItem("Other Settings Item");
         otherSettingItem.setOnAction(action -> {
             System.out.println("Other setting selected");
-            // TODO: Functionality, use your imagination.
+            // TODO: Possibly add account deletion and server configuration here!
         });
         var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
 
@@ -115,11 +115,7 @@ public class MainPage {
                                 obv.add(plName);
                                 // cbMyPlaylist.getItems().add(plName);
                             }
-                            try {
-                                JsonService.updateUser(user);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
                         });
                     }
 
@@ -145,7 +141,7 @@ public class MainPage {
 
         colBtn.setCellFactory((TableColumn<Music, Void> features) -> new TableCell<>() {
             // Create Add Playlist button
-            String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
+            String name = (obv.isEmpty()) ? "New Playlist" : obv.get(0);
             private final Button btn = new Button("Add to " + name);
             {
                 btn.setOnAction((ActionEvent event) -> {
@@ -164,11 +160,7 @@ public class MainPage {
                         obv.add(name);
                         cbMyPlaylist.setValue(name);
                     }
-                    try {
-                        JsonService.updateUser(user);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
                 });
             }
 

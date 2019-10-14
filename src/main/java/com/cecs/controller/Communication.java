@@ -1,6 +1,5 @@
 package com.cecs.controller;
 
-import com.cecs.def.DispatcherInterface;
 import com.cecs.model.RemoteRef;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -33,17 +32,15 @@ At Most Once: (methods that may change server’s DB)
 
 * */
 
-
-public class Communication  {
-    public enum Semantic
-    {
+public class Communication {
+    public enum Semantic {
         MAYBE, AT_LEAST_ONCE, AT_MOST_ONCE;
     }
 
     private HashMap<String, Object> listOfObjects;
-    //private static final int port = 5500;
     private static final byte[] buffer = new byte[32768];
-    private  static  final int TIME_OUT = 1000;
+    private static final int TIME_OUT = 1000;
+
     public Communication() {
         listOfObjects = new HashMap<>();
     }
@@ -83,13 +80,15 @@ public class Communication  {
             final var out = request.getBytes();
             sendPacket = new DatagramPacket(out, out.length, remoteRef.getAddress(), remoteRef.getPort());
             receivePacket = new DatagramPacket(buffer, buffer.length);
-            System.out.println("Sending message of size " + sendPacket.getLength() + " to " + sendPacket.getSocketAddress());
+            System.out.println(
+                    "Sending message of size " + sendPacket.getLength() + " to " + sendPacket.getSocketAddress());
 
             System.out.println("Listening...");
-            if(semantic == Semantic.MAYBE) // only send the request once
+            if (semantic == Semantic.MAYBE) // only send the request once
                 socket.send(sendPacket);
-            else{ // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if not receive the response after TIME_OUT
-                while(true){
+            else { // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if not receive the response
+                   // after TIME_OUT
+                while (true) {
                     try {
                         socket.receive(receivePacket);
                     } catch (SocketTimeoutException e) {
@@ -107,109 +106,6 @@ public class Communication  {
             e.printStackTrace();
         }
         return receivePacket != null ? new String(receivePacket.getData(), 0, receivePacket.getLength()) : null;
-    }
-
-    /*
-     * dispatch: Executes the remote method in the corresponding Object
-     *
-     * @param request: Request: it is a Json file { "remoteMethod": "getSongChunk",
-     * "objectName": "SongServices", "param": { "song": 490183, "fragment": 2 } }
-     */
-/*
-    public String dispatch1(String request) {
-        DatagramPacket packet = null;
-        try {
-            final var address = InetAddress.getByName("localhost");
-            final var socket = new DatagramSocket();
-
-            // Send
-            final var out = request.getBytes();
-            packet = new DatagramPacket(out, out.length, address, port);
-            System.out.println("Sending message of size " + packet.getLength() + " to " + packet.getSocketAddress());
-            socket.send(packet);
-
-            // Receive
-            System.out.println("Listening...");
-            packet = new DatagramPacket(buffer, buffer.length);
-            socket.receive(packet);
-            System.out.println("Message received!");
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return packet != null ? new String(packet.getData(), 0, packet.getLength()) : null;
-    }
-*/
-    /*
-     * dispatch: Executes the remote method in the corresponding Object
-     *
-     * @param request: Request: it is a Json file { "remoteMethod":"getSongChunk",
-     * "objectName":"SongServices", "param": { "song":490183, "fragment":2 } }
-     */
-    public String dispatch2(String request) {
-        var jsonReturn = new JsonObject();
-        var parser = new JsonParser();
-        var jsonRequest = parser.parse(request).getAsJsonObject();
-
-        try {
-            // Obtains the object pointing to SongServices
-            Object object = listOfObjects.get(jsonRequest.get("objectName").getAsString());
-            Method[] methods = object.getClass().getMethods();
-            Method method = null;
-            // Obtains the method
-            for (Method value : methods) {
-                if (value.getName().equals(jsonRequest.get("remoteMethod").getAsString())) {
-                    method = value;
-                }
-            }
-            if (method == null) {
-                jsonReturn.addProperty("error", "Method does not exist");
-                return jsonReturn.toString();
-            }
-            // Prepare the parameters
-            Class[] types = method.getParameterTypes();
-            Object[] parameter = new Object[types.length];
-            String[] strParam = new String[types.length];
-            JsonObject jsonParam = jsonRequest.get("param").getAsJsonObject();
-            int j = 0;
-            for (Map.Entry<String, JsonElement> entry : jsonParam.entrySet()) {
-                strParam[j++] = entry.getValue().getAsString();
-            }
-            // Prepare parameters
-            for (int i = 0; i < types.length; i++) {
-                switch (types[i].getCanonicalName()) {
-                case "java.lang.Long":
-                    parameter[i] = Long.parseLong(strParam[i]);
-                    break;
-                case "java.lang.Integer":
-                    parameter[i] = Integer.parseInt(strParam[i]);
-                    break;
-                case "String":
-                    parameter[i] = strParam[i];
-                    break;
-                }
-            }
-            // Prepare the return
-            Class returnType = method.getReturnType();
-            String ret = "";
-            switch (returnType.getCanonicalName()) {
-            case "java.lang.Long":
-            case "java.lang.Integer":
-                ret = method.invoke(object, parameter).toString();
-                break;
-            case "java.lang.String":
-                ret = (String) method.invoke(object, parameter);
-                break;
-            }
-            jsonReturn.addProperty("ret", ret);
-
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            // System.out.println(e);
-            jsonReturn.addProperty("error", "Error on " + jsonRequest.get("objectName").getAsString() + "."
-                    + jsonRequest.get("remoteMethod").getAsString());
-        }
-
-        return jsonReturn.toString();
     }
 
     /*
