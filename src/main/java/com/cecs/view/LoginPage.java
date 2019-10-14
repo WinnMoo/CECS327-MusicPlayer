@@ -2,8 +2,11 @@ package com.cecs.view;
 
 import java.io.IOException;
 
+import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
+import com.cecs.controller.Proxy;
 import com.cecs.controller.SongPlayer;
+import com.cecs.def.ProxyInterface;
 import com.cecs.model.User;
 
 import io.reactivex.Flowable;
@@ -23,6 +26,8 @@ public class LoginPage {
     enum LoginCode {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
+
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices", Communication.Semantic.AT_LEAST_ONCE);
 
     public static void show(Stage stage) {
         var signIn = new Text("Sign In");
@@ -115,7 +120,9 @@ public class LoginPage {
         } else if (pass.isBlank()) {
             code = LoginCode.INVALID_PASS;
         } else {
-            user = JsonService.login(name, pass);
+            var param = new String[] {name, pass};
+            var request = proxy.synchExecution("login", param);
+            user = JsonService.unpackUser(request);
             if (user == null) {
                 code = LoginCode.INCORRECT_CREDENTIALS;
             }

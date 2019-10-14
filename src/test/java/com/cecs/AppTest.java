@@ -1,11 +1,11 @@
 package com.cecs;
 
-import com.cecs.controller.Dispatcher;
+import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
+import com.cecs.controller.Proxy;
+import com.google.gson.JsonParser;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,19 +15,22 @@ class AppTest {
 
     @Test
     void testDispatch() {
-        var dispatch = new Dispatcher();
+        var dispatch = new Communication();
         var ret = dispatch.dispatch(jasonBuffer);
-        System.out.println("Packet: " + ret);
-        var bytes = JsonService.unpackBytes(ret);
+        var parser = new JsonParser();
+        var request  = parser.parse(ret).getAsJsonObject();
+        var bytes = JsonService.unpackBytes(request);
 
         assertEquals(8192, bytes.length);
     }
 
     @Test
     void testLogin() {
-        var dispatch = new Dispatcher();
+        var dispatch = new Communication();
         var ret = dispatch.dispatch(jasonLogin);
-        var playlists = JsonService.unpackPlaylists(ret);
+        var parser = new JsonParser();
+        var request  = parser.parse(ret).getAsJsonObject();
+        var playlists = JsonService.unpackPlaylists(request);
 
         if (playlists == null) {
             System.out.println("This user doesn't exist");
@@ -36,13 +39,22 @@ class AppTest {
         } else {
             System.out.println("This user has " + playlists.length + " playlist(s)");
         }
+    }
 
-        // System.out.println(Arrays.toString(bytes));
+    @Test
+    void testProxy() {
+        var proxy = new Proxy(new Communication(), "UserServices");
+        var params = new String[] {"chris", "greer"};
+        var request = proxy.synchExecution("login", params);
+        var user = JsonService.unpackUser(request);
+        if (user != null) {
+            System.out.println(user.username + " logged in!");
+        }
     }
 
     @AfterAll
     static void closeServer() {
-        var dispatch = new Dispatcher();
+        var dispatch = new Communication();
         dispatch.send("end");
     }
 }
