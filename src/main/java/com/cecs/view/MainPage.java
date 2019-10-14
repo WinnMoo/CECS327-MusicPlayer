@@ -1,5 +1,6 @@
 package com.cecs.view;
 
+import com.cecs.controller.*;
 import io.reactivex.Flowable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -21,11 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import com.cecs.controller.JsonService;
-import com.cecs.controller.SongPlayer;
-import com.cecs.controller.Utils;
 import com.cecs.model.Music;
 import com.cecs.model.Playlist;
 import com.cecs.model.Song;
@@ -34,7 +31,6 @@ import com.cecs.model.User;
 public class MainPage {
     public static void show(Stage stage, SongPlayer player, User user) {
         final int rowsPerPage = 20;
-        AtomicInteger currentPage = new AtomicInteger(1);
 
         // Main Menu
         var viewAll = new MenuItem("View All");
@@ -203,24 +199,6 @@ public class MainPage {
 
             return new BorderPane(table);
         });
-
-        //TODO: Add next and previous page buttons
-        var nextPageButton = new Button(">");
-        var prevPageButton = new Button("<");
-
-        nextPageButton.setOnAction(action -> {
-            currentPage.getAndIncrement();
-            int startingIndex = currentPage.get() * rowsPerPage;
-            JsonService.getSongs(startingIndex, rowsPerPage);
-        });
-
-        prevPageButton.setOnAction(action -> {
-            currentPage.getAndDecrement();
-            int startingIndex = currentPage.get() * rowsPerPage;
-            JsonService.getSongs(startingIndex, rowsPerPage);
-            //look into line 202 to figure out how to update list
-        });
-
 
         var searchBar = new TextField();
         searchBar.setPromptText("Search for artist, release, or song...");

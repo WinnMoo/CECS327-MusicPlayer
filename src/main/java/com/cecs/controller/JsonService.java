@@ -1,6 +1,7 @@
 package com.cecs.controller;
 
 import com.cecs.App;
+import com.cecs.def.ProxyInterface;
 import com.cecs.model.Music;
 import com.cecs.model.Song;
 import com.cecs.model.Playlist;
@@ -22,6 +23,8 @@ import static java.util.Arrays.binarySearch;
  * Class that handles services needed by the Gson library
  */
 public class JsonService {
+    private static ProxyInterface proxy = new Proxy(new Communication(), "MusicServices", Communication.Semantic.AT_LEAST_ONCE);
+
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     /**
      * Function to create a new User and add the User to a JSON file
@@ -108,15 +111,6 @@ public class JsonService {
         writer.close();
     }
 
-    public static ObservableList<Music> loadDatabase() {
-        var reader = new InputStreamReader(App.class.getResourceAsStream("/music.json"), StandardCharsets.UTF_8);
-        var musics = new GsonBuilder().create().fromJson(reader, Music[].class);
-        for (Music music : musics) {
-            music.getSong().setArtist(music.getArtist().getName());
-        }
-        return FXCollections.observableArrayList(musics);
-    }
-
     public static boolean updateUser(User newUser) throws IOException {
         var users = loadUsers(gson);
 
@@ -192,5 +186,26 @@ public class JsonService {
             var arr = request.get("ret").getAsString();
             return gson.fromJson(arr, User.class);
         }
+    }
+
+    public static Music[] unpackMusic(JsonObject request) {
+        var get = request.get("ret");
+        var err = request.get("error");
+        if (err != null || get.isJsonNull()) {
+            if (err != null) {
+                System.err.println(err.getAsString());
+            }
+            return null;
+        } else {
+            var arr = request.get("ret").getAsString();
+            return gson.fromJson(arr, Music[].class);
+        }
+    }
+
+    public static ObservableList<Music> loadDatabase() {
+        var param = new String[] {"asdf"}; //Proxy requires some parameter for the request
+        var songsRequest = proxy.synchExecution("loadSongs", param);
+        var musics = unpackMusic(songsRequest);
+        return FXCollections.observableArrayList(musics);
     }
 }
