@@ -1,16 +1,10 @@
 package com.cecs.controller;
 
 import com.cecs.model.RemoteRef;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.*;
 import java.util.HashMap;
-import java.util.Map;
 /* Semantics:
 Maybe
     just send the request

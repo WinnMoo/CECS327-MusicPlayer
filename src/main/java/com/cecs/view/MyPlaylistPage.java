@@ -16,7 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 import com.cecs.model.Playlist;
 import com.cecs.model.Song;
