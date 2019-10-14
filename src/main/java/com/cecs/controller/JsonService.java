@@ -23,9 +23,11 @@ import static java.util.Arrays.binarySearch;
  * Class that handles services needed by the Gson library
  */
 public class JsonService {
-    private static ProxyInterface proxy = new Proxy(new Communication(), "MusicServices", Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(new Communication(), "MusicServices",
+            Communication.Semantic.AT_LEAST_ONCE);
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     /**
      * Function to create a new User and add the User to a JSON file
      * 
@@ -73,13 +75,13 @@ public class JsonService {
     // TODO: Create use-case for testing
     /**
      * Searches for user, and if found, returns deserialized object
-     * 
+     *
      * @param name Name of user
      * @param pass Password of user
-     * 
+     *
      * @return User if their credentials match ones in the JSON file and
      *         <code>null</code> otherwise
-     * 
+     *
      * @throws IOException If file could not be modified or created
      */
     public static User login(String name, String pass) throws IOException {
@@ -161,7 +163,9 @@ public class JsonService {
     /**
      * Extracts the list of Playlists from a server response
      *
-     * @param request The response from the server, in the form of a list of playlists, where a null signifies that the user credentials do not match
+     * @param request The response from the server, in the form of a list of
+     *                playlists, where a null signifies that the user credentials do
+     *                not match
      * @return value stored in "ret" field, if possible
      */
     public static Playlist[] unpackPlaylists(JsonObject request) {
@@ -202,10 +206,41 @@ public class JsonService {
         }
     }
 
+    public static int unpackInt(JsonObject request) {
+        var get = request.get("ret");
+        var err = request.get("error");
+        if (err != null || get.isJsonNull()) {
+            if (err != null) {
+                System.err.println(err.getAsString());
+            }
+            return 0;
+        } else {
+            var arr = request.get("ret").getAsString();
+            return gson.fromJson(arr, Integer.class);
+        }
+    }
+
+    @Deprecated
     public static ObservableList<Music> loadDatabase() {
-        var param = new String[] {"asdf"}; //Proxy requires some parameter for the request
+        var param = new String[] { "asdf" }; // Proxy requires some parameter for the request
         var songsRequest = proxy.synchExecution("loadSongs", param);
         var musics = unpackMusic(songsRequest);
         return FXCollections.observableArrayList(musics);
+    }
+
+    public static ObservableList<Music> loadDatabaseChunk(int start, int length, String query) {
+        var params = new String[] { String.valueOf(start), String.valueOf(length), query };
+        var request = proxy.synchExecution("loadChunk", params);
+        var musics = unpackMusic(request);
+        if (musics == null) {
+            System.out.println("Music returned from server is null!");
+        }
+        return FXCollections.observableArrayList(musics);
+    }
+
+    public static int loadDatabaseChunkSize(String query) {
+        var params = new String[] { query };
+        var request = proxy.synchExecution("querySize", params);
+        return unpackInt(request);
     }
 }

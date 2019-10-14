@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ce71e17f-9029-4ad8-8def-d21ee2f22646" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Communication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Communication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/JsonService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/controller/Proxy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cecs/view/MainPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,6 +13,20 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -56,7 +70,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.3816092" />
-    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.runner" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -75,13 +89,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.AppTest.testProxy">
+  <component name="RunManager" selected="JUnit.AppTest.testMusicChunk">
     <configuration name="App" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="12" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="com.cecs.App" />
       <module name="assignment1" />
-      <option name="VM_PARAMETERS" value="--module-path &quot;C:\javafx-sdk-12.0.2\lib&quot; --add-modules javafx.controls,javafx.fxml" />
+      <option name="VM_PARAMETERS" value="--add-modules javafx.controls,javafx.fxml" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.cecs.def.*" />
@@ -92,24 +107,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AppTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CECS327-MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.cecs.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.cecs" />
-      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="PARAMETERS" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AppTest.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AppTest.testCreation" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="assignment1" />
       <extension name="coverage">
         <pattern>
@@ -119,13 +117,13 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.cecs" />
       <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
-      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="METHOD_NAME" value="testCreation" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AppTest.testLogin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AppTest.testDeletion" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="assignment1" />
       <extension name="coverage">
         <pattern>
@@ -135,7 +133,23 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.cecs" />
       <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
-      <option name="METHOD_NAME" value="testLogin" />
+      <option name="METHOD_NAME" value="testDeletion" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AppTest.testMusicChunk" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="assignment1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cecs.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cecs" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="METHOD_NAME" value="testMusicChunk" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -157,11 +171,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="App.testDispatch" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AppTest.testUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="assignment1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cecs.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <option name="PACKAGE_NAME" value="com.cecs" />
-      <option name="MAIN_CLASS_NAME" value="com.cecs.App" />
-      <option name="METHOD_NAME" value="testDispatch" />
+      <option name="MAIN_CLASS_NAME" value="com.cecs.AppTest" />
+      <option name="METHOD_NAME" value="testUser" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -169,17 +189,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.App" />
-      <item itemvalue="JUnit.App.testDispatch" />
-      <item itemvalue="JUnit.AppTest" />
-      <item itemvalue="JUnit.AppTest.testDispatch" />
+      <item itemvalue="JUnit.AppTest.testCreation" />
+      <item itemvalue="JUnit.AppTest.testDeletion" />
+      <item itemvalue="JUnit.AppTest.testProxy" />
+      <item itemvalue="JUnit.AppTest.testUser" />
+      <item itemvalue="JUnit.AppTest.testMusicChunk" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AppTest.testMusicChunk" />
+        <item itemvalue="JUnit.AppTest.testDeletion" />
+        <item itemvalue="JUnit.AppTest.testCreation" />
+        <item itemvalue="JUnit.AppTest.testUser" />
         <item itemvalue="JUnit.AppTest.testProxy" />
-        <item itemvalue="JUnit.AppTest.testDispatch" />
-        <item itemvalue="JUnit.AppTest.testLogin" />
-        <item itemvalue="JUnit.AppTest" />
-        <item itemvalue="JUnit.App.testDispatch" />
       </list>
     </recent_temporary>
   </component>
@@ -207,7 +229,8 @@
       <workItem from="1570122625417" duration="3579000" />
       <workItem from="1570552513507" duration="11432000" />
       <workItem from="1570726903287" duration="70000" />
-      <workItem from="1570727043690" duration="4504000" />
+      <workItem from="1570727043690" duration="18693000" />
+      <workItem from="1571018580802" duration="11954000" />
     </task>
     <servers />
   </component>
@@ -238,8 +261,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/com/cecs/AppTest.java</url>
-          <line>47</line>
-          <option name="timeStamp" value="1" />
+          <line>52</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

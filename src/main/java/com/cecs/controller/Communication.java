@@ -42,7 +42,7 @@ public class Communication  {
 
     private HashMap<String, Object> listOfObjects;
     //private static final int port = 5500;
-    private static final byte[] buffer = new byte[16384];
+    private static final byte[] buffer = new byte[32768];
     private  static  final int TIME_OUT = 1000;
     public Communication() {
         listOfObjects = new HashMap<>();

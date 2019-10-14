@@ -16,9 +16,9 @@ class AppTest {
     @Test
     void testDispatch() {
         var dispatch = new Communication();
-        var ret = dispatch.dispatch(jasonBuffer);
+        var ret = dispatch.dispatch(jasonBuffer, Communication.Semantic.AT_MOST_ONCE);
         var parser = new JsonParser();
-        var request  = parser.parse(ret).getAsJsonObject();
+        var request = parser.parse(ret).getAsJsonObject();
         var bytes = JsonService.unpackBytes(request);
 
         assertEquals(8192, bytes.length);
@@ -27,9 +27,9 @@ class AppTest {
     @Test
     void testLogin() {
         var dispatch = new Communication();
-        var ret = dispatch.dispatch(jasonLogin);
+        var ret = dispatch.dispatch(jasonLogin, Communication.Semantic.AT_MOST_ONCE);
         var parser = new JsonParser();
-        var request  = parser.parse(ret).getAsJsonObject();
+        var request = parser.parse(ret).getAsJsonObject();
         var playlists = JsonService.unpackPlaylists(request);
 
         if (playlists == null) {
@@ -43,13 +43,23 @@ class AppTest {
 
     @Test
     void testProxy() {
-        var proxy = new Proxy(new Communication(), "UserServices");
-        var params = new String[] {"chris", "greer"};
+        var proxy = new Proxy(new Communication(), "UserServices", Communication.Semantic.AT_MOST_ONCE);
+        var params = new String[] { "chris", "greer" };
         var request = proxy.synchExecution("login", params);
         var user = JsonService.unpackUser(request);
         if (user != null) {
             System.out.println(user.username + " logged in!");
         }
+    }
+
+    @Test
+    void testMusicChunk() {
+        var proxy = new Proxy(new Communication(), "MusicServices", Communication.Semantic.AT_LEAST_ONCE);
+        var params = new String[] { "0", "20" };
+        var request = proxy.synchExecution("loadChunk", params);
+        var music = JsonService.unpackMusic(request);
+
+        assertEquals(20, music.length);
     }
 
     @AfterAll
