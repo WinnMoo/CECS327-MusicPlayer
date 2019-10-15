@@ -1,5 +1,6 @@
 package com.cecs.controller;
 
+import com.cecs.def.ProxyInterface;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.*;
 
@@ -9,8 +10,9 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 
 public class SongPlayer {
+    private static ProxyInterface proxy = new Proxy(new Communication(), "SongServices");
     private Player player;
-    private CECS327InputStream is;
+    private CECS327InputStream2 is;
     private String currentSong;
     private int totalFrames;
     private Thread thread_music;
@@ -34,7 +36,7 @@ public class SongPlayer {
                     stopMusic();
                 }
                 // It uses CECS327InputStream as InputStream to play the song
-                is = new CECS327InputStream(filename);
+                is = new CECS327InputStream2(filename, proxy);
                 player = new Player(is);
                 totalFrames = pollLength();
                 playMusic();
@@ -61,7 +63,7 @@ public class SongPlayer {
         }
         stopMusic();
         try {
-            is = new CECS327InputStream(currentSong);
+            is = new CECS327InputStream2(currentSong, proxy);
             player = new Player(is);
             is.skip(marker);
             playMusic();

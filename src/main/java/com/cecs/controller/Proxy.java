@@ -8,13 +8,11 @@ public class Proxy implements ProxyInterface {
 
     private Communication communication;
     private String objectName;
-    private Communication.Semantic semantic;
     private static int requestId = 0;
 
-    public Proxy(Communication communication, String objectName, Communication.Semantic semantic) {
+    public Proxy(Communication communication, String objectName) {
         this.communication = communication;
         this.objectName = objectName;
-        this.semantic = semantic;
     }
 
     /*
@@ -22,7 +20,7 @@ public class Proxy implements ProxyInterface {
      * receives the reply of the message.
      *  add semantic call along with json request
      */
-    public JsonObject synchExecution(String remoteMethod, String[] param) {
+    public JsonObject synchExecution(String remoteMethod, String[] param, Communication.Semantic semantic) {
         JsonObject jsonRequest = new JsonObject();
         JsonObject jsonParam = new JsonObject();
 

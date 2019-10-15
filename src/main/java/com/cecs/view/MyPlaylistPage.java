@@ -22,8 +22,7 @@ import com.cecs.model.Song;
 import com.cecs.model.User;
 
 class MyPlaylistPage {
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
-            Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices");
 
     static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
@@ -86,7 +85,7 @@ class MyPlaylistPage {
                     table.setItems(songs);
 
                     user.findPlaylistByName(cbMyPlaylist.getValue()).removeSong(song);
-                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) }, Communication.Semantic.AT_MOST_ONCE);
                 });
             }
 
@@ -121,7 +120,7 @@ class MyPlaylistPage {
             obv.remove(cbMyPlaylist.getValue());
             cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
 
-            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) }, Communication.Semantic.AT_MOST_ONCE);
         });
 
         var line = new HBox(cbMyPlaylist, btDelete);

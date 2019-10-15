@@ -25,8 +25,7 @@ public class LoginPage {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
-            Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices");
 
     public static void show(Stage stage) {
         var signIn = new Text("Sign In");
@@ -118,7 +117,7 @@ public class LoginPage {
         } else if (pass.isBlank()) {
             code = LoginCode.INVALID_PASS;
         } else {
-            var request = proxy.synchExecution("login", new String[] { name, pass });
+            var request = proxy.synchExecution("login", new String[] { name, pass }, Communication.Semantic.AT_LEAST_ONCE);
             user = JsonService.unpackUser(request);
             if (user == null) {
                 code = LoginCode.INCORRECT_CREDENTIALS;

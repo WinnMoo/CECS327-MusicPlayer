@@ -1,5 +1,6 @@
 package com.cecs.def;
 
+import com.cecs.controller.Communication;
 import com.google.gson.JsonObject;
 
 public interface ProxyInterface {
@@ -21,7 +22,7 @@ public interface ProxyInterface {
      * @return It returns a Gson object with the return of the remoteMethod example:
      * { "ret":"" }
      */
-    public JsonObject synchExecution(String remoteMethod, String[] param);
+    public JsonObject synchExecution(String remoteMethod, String[] param, Communication.Semantic semantic);
 
     /*
      * Executes the remote method remoteMethod and returns without waiting for the
