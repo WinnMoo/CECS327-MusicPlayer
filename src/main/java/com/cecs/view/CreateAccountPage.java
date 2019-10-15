@@ -29,7 +29,7 @@ class CreateAccountPage {
         SUCCESS, INVALID_USER, INVALID_PASS1, INVALID_PASS2, NO_MATCH, NAME_TAKEN
     }
 
-    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices", Communication.Semantic.AT_MOST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
 
     static void showAndWait(Stage parentStage) {
         var stage = new Stage();
@@ -168,7 +168,8 @@ class CreateAccountPage {
         if (!pass1.equals(pass2)) {
             return RegisterCode.NO_MATCH;
         }
-        var request = proxy.synchExecution("createAccount", new String[] { name, pass1 });
+        var request = proxy.synchExecution("createAccount", new String[] { name, pass1 },
+                Communication.Semantic.AT_MOST_ONCE);
         var ret = JsonService.unpackBool(request);
         if (!ret) {
             return RegisterCode.NAME_TAKEN;

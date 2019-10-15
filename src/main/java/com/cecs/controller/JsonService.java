@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
  * Class that handles services needed by the Gson library
  */
 public class JsonService {
-    private static ProxyInterface proxy = new Proxy(App.comm, "MusicServices", Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "MusicServices");
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -85,6 +85,20 @@ public class JsonService {
         }
     }
 
+    public static Playlist[] unpackPlaylist(JsonObject request) {
+        var get = request.get("ret");
+        var err = request.get("error");
+        if (err != null || get.isJsonNull()) {
+            if (err != null) {
+                System.err.println(err.getAsString());
+            }
+            return null;
+        } else {
+            var arr = request.get("ret").getAsString();
+            return gson.fromJson(arr, Playlist[].class);
+        }
+    }
+
     public static int unpackInt(JsonObject request) {
         var get = request.get("ret");
         var err = request.get("error");
@@ -131,7 +145,7 @@ public class JsonService {
     @Deprecated
     public static ObservableList<Music> loadDatabase() {
         var param = new String[] { "asdf" }; // Proxy requires some parameter for the request
-        var songsRequest = proxy.synchExecution("loadSongs", param);
+        var songsRequest = proxy.synchExecution("loadSongs", param, Communication.Semantic.AT_LEAST_ONCE);
         var musics = unpackMusic(songsRequest);
         return FXCollections.observableArrayList(musics);
     }
@@ -148,7 +162,7 @@ public class JsonService {
      */
     public static ObservableList<Music> loadDatabaseChunk(int start, int end, String query) {
         var params = new String[] { String.valueOf(start), String.valueOf(end), query };
-        var request = proxy.synchExecution("loadChunk", params);
+        var request = proxy.synchExecution("loadChunk", params, Communication.Semantic.AT_LEAST_ONCE);
         var musics = unpackMusic(request);
         if (musics == null) {
             System.out.println("Music returned from server is null!");
@@ -165,7 +179,7 @@ public class JsonService {
      */
     public static int loadDatabaseChunkSize(String query) {
         var params = new String[] { query };
-        var request = proxy.synchExecution("querySize", params);
+        var request = proxy.synchExecution("querySize", params, Communication.Semantic.AT_LEAST_ONCE);
         return unpackInt(request);
     }
 }

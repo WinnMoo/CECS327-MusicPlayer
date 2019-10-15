@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainPage {
-    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices", Communication.Semantic.AT_MOST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
 
     public static void show(Stage stage, SongPlayer player, User user) {
         final int rowsPerPage = 20;
@@ -116,7 +116,8 @@ public class MainPage {
                                 obv.add(plName);
                                 // cbMyPlaylist.getItems().add(plName);
                             }
-                            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+                            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
+                                    Communication.Semantic.AT_MOST_ONCE);
                         });
                     }
 
@@ -161,7 +162,8 @@ public class MainPage {
                         obv.add(name);
                         cbMyPlaylist.setValue(name);
                     }
-                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
+                            Communication.Semantic.AT_MOST_ONCE);
                 });
             }
 
@@ -238,7 +240,8 @@ public class MainPage {
             if (playButton.getText().equals("▶")) { // lol
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                player.playSong(song.getSong().getId() + ".mp3");
+                player.playSong(song.getSong().getId());
+                // player.playSong(song.getSong().getId() + ".mp3");
                 playButton.setText("⏸");
                 playbackSlider.setDisable(false);
 
