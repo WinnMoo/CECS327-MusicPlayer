@@ -9,6 +9,7 @@ import com.cecs.model.User;
 import com.cecs.def.ProxyInterface;
 
 import io.reactivex.Flowable;
+import io.reactivex.disposables.CompositeDisposable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -30,10 +31,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainPage {
+class MainPage {
     private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
+    private static CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public static void show(Stage stage, SongPlayer player, User user) {
+    static void show(Stage stage, SongPlayer player, User user) {
         final int rowsPerPage = 20;
         final int listSize = 10000;
         final String[] query = new String[] { "" };
@@ -67,8 +69,8 @@ public class MainPage {
         var menuBar = new MenuBar(mainMenu, playlistMenu, profileMenu, settingsMenu);
 
         var listOfMusic = FXCollections.<Music>observableArrayList();
-        Flowable.fromCallable(() -> JsonService.loadDatabaseChunk(0, rowsPerPage, "")).subscribe(listOfMusic::addAll,
-                Throwable::printStackTrace);
+        var disposable1 = Flowable.fromCallable(() -> JsonService.loadDatabaseChunk(0, rowsPerPage, ""))
+                .subscribe(listOfMusic::addAll, Throwable::printStackTrace);
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
@@ -91,7 +93,7 @@ public class MainPage {
         }
 
         // Update button text when user change the playlist
-        cbMyPlaylist.valueProperty().addListener(new ChangeListener<String>() {
+        cbMyPlaylist.valueProperty().addListener(new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
                 // update button text with t1
@@ -99,6 +101,7 @@ public class MainPage {
                     // Create Add Playlist button
                     // String name = (obv.isEmpty()) ? "New Playlist" : (String) obv.get(0);
                     private final Button btn = new Button("Add to " + t1);
+
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Music music = getTableView().getItems().get(getIndex());
@@ -111,10 +114,8 @@ public class MainPage {
                                 }
                             } else {
                                 Playlist pl = new Playlist(plName, new ArrayList<>(List.of(song)));
-                                // user.getUserPlaylists().add(pl);
                                 user.addNewPlaylist(pl);
                                 obv.add(plName);
-                                // cbMyPlaylist.getItems().add(plName);
                             }
                             proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
                                     Communication.Semantic.AT_MOST_ONCE);
@@ -229,7 +230,7 @@ public class MainPage {
             player.updateTrack(playbackSlider.getValue());
         });
         playbackSlider.setOnMouseDragged(it -> player.blockUpdates());
-        player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
+        var disposable2 = player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var playButton = new Button("▶");
         var prevSongButton = new Button("⏮");
@@ -325,6 +326,9 @@ public class MainPage {
         stage.show();
         stage.setOnCloseRequest(close -> {
             player.pauseSong();
+            compositeDisposable.dispose();
         });
+
+        compositeDisposable.addAll(disposable1, disposable2);
     }
 }

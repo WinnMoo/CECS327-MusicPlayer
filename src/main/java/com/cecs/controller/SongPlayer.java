@@ -5,7 +5,6 @@ import com.cecs.def.ProxyInterface;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.*;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -49,8 +48,6 @@ public class SongPlayer {
             }
         } catch (JavaLayerException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            System.err.println("Could not find song requested.");
         }
     }
 
@@ -68,7 +65,7 @@ public class SongPlayer {
             player = new Player(is);
             is.skip(marker);
             playMusic();
-        } catch (IOException | JavaLayerException e) {
+        } catch (JavaLayerException e) {
             e.printStackTrace();
         }
     }

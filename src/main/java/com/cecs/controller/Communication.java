@@ -28,7 +28,7 @@ At Most Once: (methods that may change server’s DB)
 
 public class Communication {
     public enum Semantic {
-        MAYBE, AT_LEAST_ONCE, AT_MOST_ONCE;
+        MAYBE, AT_LEAST_ONCE, AT_MOST_ONCE
     }
 
     private static final byte[] buffer = new byte[32768];
@@ -42,7 +42,7 @@ public class Communication {
      */
     public void send(String s) {
         try {
-            var remoteRef = new RemoteRef();
+            final var remoteRef = new RemoteRef();
             final var socket = new DatagramSocket();
             final var out = s.getBytes();
             final var packet = new DatagramPacket(out, out.length, remoteRef.getAddress(), remoteRef.getPort());
@@ -61,34 +61,40 @@ public class Communication {
      * "objectName": "SongServices", "param": { "song": 490183, "fragment": 2 } }
      */
     public String dispatch(String request, Semantic semantic) {
-        DatagramPacket sendPacket = null;
+        var start = System.currentTimeMillis();
+        var duration = System.currentTimeMillis() - start;
+        System.out.format("Time needed to dispatch: %d\n", duration);
+
         DatagramPacket receivePacket = null;
         try {
-            var remoteRef = new RemoteRef();
+            final var remoteRef = new RemoteRef();
             final var socket = new DatagramSocket();
             socket.setSoTimeout(TIME_OUT);
 
             // Send
             final var out = request.getBytes();
-            sendPacket = new DatagramPacket(out, out.length, remoteRef.getAddress(), remoteRef.getPort());
+            var sendPacket = new DatagramPacket(out, out.length, remoteRef.getAddress(), remoteRef.getPort());
             receivePacket = new DatagramPacket(buffer, buffer.length);
             System.out.println(
                     "Sending message of size " + sendPacket.getLength() + " to " + sendPacket.getSocketAddress());
 
             System.out.println("Listening...");
-            if (semantic == Semantic.MAYBE) // only send the request once
-                socket.send(sendPacket);
-            else { // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if not receive the response
-                   // after TIME_OUT
+            // MAYBE
+            socket.send(sendPacket);
+            // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if response times out
+            if (semantic != Semantic.MAYBE) {
                 while (true) {
                     try {
                         socket.receive(receivePacket);
+                        break;
                     } catch (SocketTimeoutException e) {
-                        // resend
+                        // if (semantic == Semantic.AT_MOST_ONCE) {
+                        // break;
+                        // } else {
+                        // socket.send(sendPacket);
+                        // }
                         socket.send(sendPacket);
-                        continue;
                     }
-                    break;
                 }
             }
 

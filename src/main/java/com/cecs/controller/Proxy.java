@@ -38,8 +38,8 @@ public class Proxy implements ProxyInterface {
         jsonRequest.add("param", jsonParam);
 
         JsonParser parser = new JsonParser();
-        String strRet = this.communication.dispatch(jsonRequest.toString(), semantic);
 
+        String strRet = this.communication.dispatch(jsonRequest.toString(), semantic);
         return parser.parse(strRet).getAsJsonObject();
     }
 

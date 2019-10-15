@@ -8,6 +8,8 @@ import com.cecs.model.Song;
 import com.cecs.model.User;
 
 import java.util.Arrays;
+
+import io.reactivex.disposables.CompositeDisposable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +27,7 @@ import javafx.stage.Stage;
 
 class MyPlaylistPage {
     private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
+    private static CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
@@ -137,10 +140,8 @@ class MyPlaylistPage {
             player.unblockUpdates();
             player.updateTrack(playbackSlider.getValue());
         });
-        playbackSlider.setOnMouseDragged(it -> {
-            player.blockUpdates();
-        });
-        player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
+        playbackSlider.setOnMouseDragged(it -> player.blockUpdates());
+        var disposable = player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var playButton = new Button("▶");
         var prevSongButton = new Button("⏮");
@@ -233,6 +234,8 @@ class MyPlaylistPage {
         stage.show();
         stage.setOnCloseRequest(close -> {
             player.pauseSong();
+            compositeDisposable.dispose();
         });
+        compositeDisposable.add(disposable);
     }
 }

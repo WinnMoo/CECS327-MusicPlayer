@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
-    public final static Communication comm = new Communication();
+    public static Communication comm = new Communication();
 
     @Override
     public void start(Stage stage) {

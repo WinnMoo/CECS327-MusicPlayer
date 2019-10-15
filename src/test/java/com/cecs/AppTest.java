@@ -8,12 +8,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppTest {
     private final String jasonBuffer = "{ \"remoteMethod\": \"getSongChunk\", \"objectName\": \"SongServices\", \"param\": { \"song\": \"SOMZWCG12A8C13C480\", \"fragment\": 2 } }";
     private final String jasonLogin = "{ \"remoteMethod\": \"login\", \"objectName\": \"UserServices\", \"param\": { \"username\": \"chris\", \"password\": \"greer\" } }";
-    private final Communication comm = new Communication();
+    private static final Communication comm = new Communication();
 
     @Test
     void testDispatch() {
@@ -22,7 +21,7 @@ class AppTest {
         var request = parser.parse(ret).getAsJsonObject();
         var bytes = JsonService.unpackBytes(request);
 
-        assertEquals(8192, bytes.length);
+        assertEquals(16384, bytes.length);
     }
 
     @Test
@@ -64,7 +63,7 @@ class AppTest {
     }
 
     @AfterAll
-    void closeServer() {
+    static void closeServer() {
         comm.send("end");
     }
 }

@@ -27,8 +27,8 @@ public class JsonService {
      */
     public static byte[] unpackBytes(JsonObject request) {
         var val = request.get("ret").getAsString();
-        var g = gson.fromJson(val, String.class);
-        return Base64.getDecoder().decode(g);
+        var s = gson.fromJson(val, String.class);
+        return Base64.getDecoder().decode(s);
     }
 
     /**
@@ -85,20 +85,6 @@ public class JsonService {
         }
     }
 
-    public static Playlist[] unpackPlaylist(JsonObject request) {
-        var get = request.get("ret");
-        var err = request.get("error");
-        if (err != null || get.isJsonNull()) {
-            if (err != null) {
-                System.err.println(err.getAsString());
-            }
-            return null;
-        } else {
-            var arr = request.get("ret").getAsString();
-            return gson.fromJson(arr, Playlist[].class);
-        }
-    }
-
     public static int unpackInt(JsonObject request) {
         var get = request.get("ret");
         var err = request.get("error");
@@ -140,14 +126,6 @@ public class JsonService {
      */
     public static <T> String serialize(T obj) {
         return gson.toJson(obj, obj.getClass());
-    }
-
-    @Deprecated
-    public static ObservableList<Music> loadDatabase() {
-        var param = new String[] { "asdf" }; // Proxy requires some parameter for the request
-        var songsRequest = proxy.synchExecution("loadSongs", param, Communication.Semantic.AT_LEAST_ONCE);
-        var musics = unpackMusic(songsRequest);
-        return FXCollections.observableArrayList(musics);
     }
 
     /**
