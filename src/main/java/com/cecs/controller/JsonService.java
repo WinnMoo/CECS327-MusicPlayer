@@ -71,6 +71,13 @@ public class JsonService {
         }
     }
 
+    /**
+     * Extracts the array of Music objects from a server response
+     *
+     * @param request The response from the server, in the form of an array of Music, where a
+     *                null signifies that something has gone horribly wrong
+     * @return value stored in "ret" field, if possible
+     */
     public static Music[] unpackMusic(JsonObject request) {
         var get = request.get("ret");
         var err = request.get("error");
@@ -85,6 +92,12 @@ public class JsonService {
         }
     }
 
+    /**
+     * Extracts a single integer from a server response
+     *
+     * @param request The response from the server, in the form of an int
+     * @return value stored in "ret" field, if possible, <code>0</code> otherwise
+     */
     public static int unpackInt(JsonObject request) {
         var get = request.get("ret");
         var err = request.get("error");

@@ -56,7 +56,7 @@ public class CECS327InputStream2 extends InputStream {
 
     /**
      * Constructor of the class. Initialize the variables and reads the first
-     * frament in nextBuf
+     * fragment in nextBuf
      *
      * @param fileName The name of the file
      */
@@ -79,16 +79,15 @@ public class CECS327InputStream2 extends InputStream {
     }
 
     /**
-     * getNextBuff reads the buffer. It gets the data using the remote method
-     * getSongChunk
+     * Spawns a thread to read the next buffer for the song playing. Uses remote
+     * method <code>getSongChunk(String filename, int fragment)</code>
      */
     private void getBuff(int fragment) {
         new Thread(() -> {
-            String[] param = new String[] { fileName, String.valueOf(fragment) };
-            var request = proxy.synchExecution("getSongChunk", param, Communication.Semantic.AT_LEAST_ONCE);
+            var request = proxy.synchExecution("getSongChunk", new String[] { fileName, String.valueOf(fragment) },
+                    Communication.Semantic.AT_LEAST_ONCE);
             nextBuf = JsonService.unpackBytes(request);
             sem.release();
-            System.out.println("Read buffer");
         }).start();
     }
 
@@ -104,13 +103,14 @@ public class CECS327InputStream2 extends InputStream {
         }
         int posmod = pos % FRAGMENT_SIZE;
         if (posmod == 0) {
+            // Wait for getBuff()'s thread to finish
             try {
                 sem.acquire();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.arraycopy(nextBuf, 0, buf, 0, FRAGMENT_SIZE);
 
+            System.arraycopy(nextBuf, 0, buf, 0, FRAGMENT_SIZE);
             getBuff(fragment);
             fragment++;
         }

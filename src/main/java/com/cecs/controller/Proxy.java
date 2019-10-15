@@ -16,8 +16,9 @@ public class Proxy implements ProxyInterface {
     }
 
     /*
-     * Executes the remote method "remoteMethod". The method blocks until it
-     * receives the reply of the message. add semantic call along with json request
+     * Executes <code>remoteMethod(param...)</code> in a remote server. The method
+     * may block until it receives the reply of the message. Passes semantic call
+     * along with JSON request
      */
     public JsonObject synchExecution(String remoteMethod, String[] param, Communication.Semantic semantic) {
         JsonObject jsonRequest = new JsonObject();
@@ -44,11 +45,29 @@ public class Proxy implements ProxyInterface {
     }
 
     /*
-     * Executes the remote method remoteMethod and returns without waiting for the
-     * reply. It does similar to synchExecution but does not return any value
-     *
+     * Executes <code>remoteMethod(param...)</code> in a remote server and returns
+     * without waiting for the reply. This method does return a value.
      */
     public void asynchExecution(String remoteMethod, String[] param) {
-        return;
+        new Thread(() -> {
+            JsonObject jsonRequest = new JsonObject();
+            JsonObject jsonParam = new JsonObject();
+
+            jsonRequest.addProperty("remoteMethod", remoteMethod);
+            jsonRequest.addProperty("objectName", objectName);
+            jsonRequest.addProperty("requestId", ++requestId);
+            jsonRequest.addProperty("semantic", Communication.Semantic.MAYBE.toString());
+            if (requestId == Integer.MAX_VALUE)
+                requestId = 0; // reset requestId
+
+            // make sure that the params are in correct order.
+            for (int i = 0; i < param.length; i++) {
+                jsonParam.addProperty("param" + i, param[i]);
+            }
+
+            jsonRequest.add("param", jsonParam);
+
+            this.communication.send(jsonRequest.toString());
+        }).start();
     }
 }
