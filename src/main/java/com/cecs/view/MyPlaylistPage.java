@@ -1,7 +1,13 @@
 package com.cecs.view;
 
+import com.cecs.App;
 import com.cecs.controller.*;
 import com.cecs.def.ProxyInterface;
+import com.cecs.model.Playlist;
+import com.cecs.model.Song;
+import com.cecs.model.User;
+
+import java.util.Arrays;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,13 +23,8 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import com.cecs.model.Playlist;
-import com.cecs.model.Song;
-import com.cecs.model.User;
-
 class MyPlaylistPage {
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
-            Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices", Communication.Semantic.AT_LEAST_ONCE);
 
     static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
@@ -102,7 +103,7 @@ class MyPlaylistPage {
         });
 
         table.setEditable(true);
-        table.getColumns().addAll(titleCol, artistCol, colBtDelete);
+        table.getColumns().addAll(Arrays.asList(titleCol, artistCol, colBtDelete));
 
         cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
         cbMyPlaylist.setOnAction(e -> {

@@ -1,5 +1,6 @@
 package com.cecs.view;
 
+import com.cecs.App;
 import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
@@ -25,8 +26,7 @@ public class LoginPage {
         SUCCESS, INVALID_USER, INVALID_PASS, INCORRECT_CREDENTIALS,
     }
 
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
-            Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices", Communication.Semantic.AT_LEAST_ONCE);
 
     public static void show(Stage stage) {
         var signIn = new Text("Sign In");

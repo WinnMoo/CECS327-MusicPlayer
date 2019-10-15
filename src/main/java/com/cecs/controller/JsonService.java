@@ -1,21 +1,21 @@
 package com.cecs.controller;
 
+import com.cecs.App;
 import com.cecs.def.ProxyInterface;
 import com.cecs.model.Music;
 import com.cecs.model.Playlist;
 import com.cecs.model.User;
+
 import com.google.gson.*;
+import java.util.Base64;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.util.Base64;
 
 /**
  * Class that handles services needed by the Gson library
  */
 public class JsonService {
-    private static ProxyInterface proxy = new Proxy(new Communication(), "MusicServices",
-            Communication.Semantic.AT_LEAST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "MusicServices", Communication.Semantic.AT_LEAST_ONCE);
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 

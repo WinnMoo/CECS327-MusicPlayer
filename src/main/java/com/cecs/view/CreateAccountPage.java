@@ -1,8 +1,11 @@
 package com.cecs.view;
 
+import com.cecs.App;
 import com.cecs.controller.Communication;
+import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
 import com.cecs.def.ProxyInterface;
+
 import io.reactivex.Flowable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,14 +24,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import com.cecs.controller.JsonService;
-
 class CreateAccountPage {
     enum RegisterCode {
         SUCCESS, INVALID_USER, INVALID_PASS1, INVALID_PASS2, NO_MATCH, NAME_TAKEN
     }
 
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices", Communication.Semantic.AT_MOST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices", Communication.Semantic.AT_MOST_ONCE);
 
     static void showAndWait(Stage parentStage) {
         var stage = new Stage();

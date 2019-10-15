@@ -4,7 +4,7 @@ import com.cecs.model.RemoteRef;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.HashMap;
+
 /* Semantics:
 Maybe
     just send the request
@@ -31,12 +31,10 @@ public class Communication {
         MAYBE, AT_LEAST_ONCE, AT_MOST_ONCE;
     }
 
-    private HashMap<String, Object> listOfObjects;
     private static final byte[] buffer = new byte[32768];
     private static final int TIME_OUT = 1000;
 
     public Communication() {
-        listOfObjects = new HashMap<>();
     }
 
     /**
@@ -100,17 +98,5 @@ public class Communication {
             e.printStackTrace();
         }
         return receivePacket != null ? new String(receivePacket.getData(), 0, receivePacket.getLength()) : null;
-    }
-
-    /*
-     * registerObject: It register the objects that handle the request
-     *
-     * @param remoteMethod: It is the name of the method that objectName implements.
-     *
-     * @objectName: It is the main class that contains the remote methods each
-     * object can contain several remote methods
-     */
-    public void registerObject(Object remoteMethod, String objectName) {
-        listOfObjects.put(objectName, remoteMethod);
     }
 }

@@ -1,7 +1,13 @@
 package com.cecs.view;
 
+import com.cecs.App;
 import com.cecs.controller.*;
+import com.cecs.model.Music;
+import com.cecs.model.Playlist;
+import com.cecs.model.Song;
+import com.cecs.model.User;
 import com.cecs.def.ProxyInterface;
+
 import io.reactivex.Flowable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -21,16 +27,11 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.cecs.model.Music;
-import com.cecs.model.Playlist;
-import com.cecs.model.Song;
-import com.cecs.model.User;
-
 public class MainPage {
-    private static ProxyInterface proxy = new Proxy(new Communication(), "UserServices",
-            Communication.Semantic.AT_MOST_ONCE);
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices", Communication.Semantic.AT_MOST_ONCE);
 
     public static void show(Stage stage, SongPlayer player, User user) {
         final int rowsPerPage = 20;
@@ -178,7 +179,7 @@ public class MainPage {
         var table = new TableView<>(listOfMusic);
 
         table.setEditable(true);
-        table.getColumns().addAll(songs, releases, artists, colBtn);
+        table.getColumns().addAll(Arrays.asList(songs, releases, artists, colBtn));
 
         // Pagination
 
