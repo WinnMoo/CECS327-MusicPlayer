@@ -43,9 +43,9 @@ class AppTest {
 
     @Test
     void testProxy() {
-        var proxy = new Proxy(comm, "UserServices", Communication.Semantic.AT_MOST_ONCE);
+        var proxy = new Proxy(comm, "UserServices");
         var params = new String[] { "chris", "greer" };
-        var request = proxy.synchExecution("login", params);
+        var request = proxy.synchExecution("login", params, Communication.Semantic.AT_MOST_ONCE);
         var user = JsonService.unpackUser(request);
         if (user != null) {
             System.out.println(user.username + " logged in!");
@@ -54,9 +54,9 @@ class AppTest {
 
     @Test
     void testMusicChunk() {
-        var proxy = new Proxy(comm, "MusicServices", Communication.Semantic.AT_LEAST_ONCE);
+        var proxy = new Proxy(comm, "MusicServices");
         var params = new String[] { "0", "20" };
-        var request = proxy.synchExecution("loadChunk", params);
+        var request = proxy.synchExecution("loadChunk", params, Communication.Semantic.AT_LEAST_ONCE);
         var music = JsonService.unpackMusic(request);
 
         assertEquals(20, music.length);
