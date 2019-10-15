@@ -1,16 +1,24 @@
 package com.cecs.view;
 
+import com.cecs.App;
+import com.cecs.controller.*;
+import com.cecs.model.Music;
+import com.cecs.model.Playlist;
+import com.cecs.model.Song;
+import com.cecs.model.User;
+import com.cecs.def.ProxyInterface;
+
 import io.reactivex.Flowable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -19,37 +27,25 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.cecs.controller.Dispatcher;
-import com.cecs.controller.JsonService;
-import com.cecs.controller.Proxy;
-import com.cecs.controller.SongPlayer;
-import com.cecs.controller.Utils;
-import com.cecs.def.ProxyInterface;
-import com.cecs.model.Music;
-import com.cecs.model.Playlist;
-import com.cecs.model.Song;
-import com.cecs.model.User;
-
 public class MainPage {
-    private static ProxyInterface proxy = new Proxy(new Dispatcher(), "UserServices");
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
 
     public static void show(Stage stage, SongPlayer player, User user) {
+        final int rowsPerPage = 20;
+        final int listSize = 10000;
+        final String[] query = new String[] { "" };
 
         // Main Menu
         var viewAll = new MenuItem("View All");
-        viewAll.setOnAction(action -> {
-            System.out.println("View all selected");
-            MainPage.show(stage, player, user);
-        });
+        viewAll.setOnAction(action -> MainPage.show(stage, player, user));
         var mainMenu = new Menu("All Songs", null, viewAll);
 
         // Playlist Menu
         var playlistItem = new MenuItem("Go to Playlists");
-        playlistItem.setOnAction(action -> {
-            MyPlaylistPage.show(stage, player, user);
-        });
+        playlistItem.setOnAction(action -> MyPlaylistPage.show(stage, player, user));
         var playlistMenu = new Menu("Playlists", null, playlistItem);
 
         // Profile Menu
@@ -63,7 +59,7 @@ public class MainPage {
         var otherSettingItem = new MenuItem("Other Settings Item");
         otherSettingItem.setOnAction(action -> {
             System.out.println("Other setting selected");
-            // TODO: Functionality, use your imagination.
+            // TODO: Possibly add account deletion and server configuration here!
         });
         var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
 
@@ -71,7 +67,8 @@ public class MainPage {
         var menuBar = new MenuBar(mainMenu, playlistMenu, profileMenu, settingsMenu);
 
         var listOfMusic = FXCollections.<Music>observableArrayList();
-        Flowable.fromCallable(JsonService::loadDatabase).subscribe(listOfMusic::addAll, Throwable::printStackTrace);
+        Flowable.fromCallable(() -> JsonService.loadDatabaseChunk(0, rowsPerPage, "")).subscribe(listOfMusic::addAll,
+                Throwable::printStackTrace);
         final var label = new Text("Welcome back, " + user.username);
         label.setFont(Font.font(null, FontPosture.ITALIC, 24.0));
 
@@ -119,7 +116,8 @@ public class MainPage {
                                 obv.add(plName);
                                 // cbMyPlaylist.getItems().add(plName);
                             }
-                            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+                            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
+                                    Communication.Semantic.AT_MOST_ONCE);
                         });
                     }
 
@@ -164,7 +162,8 @@ public class MainPage {
                         obv.add(name);
                         cbMyPlaylist.setValue(name);
                     }
-                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
+                            Communication.Semantic.AT_MOST_ONCE);
                 });
             }
 
@@ -179,42 +178,47 @@ public class MainPage {
             }
         });
 
-        var list = new FilteredList<>(listOfMusic, m -> true);
-        var table = new TableView<>(list);
+        var table = new TableView<>(listOfMusic);
 
         table.setEditable(true);
-        table.getColumns().addAll(songs, releases, artists, colBtn);
+        table.getColumns().addAll(Arrays.asList(songs, releases, artists, colBtn));
 
         // Pagination
-        int rowsPerPage = 20;
-        Pagination pagination = new Pagination((list.size() / rowsPerPage + 1), 0);
+
+        Pagination pagination = new Pagination(listSize / rowsPerPage + 1, 0);
         pagination.setPageFactory(pageIndex -> {
             int fromIndex = pageIndex * rowsPerPage;
-            int toIndex = Math.min(fromIndex + rowsPerPage, list.size());
-            table.setItems(FXCollections.observableArrayList(list.subList(fromIndex, toIndex)));
+            int toIndex = Math.min(fromIndex + rowsPerPage, listSize);
+            System.out.println("Loading data from " + fromIndex + " to " + toIndex);
+            var musics = JsonService.loadDatabaseChunk(fromIndex, toIndex, query[0]);
+            listOfMusic.setAll(musics);
 
             return new BorderPane(table);
         });
 
+        var searchButton = new Button("Search");
         var searchBar = new TextField();
+
+        searchButton.setOnAction(action -> {
+            query[0] = searchBar.getText().toLowerCase().trim();
+            var musics = JsonService.loadDatabaseChunk(0, 20, query[0]);
+            var size = JsonService.loadDatabaseChunkSize(query[0]);
+
+            listOfMusic.setAll(musics);
+            pagination.setCurrentPageIndex(0);
+            pagination.setPageCount(size / rowsPerPage + 1);
+        });
+
         searchBar.setPromptText("Search for artist, release, or song...");
         searchBar.setOnKeyReleased(keyEvent -> {
-            list.setPredicate(p -> {
-                final var query = searchBar.getText().toLowerCase().trim();
-                return p.getArtist().toString().toLowerCase().contains(query)
-                        || p.getRelease().toString().toLowerCase().contains(query)
-                        || p.getSong().toString().toLowerCase().contains(query);
-            });
-
-            // to update page
-            table.getItems().setAll(list);
-            pagination.setCurrentPageIndex(0);
-            pagination.setPageCount(list.size() / rowsPerPage + 1);
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                searchButton.fire();
+            }
         });
         searchBar.prefWidthProperty().bind(Bindings.divide(stage.widthProperty(), 2));
 
         // De-clutter bottom of track slider
-        var searchRow = new HBox(searchBar, cbMyPlaylist);
+        var searchRow = new HBox(searchBar, searchButton, cbMyPlaylist);
         searchRow.setSpacing(10.0);
 
         // Track slider, controls when to stop/continue track updates
@@ -224,9 +228,7 @@ public class MainPage {
             player.unblockUpdates();
             player.updateTrack(playbackSlider.getValue());
         });
-        playbackSlider.setOnMouseDragged(it -> {
-            player.blockUpdates();
-        });
+        playbackSlider.setOnMouseDragged(it -> player.blockUpdates());
         player.getEvents().subscribe(playbackSlider::setValue, Throwable::printStackTrace);
 
         var playButton = new Button("▶");
@@ -238,7 +240,8 @@ public class MainPage {
             if (playButton.getText().equals("▶")) { // lol
                 var song = table.getSelectionModel().getSelectedItem();
                 stage.setTitle("Music Player 1.0" + " - Now Playing: " + song.getSong().getTitle());
-                player.playSong(song.getSong().getId() + ".mp3");
+                player.playSong(song.getSong().getId());
+                // player.playSong(song.getSong().getId() + ".mp3");
                 playButton.setText("⏸");
                 playbackSlider.setDisable(false);
 
@@ -316,7 +319,6 @@ public class MainPage {
         borderPane.setTop(menuBar);
         borderPane.setCenter(vbox);
         borderPane.setBottom(controlButtonRow);
-
         final var scene = new Scene(borderPane, 800, 600);
 
         stage.setScene(scene);

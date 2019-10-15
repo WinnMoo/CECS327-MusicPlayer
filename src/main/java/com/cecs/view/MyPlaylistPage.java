@@ -1,7 +1,13 @@
 package com.cecs.view;
 
+import com.cecs.App;
 import com.cecs.controller.*;
 import com.cecs.def.ProxyInterface;
+import com.cecs.model.Playlist;
+import com.cecs.model.Song;
+import com.cecs.model.User;
+
+import java.util.Arrays;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,27 +23,18 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import com.cecs.model.Playlist;
-import com.cecs.model.Song;
-import com.cecs.model.User;
-
 class MyPlaylistPage {
-    private static ProxyInterface proxy = new Proxy(new Dispatcher(), "UserServices");
+    private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
 
     static void show(Stage stage, SongPlayer player, User user) {
         // Main Menu
         var viewAll = new MenuItem("View All");
-        viewAll.setOnAction(action -> {
-            System.out.println("View all selected");
-            MainPage.show(stage, player, user);
-        });
+        viewAll.setOnAction(action -> MainPage.show(stage, player, user));
         var mainMenu = new Menu("All Songs", null, viewAll);
 
         // Playlist Menu
         var playlistItem = new MenuItem("Go to Playlists");
-        playlistItem.setOnAction(action -> {
-            MyPlaylistPage.show(stage, player, user);
-        });
+        playlistItem.setOnAction(action -> MyPlaylistPage.show(stage, player, user));
         var playlistMenu = new Menu("Playlists", null, playlistItem);
 
         // Profile Menu
@@ -49,10 +46,7 @@ class MyPlaylistPage {
         customMenuItem.setContent(menuSlider);
         customMenuItem.setHideOnClick(false);
         var otherSettingItem = new MenuItem("Other Settings Item");
-        otherSettingItem.setOnAction(action -> {
-            System.out.println("Other setting selected");
-            // TODO: Functionality, use your imagination.
-        });
+        otherSettingItem.setOnAction(action -> System.out.println("Other setting selected"));
         var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
 
         // Menu Bar
@@ -93,7 +87,8 @@ class MyPlaylistPage {
                     table.setItems(songs);
 
                     user.findPlaylistByName(cbMyPlaylist.getValue()).removeSong(song);
-                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
+                    proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
+                            Communication.Semantic.AT_MOST_ONCE);
                 });
             }
 
@@ -109,7 +104,7 @@ class MyPlaylistPage {
         });
 
         table.setEditable(true);
-        table.getColumns().addAll(titleCol, artistCol, colBtDelete);
+        table.getColumns().addAll(Arrays.asList(titleCol, artistCol, colBtDelete));
 
         cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
         cbMyPlaylist.setOnAction(e -> {
@@ -128,9 +123,8 @@ class MyPlaylistPage {
             obv.remove(cbMyPlaylist.getValue());
             cbMyPlaylist.setValue((obv.isEmpty()) ? "" : obv.get(0));
 
-            // JsonService.updateUser(user);
-            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) });
-
+            proxy.synchExecution("updateUser", new String[] { JsonService.serialize(user) },
+                    Communication.Semantic.AT_MOST_ONCE);
         });
 
         var line = new HBox(cbMyPlaylist, btDelete);

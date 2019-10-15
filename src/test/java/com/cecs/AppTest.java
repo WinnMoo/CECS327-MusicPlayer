@@ -1,9 +1,8 @@
 package com.cecs;
 
-import com.cecs.controller.Dispatcher;
+import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
-import com.cecs.model.User;
 import com.google.gson.JsonParser;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -14,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AppTest {
     private final String jasonBuffer = "{ \"remoteMethod\": \"getSongChunk\", \"objectName\": \"SongServices\", \"param\": { \"song\": \"SOMZWCG12A8C13C480\", \"fragment\": 2 } }";
     private final String jasonLogin = "{ \"remoteMethod\": \"login\", \"objectName\": \"UserServices\", \"param\": { \"username\": \"chris\", \"password\": \"greer\" } }";
+    private final Communication comm = new Communication();
 
     @Test
     void testDispatch() {
-        var dispatch = new Dispatcher();
-        var ret = dispatch.dispatch(jasonBuffer);
+        var ret = comm.dispatch(jasonBuffer, Communication.Semantic.AT_MOST_ONCE);
         var parser = new JsonParser();
         var request = parser.parse(ret).getAsJsonObject();
         var bytes = JsonService.unpackBytes(request);
@@ -29,26 +28,25 @@ class AppTest {
     @Test
     @Deprecated
     void testLogin() {
-        var dispatch = new Dispatcher();
-        var ret = dispatch.dispatch(jasonLogin);
+        var ret = comm.dispatch(jasonLogin, Communication.Semantic.AT_MOST_ONCE);
         var parser = new JsonParser();
         var request = parser.parse(ret).getAsJsonObject();
-        var playlists = JsonService.unpackPlaylists(request);
+        var user = JsonService.unpackUser(request);
 
-        if (playlists == null) {
-            System.out.println("This user doesn't exist");
-        } else if (playlists.length == 0) {
+        if (user == null) {
+            System.out.println("Login failed");
+        } else if (user.userPlaylists.size() == 0) {
             System.out.println("This user does not have any Playlists");
         } else {
-            System.out.println("This user has " + playlists.length + " playlist(s)");
+            System.out.format("This user has %d playlist(s)", user.userPlaylists.size());
         }
     }
 
     @Test
     void testProxy() {
-        var proxy = new Proxy(new Dispatcher(), "UserServices");
+        var proxy = new Proxy(comm, "UserServices");
         var params = new String[] { "chris", "greer" };
-        var request = proxy.synchExecution("login", params);
+        var request = proxy.synchExecution("login", params, Communication.Semantic.AT_MOST_ONCE);
         var user = JsonService.unpackUser(request);
         if (user != null) {
             System.out.println(user.username + " logged in!");
@@ -56,40 +54,17 @@ class AppTest {
     }
 
     @Test
-    void testCreation() {
-        var proxy = new Proxy(new Dispatcher(), "UserServices");
-        var params = new String[] { "added", "account" };
-        var request = proxy.synchExecution("createAccount", params);
-        var ret = JsonService.unpackBool(request);
+    void testMusicChunk() {
+        var proxy = new Proxy(comm, "MusicServices");
+        var params = new String[] { "0", "20" };
+        var request = proxy.synchExecution("loadChunk", params, Communication.Semantic.AT_LEAST_ONCE);
+        var music = JsonService.unpackMusic(request);
 
-        assertTrue(ret);
-    }
-
-    @Test
-    void testDeletion() {
-        var proxy = new Proxy(new Dispatcher(), "UserServices");
-        var param = new User("added", "account");
-        var params = new String[] { JsonService.serialize(param) };
-        var request = proxy.synchExecution("deleteAccount", params);
-        var ret = JsonService.unpackBool(request);
-
-        assertTrue(ret);
-    }
-
-    @Test
-    void testUpdate() {
-        var proxy = new Proxy(new Dispatcher(), "UserServices");
-        var param = JsonService.serialize(new User("new", "geer"));
-        var params = new String[] { param };
-        var request = proxy.synchExecution("updateUser", params);
-        var ret = JsonService.unpackBool(request);
-
-        assertTrue(ret);
+        assertEquals(20, music.length);
     }
 
     @AfterAll
-    static void closeServer() {
-        var dispatch = new Dispatcher();
-        dispatch.send("end");
+    void closeServer() {
+        comm.send("end");
     }
 }
