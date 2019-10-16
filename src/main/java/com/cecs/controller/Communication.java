@@ -32,8 +32,8 @@ public class Communication {
     }
 
     private HashMap<String, Object> listOfObjects;
-    private static final byte[] buffer = new byte[32768];
-    private static final int TIME_OUT = 1000;
+    private static final byte[] buffer = new byte[62768];
+    private static final int TIME_OUT = 10000;
 
     public Communication() {
         listOfObjects = new HashMap<>();
@@ -74,17 +74,15 @@ public class Communication {
             final var out = request.getBytes();
             sendPacket = new DatagramPacket(out, out.length, remoteRef.getAddress(), remoteRef.getPort());
             receivePacket = new DatagramPacket(buffer, buffer.length);
-            System.out.println(
-                    "Sending message of size " + sendPacket.getLength() + " to " + sendPacket.getSocketAddress());
 
-            System.out.println("Listening...");
-            if (semantic == Semantic.MAYBE) // only send the request once
-                socket.send(sendPacket);
-            else { // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if not receive the response
+            socket.send(sendPacket);
+            if (semantic != Semantic.MAYBE) { // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if not receive the response
                    // after TIME_OUT
+                int i = 0;
                 while (true) {
                     try {
                         socket.receive(receivePacket);
+                        System.out.println("Sending message " + i++);
                     } catch (SocketTimeoutException e) {
                         // resend
                         socket.send(sendPacket);
@@ -94,7 +92,7 @@ public class Communication {
                 }
             }
 
-            System.out.println("Message received!");
+            //System.out.println("Message received!");
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

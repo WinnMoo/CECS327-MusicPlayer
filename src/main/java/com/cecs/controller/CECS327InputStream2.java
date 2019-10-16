@@ -87,6 +87,7 @@ public class CECS327InputStream2 extends InputStream {
      */
     protected void getBuff(int fragment) throws IOException {
         new Thread(() -> {
+            long start = System.currentTimeMillis();
             String[] param = new String[2];
             param[0] = String.valueOf(fileName);
             param[1] = String.valueOf(fragment);
@@ -94,12 +95,13 @@ public class CECS327InputStream2 extends InputStream {
             JsonObject jsonRet = proxy.synchExecution("getSongChunk", param, Communication.Semantic.AT_LEAST_ONCE);
             String s = jsonRet.get("ret").getAsString();
             nextBuf = Base64.getMimeDecoder().decode(s);
-            //nextBuf = Base64.getDecoder().decode(s);
+            long end = System.currentTimeMillis();
+
             sem.release();
             System.out.println("Read buffer");
-        }).start();
+}).start();
 
-    }
+        }
 
     /**
      * Reads the next byte of data from the input stream.
