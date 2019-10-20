@@ -1,6 +1,7 @@
 package com.cecs.controller;
 
 import com.cecs.def.ProxyInterface;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -21,8 +22,8 @@ public class Proxy implements ProxyInterface {
      * along with JSON request
      */
     public JsonObject synchExecution(String remoteMethod, String[] param, Communication.Semantic semantic) {
-        JsonObject jsonRequest = new JsonObject();
-        JsonObject jsonParam = new JsonObject();
+        var jsonRequest = new JsonObject();
+        var jsonParam = new JsonArray();
 
         jsonRequest.addProperty("remoteMethod", remoteMethod);
         jsonRequest.addProperty("objectName", objectName);
@@ -31,17 +32,14 @@ public class Proxy implements ProxyInterface {
         if (requestId == Integer.MAX_VALUE)
             requestId = 0; // reset requestId
 
-        // make sure that the params are in correct order.
-        for (int i = 0; i < param.length; i++) {
-            jsonParam.addProperty("param" + i, param[i]);
+        for (var p : param) {
+            jsonParam.add(p);
         }
-
         jsonRequest.add("param", jsonParam);
 
-        JsonParser parser = new JsonParser();
-
         String strRet = this.communication.dispatch(jsonRequest.toString(), semantic);
-        return parser.parse(strRet).getAsJsonObject();
+
+        return new JsonParser().parse(strRet).getAsJsonObject();
     }
 
     /*
@@ -50,8 +48,8 @@ public class Proxy implements ProxyInterface {
      */
     public void asynchExecution(String remoteMethod, String[] param) {
         new Thread(() -> {
-            JsonObject jsonRequest = new JsonObject();
-            JsonObject jsonParam = new JsonObject();
+            var jsonRequest = new JsonObject();
+            var jsonParam = new JsonArray();
 
             jsonRequest.addProperty("remoteMethod", remoteMethod);
             jsonRequest.addProperty("objectName", objectName);
@@ -60,11 +58,9 @@ public class Proxy implements ProxyInterface {
             if (requestId == Integer.MAX_VALUE)
                 requestId = 0; // reset requestId
 
-            // make sure that the params are in correct order.
-            for (int i = 0; i < param.length; i++) {
-                jsonParam.addProperty("param" + i, param[i]);
+            for (var p : param) {
+                jsonParam.add(p);
             }
-
             jsonRequest.add("param", jsonParam);
 
             this.communication.send(jsonRequest.toString());

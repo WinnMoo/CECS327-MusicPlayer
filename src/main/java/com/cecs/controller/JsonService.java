@@ -1,13 +1,15 @@
 package com.cecs.controller;
 
+import java.util.Base64;
+
 import com.cecs.App;
 import com.cecs.def.ProxyInterface;
 import com.cecs.model.Music;
-import com.cecs.model.Playlist;
 import com.cecs.model.User;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
-import com.google.gson.*;
-import java.util.Base64;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -29,25 +31,6 @@ public class JsonService {
         var val = request.get("ret").getAsString();
         var s = gson.fromJson(val, String.class);
         return Base64.getDecoder().decode(s);
-    }
-
-    /**
-     * Extracts the list of Playlists from a server response
-     *
-     * @param request The response from the server, in the form of a list of
-     *                playlists, where a null signifies that the user credentials do
-     *                not match
-     * @return value stored in "ret" field, if possible
-     */
-    @Deprecated
-    public static Playlist[] unpackPlaylists(JsonObject request) {
-        var get = request.get("ret");
-        if (get.isJsonNull()) {
-            return null;
-        } else {
-            var arr = request.get("ret").getAsString();
-            return gson.fromJson(arr, Playlist[].class);
-        }
     }
 
     /**
@@ -74,8 +57,9 @@ public class JsonService {
     /**
      * Extracts the array of Music objects from a server response
      *
-     * @param request The response from the server, in the form of an array of Music, where a
-     *                null signifies that something has gone horribly wrong
+     * @param request The response from the server, in the form of an array of
+     *                Music, where a null signifies that something has gone horribly
+     *                wrong
      * @return value stored in "ret" field, if possible
      */
     public static Music[] unpackMusic(JsonObject request) {

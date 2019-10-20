@@ -1,54 +1,38 @@
 package com.cecs;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.cecs.controller.Communication;
 import com.cecs.controller.JsonService;
 import com.cecs.controller.Proxy;
-import com.google.gson.JsonParser;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class AppTest {
-    private final String jasonBuffer = "{ \"remoteMethod\": \"getSongChunk\", \"objectName\": \"SongServices\", \"param\": { \"song\": \"SOMZWCG12A8C13C480\", \"fragment\": 2 } }";
-    private final String jasonLogin = "{ \"remoteMethod\": \"login\", \"objectName\": \"UserServices\", \"param\": { \"username\": \"chris\", \"password\": \"greer\" } }";
     private static final Communication comm = new Communication();
 
     @Test
-    void testDispatch() {
-        var ret = comm.dispatch(jasonBuffer, Communication.Semantic.AT_MOST_ONCE);
-        var parser = new JsonParser();
-        var request = parser.parse(ret).getAsJsonObject();
+    void testSongChunk() {
+        var proxy = new Proxy(comm, "SongServices");
+        var params = new String[] { "SOMZWCG12A8C13C480", "2" };
+        var request = proxy.synchExecution("getSongChunk", params, Communication.Semantic.AT_LEAST_ONCE);
         var bytes = JsonService.unpackBytes(request);
 
         assertEquals(16384, bytes.length);
     }
 
     @Test
-    @Deprecated
     void testLogin() {
-        var ret = comm.dispatch(jasonLogin, Communication.Semantic.AT_MOST_ONCE);
-        var parser = new JsonParser();
-        var request = parser.parse(ret).getAsJsonObject();
+        var proxy = new Proxy(comm, "UserServices");
+        var params = new String[] { "user", "pass" };
+        var request = proxy.synchExecution("login", params, Communication.Semantic.AT_LEAST_ONCE);
         var user = JsonService.unpackUser(request);
 
         if (user == null) {
             System.out.println("Login failed");
-        } else if (user.userPlaylists.size() == 0) {
-            System.out.println("This user does not have any Playlists");
         } else {
-            System.out.format("This user has %d playlist(s)", user.userPlaylists.size());
-        }
-    }
-
-    @Test
-    void testProxy() {
-        var proxy = new Proxy(comm, "UserServices");
-        var params = new String[] { "chris", "greer" };
-        var request = proxy.synchExecution("login", params, Communication.Semantic.AT_MOST_ONCE);
-        var user = JsonService.unpackUser(request);
-        if (user != null) {
-            System.out.println(user.username + " logged in!");
+            System.out.format("This user has %d playlist(s)\n", user.userPlaylists.size());
         }
     }
 

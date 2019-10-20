@@ -60,7 +60,10 @@ public class Communication {
      * @param request: Request: it is a Json file { "remoteMethod": "getSongChunk",
      * "objectName": "SongServices", "param": { "song": 490183, "fragment": 2 } }
      */
+    // TODO: Add amount of times to retry before giving up. Alert on GUI. If the
+    // server is down, the program will freeze
     public String dispatch(String request, Semantic semantic) {
+        var retry = 0;
         var start = System.currentTimeMillis();
         var duration = System.currentTimeMillis() - start;
         System.out.format("Time needed to dispatch: %d\n", duration);
@@ -83,22 +86,22 @@ public class Communication {
             socket.send(sendPacket);
             // AT_LEAST_ONCE or AT_MOST_ONCE: resend the request if response times out
             if (semantic != Semantic.MAYBE) {
-                while (true) {
+                while (retry < 10) {
                     try {
                         socket.receive(receivePacket);
                         break;
                     } catch (SocketTimeoutException e) {
-                        // if (semantic == Semantic.AT_MOST_ONCE) {
-                        // break;
-                        // } else {
-                        // socket.send(sendPacket);
-                        // }
+                        retry++;
                         socket.send(sendPacket);
                     }
                 }
             }
-
-            System.out.println("Message received!");
+            if (retry == 10) {
+                socket.close();
+                return "{ \"error\": \"Request timed out\" }";
+            } else {
+                System.out.println("Message received!");
+            }
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
