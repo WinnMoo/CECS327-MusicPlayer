@@ -33,8 +33,14 @@ public class Communication {
 
     private static final byte[] buffer = new byte[32768];
     private static final int TIME_OUT = 1000;
+    public RemoteRef remoteRef = null;
 
     public Communication() {
+        try {
+            remoteRef = new RemoteRef();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -42,7 +48,6 @@ public class Communication {
      */
     public void send(String s) {
         try {
-            final var remoteRef = new RemoteRef();
             final var socket = new DatagramSocket();
             final var out = s.getBytes();
             final var packet = new DatagramPacket(out, out.length, remoteRef.getAddress(), remoteRef.getPort());
@@ -64,13 +69,9 @@ public class Communication {
     // server is down, the program will freeze
     public String dispatch(String request, Semantic semantic) {
         var retry = 0;
-        var start = System.currentTimeMillis();
-        var duration = System.currentTimeMillis() - start;
-        System.out.format("Time needed to dispatch: %d\n", duration);
 
         DatagramPacket receivePacket = null;
         try {
-            final var remoteRef = new RemoteRef();
             final var socket = new DatagramSocket();
             socket.setSoTimeout(TIME_OUT);
 

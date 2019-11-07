@@ -29,6 +29,13 @@ public class LoginPage {
     private static ProxyInterface proxy = new Proxy(App.comm, "UserServices");
 
     public static void show(Stage stage) {
+        var connectionSettings = new MenuItem("Connection Settings");
+        connectionSettings.setOnAction(action -> {
+            ConfigureConnectionPage.showAndWait(stage);
+        });
+        var settingsMenu = new Menu("Settings", null, connectionSettings);
+        var menuBar = new MenuBar(settingsMenu);
+
         var signIn = new Text("Sign In");
         signIn.setFont(new Font(null, 36.0));
 
@@ -105,7 +112,11 @@ public class LoginPage {
         col.setAlignment(Pos.CENTER);
         col.setPadding(new Insets(25.0));
 
-        stage.setScene(new Scene(col, 800, 600));
+        var borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+        borderPane.setCenter(col);
+
+        stage.setScene(new Scene(borderPane, 800, 600));
         stage.setTitle("Music Player 1.0");
         stage.show();
     }

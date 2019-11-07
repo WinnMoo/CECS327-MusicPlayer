@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class RemoteRef {
-    private int port ;
+    private int port;
     private InetAddress address;
 
     public RemoteRef(int port, InetAddress address) {
