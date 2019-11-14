@@ -58,12 +58,7 @@ class MainPage {
         var customMenuItem = new CustomMenuItem();
         customMenuItem.setContent(menuSlider);
         customMenuItem.setHideOnClick(false);
-        var otherSettingItem = new MenuItem("Other Settings Item");
-        otherSettingItem.setOnAction(action -> {
-            System.out.println("Other setting selected");
-            // TODO: Possibly add account deletion and server configuration here!
-        });
-        var settingsMenu = new Menu("Settings", null, customMenuItem, otherSettingItem);
+        var settingsMenu = new Menu("Settings", null, customMenuItem);
 
         // Menu Bar
         var menuBar = new MenuBar(mainMenu, playlistMenu, profileMenu, settingsMenu);
